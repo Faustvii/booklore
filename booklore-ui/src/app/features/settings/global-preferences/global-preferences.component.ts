@@ -3,16 +3,19 @@ import {FormsModule} from '@angular/forms';
 import {Observable} from 'rxjs';
 import {Button} from 'primeng/button';
 import {ToggleSwitch} from 'primeng/toggleswitch';
-import {MessageService} from 'primeng/api';
+import {MenuItem, MessageService} from 'primeng/api';
+import {SplitButton} from 'primeng/splitbutton';
 
 import {AppSettingsService} from '../../../shared/service/app-settings.service';
-import {BookService} from '../../book/service/book.service';
+import {BookMetadataManageService} from '../../book/service/book-metadata-manage.service';
 import {AppSettingKey, AppSettings, CoverCroppingSettings} from '../../../shared/model/app-settings.model';
 import {filter, take} from 'rxjs/operators';
 import {InputText} from 'primeng/inputtext';
 import {Slider} from 'primeng/slider';
 import {ExternalDocLinkComponent} from '../../../shared/components/external-doc-link/external-doc-link.component';
 import {TranslocoDirective, TranslocoPipe, TranslocoService} from '@jsverse/transloco';
+
+export const SUPPORT_ANIMATION_KEY = 'booklore-support-animation';
 
 @Component({
   selector: 'app-global-preferences',
@@ -23,6 +26,7 @@ import {TranslocoDirective, TranslocoPipe, TranslocoService} from '@jsverse/tran
     FormsModule,
     InputText,
     Slider,
+    SplitButton,
     ExternalDocLinkComponent,
     TranslocoDirective,
     TranslocoPipe
@@ -38,6 +42,8 @@ export class GlobalPreferencesComponent implements OnInit {
     enableTelemetry: true,
   };
 
+  supportButtonAnimation = localStorage.getItem(SUPPORT_ANIMATION_KEY) !== 'false';
+
   coverCroppingSettings: CoverCroppingSettings = {
     verticalCroppingEnabled: false,
     horizontalCroppingEnabled: false,
@@ -46,14 +52,23 @@ export class GlobalPreferencesComponent implements OnInit {
   };
 
   private appSettingsService = inject(AppSettingsService);
-  private bookService = inject(BookService);
+  private bookMetadataManageService = inject(BookMetadataManageService);
   private messageService = inject(MessageService);
   private t = inject(TranslocoService);
 
   appSettings$: Observable<AppSettings | null> = this.appSettingsService.appSettings$;
   maxFileUploadSizeInMb?: number;
+  regenerateCoverMenuItems: MenuItem[] = [];
 
   ngOnInit(): void {
+    this.regenerateCoverMenuItems = [
+      {
+        label: this.t.translate('settingsApp.covers.regenerateMissingBtn'),
+        icon: 'pi pi-images',
+        command: () => this.regenerateCovers(true)
+      }
+    ];
+
     this.appSettings$.pipe(
       filter(settings => !!settings),
       take(1)
@@ -85,6 +100,12 @@ export class GlobalPreferencesComponent implements OnInit {
     }
   }
 
+  onSupportAnimationChange(checked: boolean): void {
+    this.supportButtonAnimation = checked;
+    localStorage.setItem(SUPPORT_ANIMATION_KEY, String(checked));
+    window.dispatchEvent(new StorageEvent('storage', {key: SUPPORT_ANIMATION_KEY, newValue: String(checked)}));
+  }
+
   onCoverCroppingChange(): void {
     this.saveSetting(AppSettingKey.COVER_CROPPING_SETTINGS, this.coverCroppingSettings);
   }
@@ -97,8 +118,8 @@ export class GlobalPreferencesComponent implements OnInit {
     this.saveSetting(AppSettingKey.MAX_FILE_UPLOAD_SIZE_IN_MB, this.maxFileUploadSizeInMb);
   }
 
-  regenerateCovers(): void {
-    this.bookService.regenerateCovers().subscribe({
+  regenerateCovers(missingOnly = false): void {
+    this.bookMetadataManageService.regenerateCovers(missingOnly).subscribe({
       next: () =>
         this.showMessage('success', this.t.translate('settingsApp.covers.regenerateStarted'), this.t.translate('settingsApp.covers.regenerateStartedDetail')),
       error: () =>

@@ -1,6 +1,7 @@
 import {Component, DestroyRef, EventEmitter, inject, Input, OnInit, Output} from '@angular/core';
 import {Book, BookMetadata, ComicMetadata, MetadataClearFlags, MetadataUpdateWrapper} from '../../../../book/model/book.model';
 import {MessageService} from 'primeng/api';
+import {CdkDragDrop, CdkDropList, CdkDrag, moveItemInArray} from '@angular/cdk/drag-drop';
 import {Button} from 'primeng/button';
 import {FormGroup, FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {InputText} from 'primeng/inputtext';
@@ -9,6 +10,7 @@ import {forkJoin, Observable} from 'rxjs';
 import {Tooltip} from 'primeng/tooltip';
 import {UrlHelperService} from '../../../../../shared/service/url-helper.service';
 import {BookService} from '../../../../book/service/book.service';
+import {BookMetadataManageService} from '../../../../book/service/book-metadata-manage.service';
 import {Textarea} from 'primeng/textarea';
 import {filter, take} from 'rxjs/operators';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
@@ -38,7 +40,9 @@ import {TranslocoDirective, TranslocoService} from '@jsverse/transloco';
     Image,
     LazyLoadImageModule,
     Checkbox,
-    TranslocoDirective
+    TranslocoDirective,
+    CdkDropList,
+    CdkDrag,
   ]
 })
 export class MetadataPickerComponent implements OnInit {
@@ -67,6 +71,7 @@ export class MetadataPickerComponent implements OnInit {
 
   private allItems: Record<string, string[]> = {};
   filteredItems: Record<string, string[]> = {};
+  authorInputValue = '';
 
   metadataForm!: FormGroup;
   currentBookId!: number;
@@ -78,6 +83,7 @@ export class MetadataPickerComponent implements OnInit {
 
   private messageService = inject(MessageService);
   private bookService = inject(BookService);
+  private bookMetadataManageService = inject(BookMetadataManageService);
   protected urlHelper = inject(UrlHelperService);
   private destroyRef = inject(DestroyRef);
   private appSettingsService = inject(AppSettingsService);
@@ -282,19 +288,57 @@ export class MetadataPickerComponent implements OnInit {
     }
   }
 
+  dropAuthor(event: CdkDragDrop<string[]>) {
+    const authors = [...(this.metadataForm.get('authors')?.value ?? [])];
+    moveItemInArray(authors, event.previousIndex, event.currentIndex);
+    this.metadataForm.get('authors')?.setValue(authors);
+    this.metadataForm.get('authors')?.markAsDirty();
+  }
+
+  removeAuthor(index: number) {
+    const authors = [...(this.metadataForm.get('authors')?.value ?? [])];
+    authors.splice(index, 1);
+    this.metadataForm.get('authors')?.setValue(authors);
+    this.metadataForm.get('authors')?.markAsDirty();
+  }
+
+  onAuthorInputKeyUp(event: KeyboardEvent) {
+    if (event.key === 'Enter') {
+      const value = this.authorInputValue?.trim();
+      if (value) {
+        const authors = this.metadataForm.get('authors')?.value || [];
+        if (!authors.includes(value)) {
+          this.metadataForm.get('authors')?.setValue([...authors, value]);
+          this.metadataForm.get('authors')?.markAsDirty();
+        }
+        this.authorInputValue = '';
+      }
+    }
+  }
+
+  onAuthorInputSelect(event: AutoCompleteSelectEvent) {
+    const authors = (this.metadataForm.get('authors')?.value as string[]) || [];
+    const value = event.value as string;
+    if (!authors.includes(value)) {
+      this.metadataForm.get('authors')?.setValue([...authors, value]);
+      this.metadataForm.get('authors')?.markAsDirty();
+    }
+    setTimeout(() => this.authorInputValue = '');
+  }
+
   onSave(): void {
     this.isSaving = true;
     const updatedBookMetadata = this.buildMetadataWrapper(undefined);
 
     const requests: Observable<unknown>[] = [
-      this.bookService.updateBookMetadata(this.currentBookId, updatedBookMetadata, false)
+      this.bookMetadataManageService.updateBookMetadata(this.currentBookId, updatedBookMetadata, false, 'REPLACE_WHEN_PROVIDED')
     ];
 
     // Handle audiobook cover upload when fetched from Audible provider
     if (this.isAudibleProvider() && this.copiedFields['audiobookThumbnailUrl']) {
       const audiobookCoverUrl = this.fetchedMetadata.thumbnailUrl;
       if (audiobookCoverUrl) {
-        requests.push(this.bookService.uploadAudiobookCoverFromUrl(this.currentBookId, audiobookCoverUrl));
+        requests.push(this.bookMetadataManageService.uploadAudiobookCoverFromUrl(this.currentBookId, audiobookCoverUrl));
       }
     }
 
@@ -460,7 +504,7 @@ export class MetadataPickerComponent implements OnInit {
       }
     }
 
-    flags['cover'] = !current.thumbnailUrl && !!original.thumbnailUrl;
+    flags['cover'] = this.copiedFields['thumbnailUrl'] === false && !current.thumbnailUrl && !!original.thumbnailUrl;
 
     // Handle audiobook metadata clear flags (now at top-level of BookMetadata)
     for (const field of AUDIOBOOK_METADATA_FIELDS) {
@@ -500,7 +544,10 @@ export class MetadataPickerComponent implements OnInit {
   }
 
   getThumbnail(): string | null {
-    // For Audible provider, cover is handled separately via uploadAudiobookCoverFromUrl
+    if (this.copiedFields['thumbnailUrl']) {
+      return (this.fetchedMetadata['thumbnailUrl' as keyof BookMetadata] as string) || null;
+    }
+    // For Audible provider, audiobook cover is handled separately via uploadAudiobookCoverFromUrl
     if (this.isAudibleProvider()) {
       return null;
     }
@@ -508,14 +555,11 @@ export class MetadataPickerComponent implements OnInit {
     if (thumbnailUrl?.includes('api/v1')) {
       return null;
     }
-    if (this.copiedFields['thumbnailUrl']) {
-      return (this.fetchedMetadata['thumbnailUrl' as keyof BookMetadata] as string) || null;
-    }
     return null;
   }
 
   private updateMetadata(shouldLockAllFields: boolean | undefined): void {
-    this.bookService.updateBookMetadata(this.currentBookId, this.buildMetadataWrapper(shouldLockAllFields), false).subscribe({
+    this.bookMetadataManageService.updateBookMetadata(this.currentBookId, this.buildMetadataWrapper(shouldLockAllFields), false, 'REPLACE_WHEN_PROVIDED').subscribe({
       next: () => {
         if (shouldLockAllFields !== undefined) {
           this.messageService.add({
@@ -638,6 +682,7 @@ export class MetadataPickerComponent implements OnInit {
     // For audiobook cover from Audible, use the thumbnailUrl from fetched metadata
     if (field === 'audiobookThumbnailUrl') {
       this.metadataForm.get('audiobookThumbnailUrl')?.setValue(this.fetchedMetadata.thumbnailUrl);
+      this.copiedFields['audiobookThumbnailUrl'] = true;
       this.highlightCopiedInput(field);
       return;
     }

@@ -1,0 +1,286 @@
+name: Main PR - Validate and Prepare Draft Release
+
+on:
+  pull_request:
+    branches:
+      - 'main'
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - edited
+      - labeled
+      - unlabeled
+      - ready_for_review
+
+jobs:
+  migration-check:
+    name: Flyway Migration Check on PR
+    uses: ./.github/workflows/migrations-check.yml
+    with:
+      base_ref: ${{ github.event.pull_request.base.sha }}
+      head_ref: ${{ github.event.pull_request.head.sha }}
+
+  backend-tests:
+    name: Backend Tests
+    needs: [ migration-check ]
+    if: needs.migration-check.result == 'success' || needs.migration-check.result == 'skipped'
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      checks: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - name: Set Up JDK 25
+        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Execute Backend Tests
+        id: backend_tests
+        working-directory: ./booklore-api
+        run: |
+          echo "Running backend tests..."
+          ./gradlew test --no-daemon --parallel --build-cache
+        continue-on-error: true
+
+      - name: Publish Backend Test Results
+        uses: EnricoMi/publish-unit-test-result-action@c950f6fb443cb5af20a377fd0dfaa78838901040 # v2
+        if: always()
+        with:
+          files: booklore-api/build/test-results/**/*.xml
+          check_name: Backend Test Results
+
+      - name: Upload Backend Test Reports
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        if: always()
+        with:
+          name: backend-test-reports
+          path: |
+            booklore-api/build/reports/tests/
+            booklore-api/build/test-results/
+          retention-days: 30
+
+      - name: Validate Backend Test Results
+        if: steps.backend_tests.outcome == 'failure'
+        run: |
+          echo "❌ Backend tests failed"
+          exit 1
+
+  frontend-tests:
+    name: Frontend Tests
+    needs: [ migration-check ]
+    if: needs.migration-check.result == 'success' || needs.migration-check.result == 'skipped'
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      checks: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+
+      - name: Set Up Node.js
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6
+        with:
+          node-version: '24'
+          cache: 'npm'
+          cache-dependency-path: booklore-ui/package-lock.json
+
+      - name: Install Frontend Dependencies
+        working-directory: ./booklore-ui
+        run: npm ci
+
+      - name: Audit Frontend Dependencies
+        working-directory: ./booklore-ui
+        run: npm audit --audit-level=high
+
+      - name: Validate Dependency Tree
+        working-directory: ./booklore-ui
+        run: npm ls --depth=0
+
+
+      - name: Execute Frontend Tests
+        id: frontend_tests
+        working-directory: ./booklore-ui
+        run: |
+          echo "Running frontend tests..."
+          npx ng test
+        continue-on-error: true
+
+      - name: Publish Frontend Test Results
+        uses: EnricoMi/publish-unit-test-result-action@c950f6fb443cb5af20a377fd0dfaa78838901040 # v2
+        if: always()
+        with:
+          files: booklore-ui/test-results/vitest-results.xml
+          check_name: Frontend Test Results
+
+      - name: Upload Frontend Test Reports
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        if: always()
+        with:
+          name: frontend-test-reports
+          path: |
+            booklore-ui/test-results/vitest-results.xml
+          retention-days: 30
+
+      - name: Validate Frontend Test Results
+        if: steps.frontend_tests.outcome == 'failure'
+        run: |
+          echo "❌ Frontend tests failed"
+          exit 1
+
+  prepare-release-draft:
+    needs: [ backend-tests, frontend-tests ]
+    if: needs.backend-tests.result == 'success' && needs.frontend-tests.result == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          fetch-depth: 0
+
+      - name: Calculate Next Version
+        id: semVersie
+        uses: RonaldPhilipsen/semVersie@v2.1.0
+        with:
+          github-token: ${{ github.token }}
+          add-pr-label: true
+          release-notes-format: .github/semversie-release-notes.md
+
+      - name: Export Calculated Tag
+        run: |
+          echo "new_tag=${{ steps.semVersie.outputs.tag }}" >> $GITHUB_ENV
+          echo "Next version: ${{ steps.semVersie.outputs.version }}"
+
+      - name: Determine If Draft Update Is Needed
+        id: draft_guard
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+
+          # semVersie labels are the primary intent signal for release impact.
+          # Handle both prefixed and unprefixed label styles.
+          pr_labels="$(gh pr view "${PR_NUMBER}" --json labels --jq '.labels[].name' 2>/dev/null | tr '\n' ',')"
+
+          if echo "${pr_labels}" | grep -Eq '(^|,)(semVersie:(major|minor|patch)|major|minor|patch)(,|$)'; then
+            echo "PR has release-impact label(s): ${pr_labels}"
+            echo "should_upsert=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if echo "${pr_labels}" | grep -Eq '(^|,)(semVersie:noimpact|noimpact)(,|$)'; then
+            echo "PR has noimpact label: ${pr_labels}"
+            echo "should_upsert=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "No semVersie impact/noimpact label found; skipping draft update."
+          echo "should_upsert=false" >> "$GITHUB_OUTPUT"
+
+      # ----------------------------------------
+      # Native Angular build
+      # ----------------------------------------
+      - name: Set Up Node.js
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6
+        with:
+          node-version: '24'
+          cache: 'npm'
+          cache-dependency-path: booklore-ui/package-lock.json
+
+      - name: Install Frontend Dependencies
+        working-directory: ./booklore-ui
+        run: npm ci
+
+      - name: Audit Frontend Dependencies
+        working-directory: ./booklore-ui
+        run: npm audit --audit-level=high
+
+      - name: Validate Dependency Tree
+        working-directory: ./booklore-ui
+        run: npm ls --depth=0
+
+
+      - name: Build Angular App
+        working-directory: ./booklore-ui
+        run: npx ng build --configuration=production
+
+      # ----------------------------------------
+      # Native Gradle build
+      # ----------------------------------------
+      - name: Set Up JDK 25
+        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Copy Angular Dist to Spring Boot Resources
+        run: cp -r booklore-ui/dist/booklore/browser/. booklore-api/src/main/resources/static/
+
+      - name: Inject Version into application.yaml
+        env:
+          APP_VERSION: ${{ env.new_tag }}
+        run: |
+          sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/v4.52.2/yq_linux_amd64
+          sudo chmod +x /usr/local/bin/yq
+          yq eval '.app.version = strenv(APP_VERSION)' -i booklore-api/src/main/resources/application.yaml
+
+      - name: Build Spring Boot JAR
+        working-directory: ./booklore-api
+        run: ./gradlew clean build -x test --no-daemon --parallel --build-cache
+
+      - name: Upsert Draft Release From semVersie Output
+        if: steps.draft_guard.outputs.should_upsert == 'true'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          tag="${{ env.new_tag }}"
+          title="Release ${tag}"
+
+          notes_path="${{ steps.semVersie.outputs.release-notes-file }}"
+          notes_text="${{ steps.semVersie.outputs.release-notes }}"
+
+          if [ -n "${notes_path}" ] && [ -f "${notes_path}" ]; then
+            notes_arg=(--notes-file "${notes_path}")
+          else
+            notes_arg=(--notes "${notes_text}")
+          fi
+
+          existing_draft_tag="$(gh release list --limit 20 --json isDraft,tagName --jq '.[] | select(.isDraft) | .tagName' | head -n 1)"
+          if [ -n "${existing_draft_tag}" ] && [ "${existing_draft_tag}" != "${tag}" ]; then
+            gh release delete "${existing_draft_tag}" --yes
+          fi
+
+          if gh release view "${tag}" >/dev/null 2>&1; then
+            is_draft="$(gh release view "${tag}" --json isDraft --jq '.isDraft')"
+            if [ "${is_draft}" = "true" ]; then
+              gh release edit "${tag}" --title "${title}" "${notes_arg[@]}" --draft=true
+            else
+              echo "Release ${tag} is already published; skipping draft update."
+            fi
+          else
+            gh release create "${tag}" \
+              --title "${title}" \
+              "${notes_arg[@]}" \
+              --target "${{ github.event.pull_request.head.sha }}" \
+              --draft
+          fi

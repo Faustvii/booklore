@@ -1,8 +1,9 @@
-import {Component, DestroyRef, inject, Input, OnChanges, OnInit, SimpleChanges, ViewChild} from '@angular/core';
+import {AfterViewChecked, Component, DestroyRef, ElementRef, inject, Input, OnChanges, OnInit, SimpleChanges, ViewChild} from '@angular/core';
 import {Button} from 'primeng/button';
 import {AsyncPipe, DecimalPipe, NgClass} from '@angular/common';
 import {combineLatest, Observable} from 'rxjs';
 import {BookService} from '../../../../book/service/book.service';
+import {BookFileService} from '../../../../book/service/book-file.service';
 import {Rating, RatingRateEvent} from 'primeng/rating';
 import {FormsModule} from '@angular/forms';
 import {Book, BookFile, BookMetadata, BookRecommendation, BookType, ComicMetadata, FileInfo, ReadStatus} from '../../../../book/model/book.model';
@@ -14,7 +15,6 @@ import {DynamicDialogRef} from 'primeng/dynamicdialog';
 import {EmailService} from '../../../../settings/email-v2/email.service';
 import {Tooltip} from 'primeng/tooltip';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
-import {Editor} from 'primeng/editor';
 import {ProgressBar} from 'primeng/progressbar';
 import {MetadataRefreshType} from '../../../model/request/metadata-refresh-type.enum';
 import {Router} from '@angular/router';
@@ -26,14 +26,19 @@ import {ProgressSpinner} from 'primeng/progressspinner';
 import {TieredMenu} from 'primeng/tieredmenu';
 import {Image} from 'primeng/image';
 import {BookDialogHelperService} from '../../../../book/components/book-browser/book-dialog-helper.service';
+import {LibraryService} from '../../../../book/service/library.service';
 import {TagColor, TagComponent} from '../../../../../shared/components/tag/tag.component';
 import {TaskHelperService} from '../../../../settings/task-management/task-helper.service';
 import {AGE_RATING_OPTIONS, CONTENT_RATING_LABELS, fileSizeRanges, matchScoreRanges, pageCountRanges} from '../../../../book/components/book-browser/book-filter/book-filter.config';
 import {BookNavigationService} from '../../../../book/service/book-navigation.service';
 import {BookMetadataHostService} from '../../../../../shared/service/book-metadata-host.service';
 import {AppSettingsService} from '../../../../../shared/service/app-settings.service';
-import {DeleteBookFileEvent, DeleteSupplementaryFileEvent, DownloadAdditionalFileEvent, DownloadAllFilesEvent, DownloadEvent, MetadataTabsComponent, ReadEvent} from './metadata-tabs/metadata-tabs.component';
+import {DeleteBookFileEvent, DeleteSupplementaryFileEvent, DetachBookFileEvent, DownloadAdditionalFileEvent, DownloadAllFilesEvent, DownloadEvent, MetadataTabsComponent, ReadEvent} from './metadata-tabs/metadata-tabs.component';
 import {TranslocoDirective, TranslocoPipe, TranslocoService} from '@jsverse/transloco';
+import {AuthorService} from '../../../../author-browser/service/author.service';
+import {Dialog} from 'primeng/dialog';
+import {Checkbox} from 'primeng/checkbox';
+import DOMPurify from 'dompurify';
 
 
 @Component({
@@ -41,20 +46,22 @@ import {TranslocoDirective, TranslocoPipe, TranslocoService} from '@jsverse/tran
   standalone: true,
   templateUrl: './metadata-viewer.component.html',
   styleUrl: './metadata-viewer.component.scss',
-  imports: [Button, AsyncPipe, Rating, FormsModule, SplitButton, NgClass, Tooltip, DecimalPipe, Editor, ProgressBar, Menu, DatePicker, ProgressSpinner, TieredMenu, Image, TagComponent, MetadataTabsComponent, TranslocoDirective, TranslocoPipe]
+  imports: [Button, AsyncPipe, Rating, FormsModule, SplitButton, NgClass, Tooltip, DecimalPipe, ProgressBar, Menu, DatePicker, ProgressSpinner, TieredMenu, Image, TagComponent, MetadataTabsComponent, TranslocoDirective, TranslocoPipe, Dialog, Checkbox]
 })
-export class MetadataViewerComponent implements OnInit, OnChanges {
+export class MetadataViewerComponent implements OnInit, OnChanges, AfterViewChecked {
   @Input() book$!: Observable<Book | null>;
   @Input() recommendedBooks: BookRecommendation[] = [];
-  @ViewChild(Editor) quillEditor!: Editor;
   private originalRecommendedBooks: BookRecommendation[] = [];
 
   private readonly t = inject(TranslocoService);
+  private libraryService = inject(LibraryService);
   private bookDialogHelperService = inject(BookDialogHelperService)
   private emailService = inject(EmailService);
   private messageService = inject(MessageService);
   private bookService = inject(BookService);
+  private bookFileService = inject(BookFileService);
   private taskHelperService = inject(TaskHelperService);
+  private authorService = inject(AuthorService);
   protected urlHelper = inject(UrlHelperService);
   protected userService = inject(UserService);
   private confirmationService = inject(ConfirmationService);
@@ -68,15 +75,22 @@ export class MetadataViewerComponent implements OnInit, OnChanges {
   otherItems$!: Observable<MenuItem[]>;
   downloadMenuItems$!: Observable<MenuItem[]>;
   bookInSeries: Book[] = [];
+  @ViewChild(Image) private coverImage?: Image;
+  @ViewChild('descriptionContent') descriptionContentRef?: ElementRef<HTMLElement>;
   isExpanded = false;
+  isOverflowing = false;
   isComicSectionExpanded = true;
-  isAudiobookSectionExpanded = true;
   showFilePath = false;
   isAutoFetching = false;
   private metadataCenterViewMode: 'route' | 'dialog' = 'route';
   selectedReadStatus: ReadStatus = ReadStatus.UNREAD;
   isEditingDateFinished = false;
   editDateFinished: Date | null = null;
+  showDetachDialog = false;
+  detachCopyMetadata = true;
+  private detachBookId = 0;
+  private detachFileId = 0;
+  detachFileName = '';
 
   readStatusOptions: { value: ReadStatus, labelKey: string }[] = [
     {value: ReadStatus.UNREAD, labelKey: 'metadata.viewer.readStatusUnread'},
@@ -98,18 +112,18 @@ export class MetadataViewerComponent implements OnInit, OnChanges {
   navigationState$ = this.bookNavigationService.getNavigationState();
 
   ngOnInit(): void {
+    this.destroyRef.onDestroy(() => this.coverImage?.closePreview());
+
+    const onPopState = () => this.coverImage?.closePreview();
+    window.addEventListener('popstate', onPopState);
+    this.destroyRef.onDestroy(() => window.removeEventListener('popstate', onPopState));
+
     this.readMenuItems$ = this.book$.pipe(
       filter((book): book is Book => book !== null),
       map((book): MenuItem[] => {
         const items: MenuItem[] = [];
         const primaryType = book.primaryFile?.bookType;
-        if (primaryType === 'PDF') {
-          items.push({
-            label: this.t.translate('metadata.viewer.menuStreamingReader'),
-            icon: 'pi pi-play',
-            command: () => this.read(book.id, 'pdf-streaming')
-          });
-        } else if (primaryType === 'EPUB') {
+        if (primaryType === 'EPUB') {
           items.push({
             label: this.t.translate('metadata.viewer.menuStreamingReader'),
             icon: 'pi pi-play',
@@ -131,8 +145,8 @@ export class MetadataViewerComponent implements OnInit, OnChanges {
           }
 
           uniqueAltTypes.forEach(formatType => {
-            if (formatType === 'PDF' || formatType === 'EPUB') {
-              // For PDF/EPUB, offer both standard and streaming readers
+            if (formatType === 'EPUB') {
+              // For EPUB, offer both standard and streaming readers
               items.push({
                 label: formatType,
                 icon: this.getFileIcon(formatType),
@@ -145,7 +159,7 @@ export class MetadataViewerComponent implements OnInit, OnChanges {
                   {
                     label: this.t.translate('metadata.viewer.menuStreamingReader'),
                     icon: 'pi pi-play',
-                    command: () => this.read(book.id, formatType === 'PDF' ? 'pdf-streaming' : 'epub-streaming', formatType)
+                    command: () => this.read(book.id, 'epub-streaming', formatType)
                   }
                 ]
               });
@@ -221,6 +235,19 @@ export class MetadataViewerComponent implements OnInit, OnChanges {
               command: () => this.assignShelf(book.id)
             });
 
+            if (userState?.user?.permissions.canManageLibrary || userState?.user?.permissions.admin) {
+              const isPhysical = book.isPhysical ?? false;
+              items.push({
+                label: isPhysical
+                  ? this.t.translate('metadata.viewer.menuUnmarkPhysical')
+                  : this.t.translate('metadata.viewer.menuMarkPhysical'),
+                icon: isPhysical ? 'pi pi-times-circle' : 'pi pi-book',
+                command: () => {
+                  this.bookService.togglePhysicalFlag(book.id, !isPhysical).subscribe();
+                }
+              });
+            }
+
             // Add allowed submenus based on user permissions
 
             if (userState?.user?.permissions.canUpload || userState?.user?.permissions.admin) {
@@ -253,7 +280,7 @@ export class MetadataViewerComponent implements OnInit, OnChanges {
                   {
                     label: this.t.translate('metadata.viewer.menuQuickSend'),
                     icon: 'pi pi-bolt',
-                    command: () => this.quickSend(book.id)
+                    command: () => this.quickSend(book)
                   },
                   {
                     label: this.t.translate('metadata.viewer.menuCustomSend'),
@@ -267,8 +294,11 @@ export class MetadataViewerComponent implements OnInit, OnChanges {
             }
 
             // Show "Attach to Another Book" for single-file books (detached books) - not for physical books
+            // Hide in single-format libraries where attaching provides no cross-format benefit
             const isSingleFileBook = hasFiles && !book.alternativeFormats?.length;
-            if (isSingleFileBook && (userState?.user?.permissions.canManageLibrary || userState?.user?.permissions.admin)) {
+            const library = this.libraryService.findLibraryById(book.libraryId);
+            const isMultiFormatLibrary = !library?.allowedFormats?.length || library.allowedFormats.length > 1;
+            if (isSingleFileBook && isMultiFormatLibrary && (userState?.user?.permissions.canManageLibrary || userState?.user?.permissions.admin)) {
               items.push({
                 label: this.t.translate('metadata.viewer.menuAttachToAnotherBook'),
                 icon: 'pi pi-link',
@@ -415,12 +445,8 @@ export class MetadataViewerComponent implements OnInit, OnChanges {
         filter((book): book is Book => book != null && book.metadata != null)
       )
       .subscribe(book => {
-        const metadata = book.metadata;
         this.isAutoFetching = false;
-        this.loadBooksInSeriesAndFilterRecommended(metadata!.bookId);
-        if (this.quillEditor?.quill) {
-          this.quillEditor.quill.root.innerHTML = metadata!.description;
-        }
+        this.loadBooksInSeriesAndFilterRecommended(book.metadata!.bookId);
         this.selectedReadStatus = book.readStatus ?? ReadStatus.UNREAD;
       });
 
@@ -465,11 +491,22 @@ export class MetadataViewerComponent implements OnInit, OnChanges {
     );
   }
 
+  ngAfterViewChecked(): void {
+    if (!this.isExpanded && this.descriptionContentRef) {
+      const el = this.descriptionContentRef.nativeElement;
+      this.isOverflowing = el.scrollHeight > el.clientHeight;
+    }
+  }
+
   toggleExpand(): void {
     this.isExpanded = !this.isExpanded;
   }
 
-  read(bookId: number | undefined, reader?: "pdf-streaming" | "epub-streaming", bookType?: BookType): void {
+  sanitizeDescription(html: string | null | undefined): string {
+    return html ? DOMPurify.sanitize(html) : '';
+  }
+
+  read(bookId: number | undefined, reader?: "epub-streaming", bookType?: BookType): void {
     if (bookId) this.bookService.readBook(bookId, reader, bookType);
   }
 
@@ -491,11 +528,11 @@ export class MetadataViewerComponent implements OnInit, OnChanges {
   }
 
   download(book: Book) {
-    this.bookService.downloadFile(book);
+    this.bookFileService.downloadFile(book);
   }
 
   downloadAdditionalFile(book: Book, fileId: number) {
-    this.bookService.downloadAdditionalFile(book, fileId);
+    this.bookFileService.downloadAdditionalFile(book, fileId);
   }
 
   // Event handlers for MetadataTabsComponent
@@ -512,7 +549,7 @@ export class MetadataViewerComponent implements OnInit, OnChanges {
   }
 
   onDownloadAllFiles(event: DownloadAllFilesEvent): void {
-    this.bookService.downloadAllFiles(event.book);
+    this.bookFileService.downloadAllFiles(event.book);
   }
 
   onDeleteBookFile(event: DeleteBookFileEvent): void {
@@ -521,6 +558,19 @@ export class MetadataViewerComponent implements OnInit, OnChanges {
 
   onDeleteSupplementaryFile(event: DeleteSupplementaryFileEvent): void {
     this.deleteAdditionalFile(event.bookId, event.fileId, event.fileName);
+  }
+
+  onDetachBookFile(event: DetachBookFileEvent): void {
+    this.detachBookId = event.book.id;
+    this.detachFileId = event.fileId;
+    this.detachFileName = event.fileName;
+    this.detachCopyMetadata = true;
+    this.showDetachDialog = true;
+  }
+
+  confirmDetach(): void {
+    this.showDetachDialog = false;
+    this.bookFileService.detachBookFile(this.detachBookId, this.detachFileId, this.detachCopyMetadata).subscribe();
   }
 
   deleteAdditionalFile(bookId: number, fileId: number, fileName: string) {
@@ -533,7 +583,7 @@ export class MetadataViewerComponent implements OnInit, OnChanges {
       rejectButtonStyleClass: 'p-button-secondary',
       acceptButtonStyleClass: 'p-button-danger',
       accept: () => {
-        this.bookService.deleteAdditionalFile(bookId, fileId).subscribe({
+        this.bookFileService.deleteAdditionalFile(bookId, fileId).subscribe({
           next: () => {
             this.messageService.add({
               severity: 'success',
@@ -579,7 +629,7 @@ export class MetadataViewerComponent implements OnInit, OnChanges {
       rejectButtonStyleClass: 'p-button-secondary',
       acceptButtonStyleClass: 'p-button-danger',
       accept: () => {
-        this.bookService.deleteBookFile(book.id, fileId, isPrimary).subscribe({
+        this.bookFileService.deleteBookFile(book.id, fileId, isPrimary).subscribe({
           next: () => {
             this.messageService.add({
               severity: 'success',
@@ -612,19 +662,36 @@ export class MetadataViewerComponent implements OnInit, OnChanges {
     }, 15000);
   }
 
-  quickSend(bookId: number) {
-    this.emailService.emailBookQuick(bookId).subscribe({
-      next: () => this.messageService.add({
-        severity: 'info',
-        summary: this.t.translate('metadata.viewer.toast.quickSendSuccessSummary'),
-        detail: this.t.translate('metadata.viewer.toast.quickSendSuccessDetail'),
-      }),
-      error: (err) => this.messageService.add({
-        severity: 'error',
-        summary: this.t.translate('metadata.viewer.toast.quickSendErrorSummary'),
-        detail: err?.error?.message || this.t.translate('metadata.viewer.toast.quickSendErrorDetail'),
-      })
-    });
+  quickSend(book: Book) {
+    const doSend = () => {
+      this.emailService.emailBookQuick(book.id).subscribe({
+        next: () => this.messageService.add({
+          severity: 'info',
+          summary: this.t.translate('metadata.viewer.toast.quickSendSuccessSummary'),
+          detail: this.t.translate('metadata.viewer.toast.quickSendSuccessDetail'),
+        }),
+        error: (err) => this.messageService.add({
+          severity: 'error',
+          summary: this.t.translate('metadata.viewer.toast.quickSendErrorSummary'),
+          detail: err?.error?.message || this.t.translate('metadata.viewer.toast.quickSendErrorDetail'),
+        })
+      });
+    };
+
+    if (book.primaryFile?.fileSizeKb && book.primaryFile.fileSizeKb > 25 * 1024) {
+      this.confirmationService.confirm({
+        message: this.t.translate('metadata.viewer.confirm.largeFileMessage'),
+        header: this.t.translate('metadata.viewer.confirm.largeFileHeader'),
+        icon: 'pi pi-exclamation-triangle',
+        acceptLabel: this.t.translate('metadata.viewer.confirm.sendAnyway'),
+        rejectLabel: this.t.translate('common.cancel'),
+        acceptButtonProps: { severity: 'warn' },
+        rejectButtonProps: { severity: 'secondary' },
+        accept: doSend,
+      });
+    } else {
+      doSend();
+    }
   }
 
   assignShelf(bookId: number) {
@@ -736,7 +803,20 @@ export class MetadataViewerComponent implements OnInit, OnChanges {
   }
 
   goToAuthorBooks(author: string): void {
-    this.handleMetadataClick('author', author);
+    this.authorService.getAuthorByName(author).subscribe({
+      next: (authorDetails) => {
+        const navigate = () => this.router.navigate(['/author', authorDetails.id]);
+        if (this.metadataCenterViewMode === 'dialog') {
+          this.dialogRef?.close();
+          setTimeout(navigate, 200);
+        } else {
+          navigate();
+        }
+      },
+      error: () => {
+        this.handleMetadataClick('author', author);
+      }
+    });
   }
 
   goToCategory(category: string): void {
@@ -849,7 +929,7 @@ export class MetadataViewerComponent implements OnInit, OnChanges {
         sort: 'title',
         direction: 'asc',
         sidebar: true,
-        filter: `${filterKey}:${filterValue}`
+        filter: `${filterKey}:${encodeURIComponent(filterValue)}`
       }
     });
   }
@@ -1000,6 +1080,7 @@ export class MetadataViewerComponent implements OnInit, OnChanges {
       case 'm4b':
       case 'm4a':
       case 'mp3':
+      case 'opus':
         return 'pi pi-headphones';
       default:
         return 'pi pi-file';

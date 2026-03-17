@@ -97,6 +97,14 @@ export interface BookFileProgress {
   progressPercent: number;
 }
 
+export interface AudiobookChapterInfo {
+  index?: number;
+  title?: string;
+  startTimeMs?: number;
+  endTimeMs?: number;
+  durationMs?: number;
+}
+
 export interface AudiobookMetadata {
   narrator?: string;
   abridged?: boolean | null;
@@ -106,6 +114,7 @@ export interface AudiobookMetadata {
   channels?: number;
   codec?: string;
   chapterCount?: number;
+  chapters?: AudiobookChapterInfo[];
   narratorLocked?: boolean;
   abridgedLocked?: boolean;
 }
@@ -239,6 +248,7 @@ export interface BookMetadata {
   contentRating?: string | null;
   ageRatingLocked?: boolean;
   contentRatingLocked?: boolean;
+  allMetadataLocked?: boolean;
 
   [key: string]: unknown;
 }
@@ -403,4 +413,37 @@ export interface CreatePhysicalBookRequest {
   language?: string;
   pageCount?: number;
   categories?: string[];
+  thumbnailUrl?: string;
+}
+
+export interface BookStatusUpdateResponse {
+  bookId: number;
+  readStatus: ReadStatus;
+  readStatusModifiedTime: string;
+  dateFinished?: string;
+}
+
+export interface PersonalRatingUpdateResponse {
+  bookId: number;
+  personalRating?: number;
+}
+
+export interface DuplicateDetectionRequest {
+  libraryId: number;
+  matchByIsbn: boolean;
+  matchByExternalId: boolean;
+  matchByTitleAuthor: boolean;
+  matchByDirectory: boolean;
+  matchByFilename: boolean;
+}
+
+export interface DuplicateGroup {
+  suggestedTargetBookId: number;
+  matchReason: string;
+  books: Book[];
+}
+
+export interface DetachBookFileResponse {
+  sourceBook: Book;
+  newBook: Book;
 }

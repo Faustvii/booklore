@@ -57,14 +57,14 @@
           <li>
             <button
               class="topbar-item"
-              (click)="shouldShowStatsMenu ? statsMenu.toggle($event) : handleStatsButtonClick($event)"
+              (click)="shouldShowStatsMenu ? statsMenu?.toggle($event) : handleStatsButtonClick($event)"
               [pTooltip]="statsTooltip"
               tooltipPosition="bottom">
-              <svg class="multi-color-chart-icon" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="1.25" y="10" width="2.5" height="9" rx="0.5" fill="#ef4444"/>
-                <rect x="6.25" y="7" width="2.5" height="12" rx="0.5" fill="#f59e0b"/>
-                <rect x="11.25" y="3" width="2.5" height="16" rx="0.5" fill="#10b981"/>
-                <rect x="16.25" y="5" width="2.5" height="14" rx="0.5" fill="#3b82f6"/>
+              <svg class="multi-color-chart-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 1.25rem; height: 1.25rem;">
+                <rect x="2" y="13" width="4" height="9" rx="1" fill="#ef4444"/>
+                <rect x="7.5" y="3" width="4" height="19" rx="1" fill="#f59e0b"/>
+                <rect x="13" y="9" width="4" height="13" rx="1" fill="#3b82f6"/>
+                <rect x="18.5" y="5" width="4" height="17" rx="1" fill="#10b981"/>
               </svg>
             </button>
             @if (shouldShowStatsMenu) {
@@ -104,7 +104,7 @@
               [ngStyle]="{ color: iconColor }"
               style="font-size: 1.25rem"
               [class.pulsating]="iconPulsating"
-              aria-label="Unified Notification Icon"
+              [attr.aria-label]="t('notificationAriaLabel')"
             ></i>
           </button>
 
@@ -117,14 +117,6 @@
           </p-popover>
         </li>
 
-        <li class="topbar-item-relative heart-button topbar-item" (click)="openGithubSupportDialog()">
-          <span
-            style="animation-duration: 2s; background: conic-gradient(from 90deg, #f97316, #f59e0b, #eab308, #84cc16, #22c55e, #10b981, #14a8a6, #06b6d4, #0ea5e9, #3b82f6, #6366f1, #8b5cf6, #a855f7, #d946ef, #ec4899, #f43f5e)"
-            class="heart-spinner">
-          </span>
-          <span class="heart-background"></span>
-          <i class="pi pi-heart heart-icon"></i>
-        </li>
         <li class="topbar-item-relative">
           <button
             type="button"
@@ -224,24 +216,29 @@
               </li>
             }
           }
-          @if (hasStatsAccess) {
-            <li>
-              <button
-                class="mobile-menu-item"
-                (click)="shouldShowStatsMenu ? statsMenuMobile.toggle($event) : handleStatsButtonClick($event)"
-              >
-                <svg class="multi-color-chart-icon" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <rect x="1" y="13" width="2.5" height="6" rx="0.5" fill="#ef4444"/>
-                  <rect x="5" y="10" width="2.5" height="9" rx="0.5" fill="#f59e0b"/>
-                  <rect x="9" y="6" width="2.5" height="13" rx="0.5" fill="#10b981"/>
-                  <rect x="13" y="8" width="2.5" height="11" rx="0.5" fill="#3b82f6"/>
-                </svg>
-                {{ t('charts') }}
-              </button>
-              @if (shouldShowStatsMenu) {
-                <p-menu #statsMenuMobile [model]="statsMenuItems" [popup]="true"/>
-              }
-            </li>
+          @if (userService.userState$ | async; as statsUserState) {
+            @if (statsUserState.user?.permissions?.canAccessLibraryStats || statsUserState.user?.permissions?.admin) {
+              <li>
+                <button
+                  class="mobile-menu-item"
+                  (click)="navigateToStats(); mobileMenu.hide()"
+                >
+                  <i class="pi pi-chart-line topbar-icon"></i>
+                  {{ t('libraryStats') }}
+                </button>
+              </li>
+            }
+            @if (statsUserState.user?.permissions?.canAccessUserStats || statsUserState.user?.permissions?.admin) {
+              <li>
+                <button
+                  class="mobile-menu-item"
+                  (click)="navigateToUserStats(); mobileMenu.hide()"
+                >
+                  <i class="pi pi-users topbar-icon"></i>
+                  {{ t('readingStats') }}
+                </button>
+              </li>
+            }
           }
           @if (userService.userState$ | async; as userState) {
             @if (userState.user?.permissions?.canManageLibrary || userState.user?.permissions?.admin) {
@@ -284,15 +281,6 @@
               {{ t('language') }}
             </button>
             <p-menu #langMenuMobile [model]="langMenuItems" [popup]="true"/>
-          </li>
-          <li>
-            <button
-              class="mobile-menu-item"
-              (click)="openGithubSupportDialog(); mobileMenu.hide()"
-            >
-              <i class="pi pi-thumbs-up topbar-icon"></i>
-              {{ t('supportBookLore') }}
-            </button>
           </li>
 
           @if (userService.userState$ | async; as userState) {

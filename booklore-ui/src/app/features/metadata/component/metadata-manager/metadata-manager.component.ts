@@ -10,6 +10,7 @@ import {ConfirmDialogModule} from 'primeng/confirmdialog';
 import {ConfirmationService, MessageService} from 'primeng/api';
 import {PageTitleService} from "../../../../shared/service/page-title.service";
 import {BookService} from '../../../book/service/book.service';
+import {BookMetadataManageService} from '../../../book/service/book-metadata-manage.service';
 import {Book} from '../../../book/model/book.model';
 import {FormsModule} from '@angular/forms';
 import {Tooltip} from 'primeng/tooltip';
@@ -32,6 +33,7 @@ type MetadataType = 'authors' | 'categories' | 'moods' | 'tags' | 'series' | 'pu
 interface TabConfig {
   type: MetadataType;
   labelKey: string;
+  labelPluralKey: string;
   placeholderKey: string;
   selectAllKey: 'selectAllAuthors' | 'selectAllCategories' | 'selectAllMoods' | 'selectAllTags' | 'selectAllSeries' | 'selectAllPublishers' | 'selectAllLanguages';
   icon: string;
@@ -67,6 +69,7 @@ interface TabConfig {
 })
 export class MetadataManagerComponent implements OnInit, OnDestroy {
   private bookService = inject(BookService);
+  private bookMetadataManageService = inject(BookMetadataManageService);
   private messageService = inject(MessageService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
@@ -123,13 +126,13 @@ export class MetadataManagerComponent implements OnInit, OnDestroy {
   }
 
   tabConfigs: TabConfig[] = [
-    {type: 'authors', labelKey: 'tabs.author', placeholderKey: 'placeholders.searchAuthors', selectAllKey: 'selectAllAuthors', icon: 'pi-user'},
-    {type: 'categories', labelKey: 'tabs.genre', placeholderKey: 'placeholders.searchGenres', selectAllKey: 'selectAllCategories', icon: 'pi-tag'},
-    {type: 'moods', labelKey: 'tabs.mood', placeholderKey: 'placeholders.searchMoods', selectAllKey: 'selectAllMoods', icon: 'pi-heart'},
-    {type: 'tags', labelKey: 'tabs.tag', placeholderKey: 'placeholders.searchTags', selectAllKey: 'selectAllTags', icon: 'pi-tags'},
-    {type: 'series', labelKey: 'tabs.series', placeholderKey: 'placeholders.searchSeries', selectAllKey: 'selectAllSeries', icon: 'pi-book'},
-    {type: 'publishers', labelKey: 'tabs.publisher', placeholderKey: 'placeholders.searchPublishers', selectAllKey: 'selectAllPublishers', icon: 'pi-building'},
-    {type: 'languages', labelKey: 'tabs.language', placeholderKey: 'placeholders.searchLanguages', selectAllKey: 'selectAllLanguages', icon: 'pi-globe'}
+    {type: 'authors', labelKey: 'tabs.author', labelPluralKey: 'tabs.authors', placeholderKey: 'placeholders.searchAuthors', selectAllKey: 'selectAllAuthors', icon: 'pi-user'},
+    {type: 'categories', labelKey: 'tabs.genre', labelPluralKey: 'tabs.genres', placeholderKey: 'placeholders.searchGenres', selectAllKey: 'selectAllCategories', icon: 'pi-tag'},
+    {type: 'moods', labelKey: 'tabs.mood', labelPluralKey: 'tabs.moods', placeholderKey: 'placeholders.searchMoods', selectAllKey: 'selectAllMoods', icon: 'pi-heart'},
+    {type: 'tags', labelKey: 'tabs.tag', labelPluralKey: 'tabs.tags', placeholderKey: 'placeholders.searchTags', selectAllKey: 'selectAllTags', icon: 'pi-tags'},
+    {type: 'series', labelKey: 'tabs.series', labelPluralKey: 'tabs.seriesPlural', placeholderKey: 'placeholders.searchSeries', selectAllKey: 'selectAllSeries', icon: 'pi-book'},
+    {type: 'publishers', labelKey: 'tabs.publisher', labelPluralKey: 'tabs.publishers', placeholderKey: 'placeholders.searchPublishers', selectAllKey: 'selectAllPublishers', icon: 'pi-building'},
+    {type: 'languages', labelKey: 'tabs.language', labelPluralKey: 'tabs.languages', placeholderKey: 'placeholders.searchLanguages', selectAllKey: 'selectAllLanguages', icon: 'pi-globe'}
   ];
 
   ngOnInit() {
@@ -301,7 +304,7 @@ export class MetadataManagerComponent implements OnInit, OnDestroy {
       this.messageService.add({
         severity: 'warn',
         summary: this.t.translate('metadata.manager.toast.invalidTargetSummary'),
-        detail: this.t.translate('metadata.manager.toast.singleValueOnly', {singular: this.currentMergeType.slice(0, -1)})
+        detail: this.t.translate('metadata.manager.toast.singleValueOnly', {singular: this.getTypeLabel(this.currentMergeType, false)})
       });
       return;
     }
@@ -326,7 +329,7 @@ export class MetadataManagerComponent implements OnInit, OnDestroy {
 
     this.loading = true;
     this.mergingInProgress = true;
-    this.bookService.consolidateMetadata(this.currentMergeType, targetValues, [oldValue]).subscribe({
+    this.bookMetadataManageService.consolidateMetadata(this.currentMergeType, targetValues, [oldValue]).subscribe({
       next: () => {
         this.messageService.add({
           severity: 'success',
@@ -387,7 +390,7 @@ export class MetadataManagerComponent implements OnInit, OnDestroy {
       this.messageService.add({
         severity: 'warn',
         summary: this.t.translate('metadata.manager.toast.invalidTargetSummary'),
-        detail: this.t.translate('metadata.manager.toast.singleMergeValueOnly', {singular: this.currentMergeType.slice(0, -1)})
+        detail: this.t.translate('metadata.manager.toast.singleMergeValueOnly', {singular: this.getTypeLabel(this.currentMergeType, false)})
       });
       return;
     }
@@ -403,7 +406,7 @@ export class MetadataManagerComponent implements OnInit, OnDestroy {
 
     this.loading = true;
     this.mergingInProgress = true;
-    this.bookService.consolidateMetadata(this.currentMergeType, targetValues, valuesToMerge).subscribe({
+    this.bookMetadataManageService.consolidateMetadata(this.currentMergeType, targetValues, valuesToMerge).subscribe({
       next: () => {
         this.messageService.add({
           severity: 'success',
@@ -411,8 +414,8 @@ export class MetadataManagerComponent implements OnInit, OnDestroy {
             ? this.t.translate('metadata.manager.toast.mergeSuccessfulSummary')
             : this.t.translate('metadata.manager.toast.mergeSplitSuccessfulSummary'),
           detail: operation === 'merge'
-            ? this.t.translate('metadata.manager.toast.mergeSuccessfulDetail', {selectedCount: selected.length, type: this.currentMergeType, targetCount: targetValues.length, bookCount: affectedBooks})
-            : this.t.translate('metadata.manager.toast.mergeSplitSuccessfulDetail', {selectedCount: selected.length, type: this.currentMergeType, targetCount: targetValues.length, bookCount: affectedBooks}),
+            ? this.t.translate('metadata.manager.toast.mergeSuccessfulDetail', {selectedCount: selected.length, type: this.getTypeLabel(this.currentMergeType, true), targetCount: targetValues.length, bookCount: affectedBooks})
+            : this.t.translate('metadata.manager.toast.mergeSplitSuccessfulDetail', {selectedCount: selected.length, type: this.getTypeLabel(this.currentMergeType, true), targetCount: targetValues.length, bookCount: affectedBooks}),
           life: 5000
         });
         this.showMergeDialog = false;
@@ -463,12 +466,12 @@ export class MetadataManagerComponent implements OnInit, OnDestroy {
 
     this.loading = true;
     this.deletingInProgress = true;
-    this.bookService.deleteMetadata(this.currentMergeType, valuesToDelete).subscribe({
+    this.bookMetadataManageService.deleteMetadata(this.currentMergeType, valuesToDelete).subscribe({
       next: () => {
         this.messageService.add({
           severity: 'success',
           summary: this.t.translate('metadata.manager.toast.deleteSuccessfulSummary'),
-          detail: this.t.translate('metadata.manager.toast.deleteSuccessfulDetail', {count: itemCount, type: this.currentMergeType.slice(0, -1) + (itemCount > 1 ? 's' : ''), bookCount: affectedBooks}),
+          detail: this.t.translate('metadata.manager.toast.deleteSuccessfulDetail', {count: itemCount, type: itemCount > 1 ? this.getTypeLabel(this.currentMergeType, true) : this.getTypeLabel(this.currentMergeType, false), bookCount: affectedBooks}),
           life: 5000
         });
         this.showDeleteDialog = false;
@@ -604,9 +607,15 @@ export class MetadataManagerComponent implements OnInit, OnDestroy {
         sort: 'title',
         direction: 'asc',
         sidebar: true,
-        filter: `${filterKey}:${filterValue}`
+        filter: `${filterKey}:${encodeURIComponent(filterValue)}`
       }
     });
+  }
+
+  protected getTypeLabel(type: MetadataType, plural: boolean): string {
+    const tab = this.tabConfigs.find(tc => tc.type === type);
+    if (!tab) return type;
+    return this.t.translate('metadata.manager.' + (plural ? tab.labelPluralKey : tab.labelKey));
   }
 
   protected isSingleValueField(type: MetadataType): boolean {

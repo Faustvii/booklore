@@ -24,6 +24,7 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -104,21 +105,28 @@ public class AmazonBookParser implements BookParser, DetailedMetadataProvider {
 
     @Override
     public List<BookMetadata> fetchMetadata(Book book, FetchMetadataRequest fetchMetadataRequest) {
-        String queryUrl = buildQueryUrl(fetchMetadataRequest, book);
-        if (queryUrl == null) {
-            log.error("Query URL is null, cannot proceed.");
+        LinkedList<String> amazonBookIds = getAmazonBookIds(book, fetchMetadataRequest);
+        if (amazonBookIds == null || amazonBookIds.isEmpty()) {
             return Collections.emptyList();
         }
-        try {
-            Document doc = fetchDocument(queryUrl);
-            return extractSearchPreviews(doc);
-        } catch (AmazonAntiScrapingException e) {
-            log.debug("Aborting Amazon search due to anti-scraping (503).");
-            return Collections.emptyList();
-        } catch (Exception e) {
-            log.error("Failed to fetch Amazon search results: {}", e.getMessage(), e);
-            return Collections.emptyList();
+        List<BookMetadata> results = new ArrayList<>();
+        for (int i = 0; i < amazonBookIds.size() && results.size() < COUNT_DETAILED_METADATA_TO_GET; i++) {
+            try {
+                if (i > 0) {
+                    Thread.sleep(ThreadLocalRandom.current().nextLong(500, 1501));
+                }
+                BookMetadata metadata = getBookMetadata(amazonBookIds.get(i));
+                if (metadata != null) {
+                    results.add(metadata);
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                break;
+            } catch (Exception e) {
+                log.error("Error fetching metadata for ASIN: {}", amazonBookIds.get(i), e);
+            }
         }
+        return results;
     }
 
     private List<BookMetadata> extractSearchPreviews(Document doc) {
@@ -280,7 +288,7 @@ public class AmazonBookParser implements BookParser, DetailedMetadataProvider {
                 .provider(MetadataProvider.Amazon)
                 .title(titleInfo.title())
                 .subtitle(titleInfo.subtitle())
-                .authors(new HashSet<>(getAuthors(doc)))
+                .authors(new ArrayList<>(getAuthors(doc)))
                 .categories(new HashSet<>(getBestSellerCategories(doc)))
                 .description(cleanDescriptionHtml(getDescription(doc)))
                 .seriesName(seriesInfo.name())
@@ -372,23 +380,23 @@ public class AmazonBookParser implements BookParser, DetailedMetadataProvider {
         return new TitleInfo(title, subtitle);
     }
 
-    private Set<String> getAuthors(Document doc) {
-        Set<String> authors = new HashSet<>();
+    private List<String> getAuthors(Document doc) {
+        List<String> authors = new ArrayList<>();
         try {
             Element bylineDiv = doc.selectFirst("#bylineInfo_feature_div");
             if (bylineDiv != null) {
-                authors.addAll(bylineDiv.select(".author a").stream().map(Element::text).collect(Collectors.toSet()));
+                authors.addAll(bylineDiv.select(".author a").stream().map(Element::text).toList());
             }
 
             if (authors.isEmpty()) {
                 Element bylineInfo = doc.selectFirst("#bylineInfo");
                 if (bylineInfo != null) {
-                    authors.addAll(bylineInfo.select(".author a").stream().map(Element::text).collect(Collectors.toSet()));
+                    authors.addAll(bylineInfo.select(".author a").stream().map(Element::text).toList());
                 }
             }
 
             if (authors.isEmpty()) {
-                authors.addAll(doc.select(".author a").stream().map(Element::text).collect(Collectors.toSet()));
+                authors.addAll(doc.select(".author a").stream().map(Element::text).toList());
             }
 
             if (authors.isEmpty()) {

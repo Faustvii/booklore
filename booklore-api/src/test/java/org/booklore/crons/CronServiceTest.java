@@ -51,20 +51,13 @@ class CronServiceTest {
     }
 
     @Test
-    void sendTelemetryData_telemetryEnabled_postSuccess_savesSetting() {
+    void sendTelemetryData_isHardDisabled_doesNotSendOrSave() {
         AppSettings settings = mock(AppSettings.class);
         when(appSettingService.getAppSettings()).thenReturn(settings);
         when(settings.isTelemetryEnabled()).thenReturn(true);
-        when(appProperties.getTelemetry().getBaseUrl()).thenReturn("http://telemetry");
-        BookloreTelemetry telemetry = mock(BookloreTelemetry.class);
-        when(telemetryService.collectTelemetry()).thenReturn(telemetry);
-        RestClient.RequestBodyUriSpec post = mock(RestClient.RequestBodyUriSpec.class, RETURNS_DEEP_STUBS);
-        when(restClient.post()).thenReturn(post);
-        when(post.uri(anyString())).thenReturn(post);
-        when(post.body(any())).thenReturn(post);
-        when(post.retrieve().body(String.class)).thenReturn("ok");
         cronService.sendTelemetryData();
-        verify(appSettingService).saveSetting(eq("last_telemetry_sent"), anyString());
+        verifyNoInteractions(telemetryService, restClient);
+        verify(appSettingService, never()).saveSetting(eq("last_telemetry_sent"), anyString());
     }
 
     @Test
@@ -84,22 +77,30 @@ class CronServiceTest {
     }
 
     @Test
-    void sendPing_postSuccess_savesSettings() {
-        when(appProperties.getTelemetry().getBaseUrl()).thenReturn("http://telemetry");
-        InstallationPing ping = InstallationPing.builder().appVersion("1.0.0").build();
-        when(telemetryService.getInstallationPing()).thenReturn(ping);
-        RestClient.RequestBodyUriSpec post = mock(RestClient.RequestBodyUriSpec.class, RETURNS_DEEP_STUBS);
-        when(restClient.post()).thenReturn(post);
-        when(post.uri(anyString())).thenReturn(post);
-        when(post.body(any())).thenReturn(post);
-        when(post.retrieve().body(String.class)).thenReturn("ok");
+    void sendPing_telemetryDisabled_doesNotSend() {
+        AppSettings settings = mock(AppSettings.class);
+        when(appSettingService.getAppSettings()).thenReturn(settings);
+        when(settings.isTelemetryEnabled()).thenReturn(false);
         cronService.sendPing();
-        verify(appSettingService).saveSetting(eq("last_ping_sent"), anyString());
-        verify(appSettingService).saveSetting(eq("last_ping_app_version"), eq("1.0.0"));
+        verifyNoInteractions(restClient);
     }
 
     @Test
-    void sendPing_postFails_doesNotSaveSettings() {
+    void sendPing_isHardDisabled_doesNotSendOrSave() {
+        AppSettings settings = mock(AppSettings.class);
+        when(appSettingService.getAppSettings()).thenReturn(settings);
+        when(settings.isTelemetryEnabled()).thenReturn(true);
+        cronService.sendPing();
+        verifyNoInteractions(restClient);
+        verify(appSettingService, never()).saveSetting(eq("last_ping_sent"), anyString());
+        verify(appSettingService, never()).saveSetting(eq("last_ping_app_version"), anyString());
+    }
+
+    @Test
+    void sendPing_telemetryEnabled_postFails_doesNotSaveSettings() {
+        AppSettings settings = mock(AppSettings.class);
+        when(appSettingService.getAppSettings()).thenReturn(settings);
+        when(settings.isTelemetryEnabled()).thenReturn(true);
         when(appProperties.getTelemetry().getBaseUrl()).thenReturn("http://telemetry");
         InstallationPing ping = InstallationPing.builder().appVersion("1.0.0").build();
         when(telemetryService.getInstallationPing()).thenReturn(ping);
@@ -208,33 +209,30 @@ class CronServiceTest {
     }
 
     @Test
-    void checkAndRunTelemetry_shouldRunTaskTrue_callsSendTelemetryData() {
+    void initScheduledTasks_doesNotTriggerTelemetryChecks() {
         AppSettings settings = mock(AppSettings.class);
         when(appSettingService.getAppSettings()).thenReturn(settings);
         when(settings.isTelemetryEnabled()).thenReturn(true);
         when(appSettingService.getSettingValue("last_telemetry_sent")).thenReturn(Instant.now().minusSeconds(60 * 60 * 25).toString());
         CronService spy = spy(cronService);
         doNothing().when(spy).sendTelemetryData();
-        // Ensure getInstallationPing returns non-null for ping checks
-        InstallationPing ping = InstallationPing.builder().appVersion("1.0.0").build();
-        when(telemetryService.getInstallationPing()).thenReturn(ping);
         spy.initScheduledTasks();
-        verify(spy).sendTelemetryData();
+        verify(spy, never()).sendTelemetryData();
     }
 
     @Test
-    void checkAndRunPing_appVersionChanged_callsSendPing() {
+    void initScheduledTasks_doesNotTriggerPingOnVersionChange() {
         when(appSettingService.getSettingValue("last_ping_app_version")).thenReturn("1.0.0");
         InstallationPing ping = InstallationPing.builder().appVersion("2.0.0").build();
         when(telemetryService.getInstallationPing()).thenReturn(ping);
         CronService spy = spy(cronService);
         doNothing().when(spy).sendPing();
         spy.initScheduledTasks();
-        verify(spy).sendPing();
+        verify(spy, never()).sendPing();
     }
 
     @Test
-    void checkAndRunPing_shouldRunTaskTrue_callsSendPing() {
+    void initScheduledTasks_doesNotTriggerScheduledPing() {
         when(appSettingService.getSettingValue("last_ping_app_version")).thenReturn("1.0.0");
         InstallationPing ping = InstallationPing.builder().appVersion("1.0.0").build();
         when(telemetryService.getInstallationPing()).thenReturn(ping);
@@ -242,7 +240,7 @@ class CronServiceTest {
         CronService spy = spy(cronService);
         doNothing().when(spy).sendPing();
         spy.initScheduledTasks();
-        verify(spy).sendPing();
+        verify(spy, never()).sendPing();
     }
 
     @Test

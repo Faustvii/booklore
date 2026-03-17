@@ -25,6 +25,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -35,6 +36,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class AudibleParser implements BookParser, DetailedMetadataProvider {
 
+    private static final int COUNT_DETAILED_METADATA_TO_GET = 3;
     private static final long MIN_REQUEST_INTERVAL_MS = 1500;
     private static final String DEFAULT_DOMAIN = "com";
 
@@ -74,19 +76,28 @@ public class AudibleParser implements BookParser, DetailedMetadataProvider {
 
     @Override
     public List<BookMetadata> fetchMetadata(Book book, FetchMetadataRequest fetchMetadataRequest) {
-        String queryUrl = buildQueryUrl(fetchMetadataRequest, book);
-        if (queryUrl == null) {
-            log.error("Query URL is null, cannot proceed with Audible search.");
+        List<String> audibleIds = getAudibleIds(book, fetchMetadataRequest);
+        if (audibleIds == null || audibleIds.isEmpty()) {
             return Collections.emptyList();
         }
-        try {
-            enforceRateLimit();
-            Document doc = fetchDocument(queryUrl);
-            return extractSearchPreviews(doc);
-        } catch (Exception e) {
-            log.error("Failed to fetch Audible search results: {}", e.getMessage(), e);
-            return Collections.emptyList();
+        List<BookMetadata> results = new ArrayList<>();
+        for (int i = 0; i < audibleIds.size() && results.size() < COUNT_DETAILED_METADATA_TO_GET; i++) {
+            try {
+                if (i > 0) {
+                    Thread.sleep(ThreadLocalRandom.current().nextLong(500, 1501));
+                }
+                BookMetadata metadata = getBookMetadata(audibleIds.get(i));
+                if (metadata != null) {
+                    results.add(metadata);
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                break;
+            } catch (Exception e) {
+                log.error("Error fetching metadata for Audible ID: {}", audibleIds.get(i), e);
+            }
         }
+        return results;
     }
 
     private List<BookMetadata> extractSearchPreviews(Document doc) {
@@ -110,10 +121,11 @@ public class AudibleParser implements BookParser, DetailedMetadataProvider {
             Element container = findProductContainer(link);
 
             String thumbnailUrl = extractPreviewThumbnail(container, link);
-            Set<String> authors = extractPreviewAuthors(container);
+            List<String> authors = extractPreviewAuthors(container);
             String narrator = extractPreviewNarrator(container);
 
             BookMetadata.BookMetadataBuilder builder = BookMetadata.builder()
+                    .asin(asin)
                     .audibleId(asin)
                     .title(title)
                     .thumbnailUrl(thumbnailUrl)
@@ -161,8 +173,8 @@ public class AudibleParser implements BookParser, DetailedMetadataProvider {
         return null;
     }
 
-    private Set<String> extractPreviewAuthors(Element container) {
-        Set<String> authors = new LinkedHashSet<>();
+    private List<String> extractPreviewAuthors(Element container) {
+        List<String> authors = new ArrayList<>();
         if (container == null) return authors;
 
         for (Element authorLink : container.select("a[href*='/author/']")) {
@@ -307,7 +319,7 @@ public class AudibleParser implements BookParser, DetailedMetadataProvider {
             }
         }
 
-        Set<String> authors = extractPersonNames(audiobookNode, "author");
+        List<String> authors = extractPersonNames(audiobookNode, "author");
         String narrator = extractFirstPersonName(audiobookNode, "readBy");
         String publisher = getJsonString(audiobookNode, "publisher");
         String description = getJsonString(audiobookNode, "description");
@@ -405,6 +417,7 @@ public class AudibleParser implements BookParser, DetailedMetadataProvider {
 
         return BookMetadata.builder()
                 .provider(MetadataProvider.Audible)
+                .asin(audibleId)
                 .audibleId(audibleId)
                 .title(title)
                 .subtitle(subtitle)
@@ -432,8 +445,8 @@ public class AudibleParser implements BookParser, DetailedMetadataProvider {
         return fieldNode.asText(null);
     }
 
-    private Set<String> extractPersonNames(JsonNode node, String field) {
-        Set<String> names = new HashSet<>();
+    private List<String> extractPersonNames(JsonNode node, String field) {
+        List<String> names = new ArrayList<>();
         if (node == null) return names;
 
         JsonNode fieldNode = node.path(field);

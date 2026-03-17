@@ -1,0 +1,12 @@
+diff --git a/booklore-api/src/main/java/org/booklore/controller/AppSettingController.java b/booklore-api/src/main/java/org/booklore/controller/AppSettingController.java
+index 03889e74..5ccf0314 100644
+--- a/booklore-api/src/main/java/org/booklore/controller/AppSettingController.java
++++ b/booklore-api/src/main/java/org/booklore/controller/AppSettingController.java
+@@ -33,6 +33,7 @@ public class AppSettingController {
+     @Operation(summary = "Get application settings", description = "Retrieve all application settings.")
+     @ApiResponse(responseCode = "200", description = "Application settings returned successfully")
+     @GetMapping
++    @PreAuthorize("@securityUtil.isAdmin()")
+     public AppSettings getAppSettings() {
+         return appSettingService.getAppSettings();
+     }

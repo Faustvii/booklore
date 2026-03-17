@@ -60,7 +60,8 @@ export class KoboSyncSettingsComponent implements OnInit, OnDestroy {
     syncEnabled: false,
     progressMarkAsReadingThreshold: 1,
     progressMarkAsFinishedThreshold: 99,
-    autoAddToShelf: true
+    autoAddToShelf: true,
+    twoWayProgressSync: false
   }
 
   ngOnInit() {
@@ -121,6 +122,7 @@ export class KoboSyncSettingsComponent implements OnInit, OnDestroy {
         this.koboSyncSettings.progressMarkAsReadingThreshold = settings.progressMarkAsReadingThreshold ?? 1;
         this.koboSyncSettings.progressMarkAsFinishedThreshold = settings.progressMarkAsFinishedThreshold ?? 99;
         this.koboSyncSettings.autoAddToShelf = settings.autoAddToShelf ?? false;
+        this.koboSyncSettings.twoWayProgressSync = settings.twoWayProgressSync ?? false;
         this.credentialsSaved = !!settings.token;
       },
       error: () => {
@@ -227,6 +229,13 @@ export class KoboSyncSettingsComponent implements OnInit, OnDestroy {
     this.updateKoboSettings(message);
   }
 
+  onTwoWaySyncToggle() {
+    const message = this.koboSyncSettings.twoWayProgressSync
+      ? this.t.translate('settingsDevice.kobo.twoWaySyncEnabled')
+      : this.t.translate('settingsDevice.kobo.twoWaySyncDisabled');
+    this.updateKoboSettings(message);
+  }
+
   private updateKoboSettings(successMessage: string) {
     this.koboService.updateSettings(this.koboSyncSettings).subscribe({
       next: () => {
@@ -235,9 +244,7 @@ export class KoboSyncSettingsComponent implements OnInit, OnDestroy {
           summary: this.t.translate('settingsDevice.kobo.settingsUpdated'),
           detail: successMessage
         });
-        if (!this.koboSyncSettings.syncEnabled) {
-          this.shelfService.reloadShelves();
-        }
+        this.shelfService.reloadShelves();
       },
       error: () => {
         this.messageService.add({

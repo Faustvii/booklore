@@ -27,12 +27,15 @@ public interface BookRepository extends JpaRepository<BookEntity, Long>, JpaSpec
     @Query("SELECT b FROM BookEntity b JOIN b.bookFiles bf WHERE bf.currentHash = :currentHash AND bf.isBookFormat = true AND (b.deleted IS NULL OR b.deleted = false)")
     Optional<BookEntity> findByCurrentHash(@Param("currentHash") String currentHash);
 
+    @Query("SELECT b FROM BookEntity b JOIN FETCH b.bookFiles bf WHERE bf.currentHash = :currentHash AND bf.isBookFormat = true AND (b.deleted IS NULL OR b.deleted = false OR b.deletedAt > :cutoff)")
+    Optional<BookEntity> findByCurrentHashIncludingRecentlyDeleted(@Param("currentHash") String currentHash, @Param("cutoff") Instant cutoff);
+
     Optional<BookEntity> findByBookCoverHash(String bookCoverHash);
 
     @Query("SELECT b.id FROM BookEntity b WHERE b.library.id = :libraryId AND (b.deleted IS NULL OR b.deleted = false)")
     Set<Long> findBookIdsByLibraryId(@Param("libraryId") long libraryId);
 
-    @Query("SELECT DISTINCT b FROM BookEntity b JOIN b.bookFiles bf WHERE b.libraryPath.id = :libraryPathId AND bf.fileSubPath LIKE CONCAT(:fileSubPathPrefix, '%') AND bf.isBookFormat = true AND (b.deleted IS NULL OR b.deleted = false)")
+    @Query("SELECT DISTINCT b FROM BookEntity b JOIN b.bookFiles bf WHERE b.libraryPath.id = :libraryPathId AND (bf.fileSubPath = :fileSubPathPrefix OR bf.fileSubPath LIKE CONCAT(:fileSubPathPrefix, '/%')) AND bf.isBookFormat = true AND (b.deleted IS NULL OR b.deleted = false)")
     List<BookEntity> findAllByLibraryPathIdAndFileSubPathStartingWith(@Param("libraryPathId") Long libraryPathId, @Param("fileSubPathPrefix") String fileSubPathPrefix);
 
     @Query("SELECT DISTINCT b FROM BookEntity b JOIN b.bookFiles bf WHERE b.libraryPath.id = :libraryPathId AND bf.fileSubPath = :fileSubPath AND bf.isBookFormat = true AND (b.deleted IS NULL OR b.deleted = false)")
@@ -65,6 +68,17 @@ public interface BookRepository extends JpaRepository<BookEntity, Long>, JpaSpec
     @EntityGraph(attributePaths = {"metadata", "bookFiles"})
     @Query("SELECT b FROM BookEntity b WHERE b.library.id = :libraryId AND (b.deleted IS NULL OR b.deleted = false)")
     List<BookEntity> findAllByLibraryIdWithFiles(@Param("libraryId") Long libraryId);
+
+    @Query("""
+            SELECT DISTINCT b FROM BookEntity b
+            LEFT JOIN FETCH b.metadata m
+            LEFT JOIN FETCH m.authors
+            LEFT JOIN FETCH b.bookFiles
+            LEFT JOIN FETCH b.libraryPath
+            WHERE b.library.id = :libraryId
+            AND (b.deleted IS NULL OR b.deleted = false)
+            """)
+    List<BookEntity> findAllForDuplicateDetection(@Param("libraryId") Long libraryId);
 
     @EntityGraph(attributePaths = {"metadata", "metadata.comicMetadata", "shelves", "libraryPath", "bookFiles"})
     @Query("SELECT b FROM BookEntity b WHERE b.library.id IN :libraryIds AND (b.deleted IS NULL OR b.deleted = false)")
@@ -117,6 +131,19 @@ public interface BookRepository extends JpaRepository<BookEntity, Long>, JpaSpec
 
     @Query("SELECT COUNT(b) FROM BookEntity b WHERE b.deleted = TRUE")
     long countAllSoftDeleted();
+
+    @Query("""
+        SELECT DISTINCT b FROM BookEntity b
+        JOIN FETCH b.bookFiles bf
+        WHERE b.libraryPath.id = :libraryPathId
+        AND (bf.fileSubPath = :folderPath
+             OR bf.fileSubPath LIKE CONCAT(:folderPath, '/%')
+             OR (bf.folderBased = true AND CONCAT(bf.fileSubPath, '/', bf.fileName) = :folderPath))
+        AND bf.isBookFormat = true
+        AND (b.deleted IS NULL OR b.deleted = false)
+        """)
+    List<BookEntity> findBooksWithFilesUnderPath(@Param("libraryPathId") Long libraryPathId,
+                                                  @Param("folderPath") String folderPath);
 
     @Query(value = """
         SELECT b.*

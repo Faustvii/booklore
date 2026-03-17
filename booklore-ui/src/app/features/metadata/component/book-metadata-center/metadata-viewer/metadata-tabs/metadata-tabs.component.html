@@ -1,5 +1,5 @@
 <ng-container *transloco="let t; prefix: 'metadata.tabs'">
-<p-tabs lazy class="custom-p-tabs" [value]="defaultTabValue" scrollable>
+<p-tabs lazy class="custom-p-tabs" [value]="defaultTabValue" scrollable (valueChange)="onTabChange($event)">
   <p-tablist>
     @if (bookInSeries.length > 1) {
       <p-tab value="series">
@@ -12,6 +12,11 @@
     @if (supportsDualCovers()) {
       <p-tab value="covers">
         <i class="pi pi-images"></i> {{ t('covers') }}
+      </p-tab>
+    }
+    @if (hasAudiobookFormat()) {
+      <p-tab value="chapters">
+        <i class="pi pi-headphones"></i> {{ t('chapters') }}
       </p-tab>
     }
     <p-tab value="files">
@@ -108,6 +113,90 @@
         <app-book-reviews [bookId]="book.id"></app-book-reviews>
       </ng-template>
     </p-tabpanel>
+    <p-tabpanel value="chapters">
+      <ng-template #content>
+        <div class="chapters-tab-content">
+          @if (chaptersLoading) {
+            <div class="chapters-loading">
+              <i class="pi pi-spin pi-spinner"></i>
+            </div>
+          } @else if (audiobookInfo) {
+            <div class="chapters-tech-info">
+              <span class="tech-info-item">
+                <i class="pi pi-clock"></i> {{ formatDuration(audiobookInfo.durationMs) }}
+              </span>
+              @if (audiobookInfo.codec) {
+                <span class="tech-info-item">{{ audiobookInfo.codec.toUpperCase() }}</span>
+              }
+              @if (audiobookInfo.bitrate) {
+                <span class="tech-info-item">{{ audiobookInfo.bitrate }} kbps</span>
+              }
+              @if (audiobookInfo.sampleRate) {
+                <span class="tech-info-item">{{ formatSampleRate(audiobookInfo.sampleRate) }}</span>
+              }
+              @if (audiobookInfo.channels) {
+                <span class="tech-info-item">{{ getChannelLabel(audiobookInfo.channels) }}</span>
+              }
+            </div>
+            @if (audiobookInfo.folderBased && audiobookInfo.tracks?.length) {
+              <div class="chapters-table-wrapper">
+                <table class="chapters-table">
+                  <thead>
+                    <tr>
+                      <th class="chapter-num">#</th>
+                      <th class="chapter-title">{{ t('chapterTitle') }}</th>
+                      <th class="chapter-file">{{ t('fileName') }}</th>
+                      <th class="chapter-time">{{ t('startTime') }}</th>
+                      <th class="chapter-time">{{ t('duration') }}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (track of audiobookInfo.tracks; track track.index) {
+                      <tr>
+                        <td class="chapter-num">{{ track.index + 1 }}</td>
+                        <td class="chapter-title">{{ track.title }}</td>
+                        <td class="chapter-file">{{ track.fileName }}</td>
+                        <td class="chapter-time">{{ formatDuration(track.cumulativeStartMs) }}</td>
+                        <td class="chapter-time">{{ formatDuration(track.durationMs) }}</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            } @else if (audiobookInfo.chapters?.length) {
+              <div class="chapters-table-wrapper">
+                <table class="chapters-table">
+                  <thead>
+                    <tr>
+                      <th class="chapter-num">#</th>
+                      <th class="chapter-title">{{ t('chapterTitle') }}</th>
+                      <th class="chapter-time">{{ t('startTime') }}</th>
+                      <th class="chapter-time">{{ t('endTime') }}</th>
+                      <th class="chapter-time">{{ t('duration') }}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (chapter of audiobookInfo.chapters; track chapter.index) {
+                      <tr>
+                        <td class="chapter-num">{{ chapter.index + 1 }}</td>
+                        <td class="chapter-title">{{ chapter.title }}</td>
+                        <td class="chapter-time">{{ formatDuration(chapter.startTimeMs) }}</td>
+                        <td class="chapter-time">{{ formatDuration(chapter.endTimeMs) }}</td>
+                        <td class="chapter-time">{{ formatDuration(chapter.durationMs) }}</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            } @else {
+              <div class="chapters-empty">
+                <i class="pi pi-info-circle"></i> {{ t('noChapters') }}
+              </div>
+            }
+          }
+        </div>
+      </ng-template>
+    </p-tabpanel>
     <p-tabpanel value="files">
       <ng-template #content>
         <div class="files-tab-content">
@@ -145,26 +234,7 @@
                       <span class="file-size">{{ getFileSizeInMB(book.primaryFile) }}</span>
                     </div>
                     <div class="file-actions">
-                      @if (book.primaryFile.bookType === 'PDF') {
-                        <p-button
-                          icon="pi pi-book"
-                          size="small"
-                          text
-                          severity="primary"
-                          [pTooltip]="t('readTooltip')"
-                          tooltipPosition="top"
-                          (onClick)="read(book.id)">
-                        </p-button>
-                        <p-button
-                          icon="pi pi-play"
-                          size="small"
-                          text
-                          severity="info"
-                          [pTooltip]="t('streamingReaderTooltip')"
-                          tooltipPosition="top"
-                          (onClick)="read(book.id, 'pdf-streaming')">
-                        </p-button>
-                      } @else if (book.primaryFile.bookType === 'EPUB') {
+                      @if (book.primaryFile.bookType === 'EPUB') {
                         <p-button
                           icon="pi pi-book"
                           size="small"
@@ -183,7 +253,7 @@
                           tooltipPosition="top"
                           (onClick)="read(book.id, 'epub-streaming')">
                         </p-button>
-                      } @else if (book.primaryFile.bookType && ['FB2', 'MOBI', 'AZW3', 'CBX'].includes(book.primaryFile.bookType)) {
+                      } @else if (book.primaryFile.bookType && ['PDF', 'FB2', 'MOBI', 'AZW3', 'CBX'].includes(book.primaryFile.bookType)) {
                         <p-button
                           icon="pi pi-book"
                           size="small"
@@ -213,6 +283,17 @@
                         tooltipPosition="top"
                         (onClick)="download(book)">
                       </p-button>
+                      @if (canDetach(book)) {
+                        <p-button
+                          icon="pi pi-external-link"
+                          size="small"
+                          text
+                          severity="warn"
+                          [pTooltip]="t('detachTooltip')"
+                          tooltipPosition="top"
+                          (onClick)="detachFile(book, book.primaryFile!.id, book.primaryFile!.fileName || 'file')">
+                        </p-button>
+                      }
                       <p-button
                         icon="pi pi-trash"
                         size="small"
@@ -241,7 +322,7 @@
                         <span class="file-size">{{ getFileSizeInMB(format) }}</span>
                       </div>
                       <div class="file-actions">
-                        @if (format.bookType === 'PDF' || format.bookType === 'EPUB') {
+                        @if (format.bookType === 'EPUB') {
                           <p-button
                             icon="pi pi-book"
                             size="small"
@@ -258,9 +339,9 @@
                             severity="info"
                             [pTooltip]="t('streamingReaderTooltip')"
                             tooltipPosition="top"
-                            (onClick)="read(book.id, format.bookType === 'PDF' ? 'pdf-streaming' : 'epub-streaming', format.bookType)">
+                            (onClick)="read(book.id, 'epub-streaming', format.bookType)">
                           </p-button>
-                        } @else if (format.bookType && ['FB2', 'MOBI', 'AZW3', 'CBX'].includes(format.bookType)) {
+                        } @else if (format.bookType && ['PDF', 'FB2', 'MOBI', 'AZW3', 'CBX'].includes(format.bookType)) {
                           <p-button
                             icon="pi pi-book"
                             size="small"
@@ -290,6 +371,17 @@
                           tooltipPosition="top"
                           (onClick)="downloadAdditionalFile(book, format.id)">
                         </p-button>
+                        @if (canDetach(book)) {
+                          <p-button
+                            icon="pi pi-external-link"
+                            size="small"
+                            text
+                            severity="warn"
+                            [pTooltip]="t('detachTooltip')"
+                            tooltipPosition="top"
+                            (onClick)="detachFile(book, format.id, format.fileName || 'file')">
+                          </p-button>
+                        }
                         <p-button
                           icon="pi pi-trash"
                           size="small"
@@ -326,6 +418,17 @@
                           tooltipPosition="top"
                           (onClick)="downloadAdditionalFile(book, file.id)">
                         </p-button>
+                        @if (canDetach(book)) {
+                          <p-button
+                            icon="pi pi-external-link"
+                            size="small"
+                            text
+                            severity="warn"
+                            [pTooltip]="t('detachTooltip')"
+                            tooltipPosition="top"
+                            (onClick)="detachFile(book, file.id, file.fileName || 'file')">
+                          </p-button>
+                        }
                         <p-button
                           icon="pi pi-trash"
                           size="small"
