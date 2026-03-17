@@ -36,8 +36,7 @@ public class CronService {
 
     @PostConstruct
     public void initScheduledTasks() {
-        checkAndRunTelemetry();
-        checkAndRunPing();
+        // Disabled in this fork.
     }
 
     @Scheduled(fixedDelay = 24, timeUnit = TimeUnit.HOURS, initialDelay = 24)
@@ -78,8 +77,7 @@ public class CronService {
     }
 
     private boolean isTelemetryEnabled() {
-        AppSettings settings = appSettingService.getAppSettings();
-        return settings != null && settings.isTelemetryEnabled();
+        return false;
     }
 
     private void checkAndRunTelemetry() {

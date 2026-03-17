@@ -20,7 +20,7 @@ app:
     groups-delimiter: ${REMOTE_AUTH_GROUPS_DELIMITER:\\s+}
   force-disable-oidc: ${FORCE_DISABLE_OIDC:false}
   telemetry:
-    base-url: ${TELEMETRY_BASE_URL:https://telemetry.booklore.org}
+    base-url: ${TELEMETRY_BASE_URL:http://localhost}
   disk-type: ${DISK_TYPE:LOCAL}
 
 server:
