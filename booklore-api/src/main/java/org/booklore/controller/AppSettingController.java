@@ -33,6 +33,7 @@ public class AppSettingController {
     @Operation(summary = "Get application settings", description = "Retrieve all application settings.")
     @ApiResponse(responseCode = "200", description = "Application settings returned successfully")
     @GetMapping
+    @PreAuthorize("@securityUtil.isAdmin()")
     public AppSettings getAppSettings() {
         return appSettingService.getAppSettings();
     }
