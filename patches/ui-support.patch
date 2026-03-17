@@ -1,0 +1,77 @@
+diff --git a/booklore-ui/src/app/shared/layout/component/layout-topbar/app.topbar.component.html b/booklore-ui/src/app/shared/layout/component/layout-topbar/app.topbar.component.html
+index a1762429..b85e6861 100644
+--- a/booklore-ui/src/app/shared/layout/component/layout-topbar/app.topbar.component.html
++++ b/booklore-ui/src/app/shared/layout/component/layout-topbar/app.topbar.component.html
+@@ -117,18 +117,6 @@
+           </p-popover>
+         </li>
+ 
+-        <li class="topbar-item-relative heart-button topbar-item"
+-            [class.heart-button-static]="!supportAnimationEnabled"
+-            (click)="openGithubSupportDialog()">
+-          @if (supportAnimationEnabled) {
+-            <span class="heart-ripple"></span>
+-            <span class="heart-ripple heart-ripple-delayed"></span>
+-            <span class="heart-orbit heart-orbit-1"></span>
+-            <span class="heart-orbit heart-orbit-2"></span>
+-            <span class="heart-orbit heart-orbit-3"></span>
+-          }
+-          <i class="pi pi-heart-fill heart-icon"></i>
+-        </li>
+         <li class="topbar-item-relative">
+           <button
+             type="button"
+@@ -294,15 +282,6 @@
+             </button>
+             <p-menu #langMenuMobile [model]="langMenuItems" [popup]="true"/>
+           </li>
+-          <li>
+-            <button
+-              class="mobile-menu-item"
+-              (click)="openGithubSupportDialog(); mobileMenu.hide()"
+-            >
+-              <i class="pi pi-thumbs-up topbar-icon"></i>
+-              {{ t('supportBookLore') }}
+-            </button>
+-          </li>
+ 
+           @if (userService.userState$ | async; as userState) {
+             @if (!userState.user?.permissions?.demoUser) {
+diff --git a/booklore-ui/src/app/shared/components/github-support-dialog/github-support-dialog.html b/booklore-ui/src/app/shared/components/github-support-dialog/github-support-dialog.html
+index d9a55631..6abad036 100644
+--- a/booklore-ui/src/app/shared/components/github-support-dialog/github-support-dialog.html
++++ b/booklore-ui/src/app/shared/components/github-support-dialog/github-support-dialog.html
+@@ -24,7 +24,7 @@
+     </p>
+ 
+     <div class="support-cards">
+-      <a class="support-card star-card" href="https://github.com/booklore-app/booklore" target="_blank" rel="noopener noreferrer">
++      <a class="support-card star-card" href="https://github.com/Faustvii/booklore" target="_blank" rel="noopener noreferrer">
+         <i class="pi pi-github card-icon"></i>
+         <div class="card-text">
+           <span class="card-title">{{ t('starTitle') }}</span>
+@@ -32,24 +32,6 @@
+         </div>
+         <i class="pi pi-arrow-up-right card-arrow"></i>
+       </a>
+-
+-      <a class="support-card collective-card" href="https://opencollective.com/booklore" target="_blank" rel="noopener noreferrer">
+-        <i class="pi pi-heart card-icon"></i>
+-        <div class="card-text">
+-          <span class="card-title">{{ t('collectiveTitle') }}</span>
+-          <span class="card-desc">{{ t('collectiveDesc') }}</span>
+-        </div>
+-        <i class="pi pi-arrow-up-right card-arrow"></i>
+-      </a>
+-
+-      <a class="support-card kofi-card" href="https://ko-fi.com/bookloredev" target="_blank" rel="noopener noreferrer">
+-        <i class="pi pi-gift card-icon"></i>
+-        <div class="card-text">
+-          <span class="card-title">{{ t('kofiTitle') }}</span>
+-          <span class="card-desc">{{ t('kofiDesc') }}</span>
+-        </div>
+-        <i class="pi pi-arrow-up-right card-arrow"></i>
+-      </a>
+     </div>
+ 
+     <p class="closing">{{ t('closing') }}</p>

@@ -1,0 +1,87 @@
+diff --git a/booklore-api/src/main/java/org/booklore/service/VersionService.java b/booklore-api/src/main/java/org/booklore/service/VersionService.java
+index c305df7f..3d1d4fdf 100644
+--- a/booklore-api/src/main/java/org/booklore/service/VersionService.java
++++ b/booklore-api/src/main/java/org/booklore/service/VersionService.java
+@@ -32,17 +32,11 @@ public class VersionService {
+ 
+ 
+     public VersionInfo getVersionInfo() {
+-        String latest = "unknown";
+-        try {
+-            latest = fetchLatestGitHubReleaseVersion();
+-        } catch (Exception e) {
+-            log.warn("Error fetching latest release version");
+-        }
+-        return new VersionInfo(appVersion, latest);
++        return new VersionInfo(appVersion, appVersion);
+     }
+ 
+     public List<ReleaseNote> getChangelogSinceCurrentVersion() {
+-        return fetchReleaseNotesSince(appVersion);
++        return new ArrayList<>();
+     }
+ 
+ 
+diff --git a/booklore-api/src/test/java/org/booklore/service/VersionServiceTest.java b/booklore-api/src/test/java/org/booklore/service/VersionServiceTest.java
+index d95758bd..3c19c38f 100644
+--- a/booklore-api/src/test/java/org/booklore/service/VersionServiceTest.java
++++ b/booklore-api/src/test/java/org/booklore/service/VersionServiceTest.java
+@@ -21,6 +21,7 @@ class VersionServiceTest {
+     @BeforeEach
+     void setUp() {
+         service = new VersionService();
++        service.appVersion = "v1.0.0";
+         spyService = Mockito.spy(service);
+     }
+ 
+@@ -107,7 +108,7 @@ class VersionServiceTest {
+     class GetVersionInfoTests {
+ 
+         @Test
+-        void includesAppAndLatestOnSuccess() {
++        void returnsCurrentVersionForLatest() {
+             Mockito.doReturn("v9.9.9")
+                     .when(spyService)
+                     .fetchLatestGitHubReleaseVersion();
+@@ -117,11 +118,11 @@ class VersionServiceTest {
+             assertThat(info.getCurrent())
+                     .isEqualTo(service.appVersion);
+             assertThat(info.getLatest())
+-                    .isEqualTo("v9.9.9");
++                .isEqualTo(service.appVersion);
+         }
+ 
+         @Test
+-        void usesUnknownIfFetchFails() {
++        void doesNotDependOnFetchFailures() {
+             Mockito.doThrow(new RuntimeException("fail"))
+                     .when(spyService)
+                     .fetchLatestGitHubReleaseVersion();
+@@ -129,7 +130,7 @@ class VersionServiceTest {
+             VersionInfo info = spyService.getVersionInfo();
+ 
+             assertThat(info.getLatest())
+-                    .isEqualTo("unknown");
++                .isEqualTo(service.appVersion);
+         }
+     }
+ 
+@@ -138,16 +139,9 @@ class VersionServiceTest {
+     class GetChangelogSinceCurrentVersionTests {
+ 
+         @Test
+-        void returnsNotesWhenAvailable() {
+-            LocalDateTime fixedTime = LocalDateTime.of(2025, 1, 1, 12, 0, 0);
+-            ReleaseNote note = new ReleaseNote("v1.1", "n", "b", "u", fixedTime);
+-
+-            Mockito.doReturn(List.of(note))
+-                    .when(spyService)
+-                    .fetchReleaseNotesSince(service.appVersion);
+-
++        void returnsEmptyListWhenUpdatesAreDisabled() {
+             List<ReleaseNote> result = spyService.getChangelogSinceCurrentVersion();
+-            assertThat(result).hasSize(1).containsExactly(note);
++            assertThat(result).isEmpty();
+         }
+ 
+         @Test

@@ -1,0 +1,30 @@
+diff --git a/booklore-ui/src/app/shared/layout/component/layout-menu/app.menu.component.ts b/booklore-ui/src/app/shared/layout/component/layout-menu/app.menu.component.ts
+index c3119c31..6e8d7d59 100644
+--- a/booklore-ui/src/app/shared/layout/component/layout-menu/app.menu.component.ts
++++ b/booklore-ui/src/app/shared/layout/component/layout-menu/app.menu.component.ts
+@@ -252,8 +252,8 @@ export class AppMenuComponent implements OnInit {
+   getVersionUrl(version: string | undefined): string {
+     if (!version) return '#';
+     return version.startsWith('v')
+-      ? `https://github.com/booklore-app/booklore/releases/tag/${version}`
+-      : `https://github.com/booklore-app/booklore/commit/${version}`;
++      ? `https://github.com/Faustvii/booklore/releases/tag/${version}`
++      : `https://github.com/Faustvii/booklore/commit/${version}`;
+   }
+
+   isSemanticVersion(version: string | undefined): boolean {
+diff --git a/Dockerfile b/Dockerfile
+index d5e2eba5..23910830 100644
+--- a/Dockerfile
++++ b/Dockerfile
+@@ -46,8 +46,8 @@ ARG APP_REVISION
+ # Set OCI labels
+ LABEL org.opencontainers.image.title="BookLore" \
+       org.opencontainers.image.description="BookLore: A self-hosted, multi-user digital library with smart shelves, auto metadata, Kobo & KOReader sync, BookDrop imports, OPDS support, and a built-in reader for EPUB, PDF, and comics." \
+-      org.opencontainers.image.source="https://github.com/booklore-app/booklore" \
+-      org.opencontainers.image.url="https://github.com/booklore-app/booklore" \
++      org.opencontainers.image.source="https://github.com/Faustvii/booklore" \
++      org.opencontainers.image.url="https://github.com/Faustvii/booklore" \
+       org.opencontainers.image.documentation="https://booklore.org/docs/getting-started" \
+       org.opencontainers.image.version=$APP_VERSION \
+       org.opencontainers.image.revision=$APP_REVISION \
