@@ -1,0 +1,57 @@
+name: Main - Create Release Tag From Draft
+
+on:
+  push:
+    branches:
+      - 'main'
+
+jobs:
+  create-release-tag:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+      contents: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          fetch-depth: 0
+
+      - name: Resolve Draft Release Tag
+        id: resolve_draft
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          draft_tag="$(gh release list --limit 20 --json isDraft,tagName --jq '.[] | select(.isDraft) | .tagName' | head -n 1)"
+          if [ -z "${draft_tag}" ]; then
+            echo "No draft release found. Nothing to tag."
+            echo "has_draft=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "Draft release tag: ${draft_tag}"
+          echo "has_draft=true" >> "$GITHUB_OUTPUT"
+          echo "draft_tag=${draft_tag}" >> "$GITHUB_OUTPUT"
+
+      - name: Create And Push Tag On Main Commit
+        if: steps.resolve_draft.outputs.has_draft == 'true'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          DRAFT_TAG: ${{ steps.resolve_draft.outputs.draft_tag }}
+        run: |
+          set -euo pipefail
+
+          if git ls-remote --exit-code --tags origin "refs/tags/${DRAFT_TAG}" >/dev/null 2>&1; then
+            echo "Tag ${DRAFT_TAG} already exists. Skipping tag creation."
+            exit 0
+          fi
+
+          git tag "${DRAFT_TAG}" "${GITHUB_SHA}"
+          git push origin "refs/tags/${DRAFT_TAG}"
+
+          # Tags pushed with GITHUB_TOKEN do not always trigger downstream workflows.
+          # Dispatch explicitly to guarantee the tag release workflow runs.
+          gh workflow run release-from-tag.yml --ref "${DRAFT_TAG}"

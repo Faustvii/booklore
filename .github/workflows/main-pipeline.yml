@@ -1,32 +1,25 @@
-name: Main - Build, Tag, Push, and Release
+name: Main PR - Validate and Prepare Draft Release
 
 on:
-  push:
+  pull_request:
     branches:
       - 'main'
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - edited
+      - labeled
+      - unlabeled
+      - ready_for_review
 
 jobs:
-  get-base-ref:
-    name: Get Base Ref
-    runs-on: ubuntu-latest
-    outputs:
-      base_ref: ${{ steps.get_base.outputs.base_ref }}
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
-        with:
-          fetch-depth: 2
-      - name: Get Base Ref
-        id: get_base
-        run: echo "base_ref=$(git rev-parse HEAD~1)" >> $GITHUB_OUTPUT
-
   migration-check:
-    name: Flyway Migration Check on Main
-    needs: [ get-base-ref ]
+    name: Flyway Migration Check on PR
     uses: ./.github/workflows/migrations-check.yml
     with:
-      base_ref: ${{ needs.get-base-ref.outputs.base_ref }}
-      head_ref: ${{ github.sha }}
+      base_ref: ${{ github.event.pull_request.base.sha }}
+      head_ref: ${{ github.event.pull_request.head.sha }}
 
   backend-tests:
     name: Backend Tests
@@ -146,14 +139,14 @@ jobs:
           echo "❌ Frontend tests failed"
           exit 1
 
-  build-and-release:
+  prepare-release-draft:
     needs: [ backend-tests, frontend-tests ]
     if: needs.backend-tests.result == 'success' && needs.frontend-tests.result == 'success'
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      packages: write
-      pull-requests: read
+      pull-requests: write
+      issues: write
 
     steps:
       - name: Checkout Repository
@@ -161,29 +154,45 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Authenticate to GitHub Container Registry
-        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ github.token }}
-
-      - name: Set Up QEMU for Multi-Architecture Builds
-        uses: docker/setup-qemu-action@c7c53464625b32c7a7e944ae62b3e17d2b600130 # v3
-
-      - name: Set Up Docker Buildx
-        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
-
       - name: Calculate Next Version
-        id: semversie
+        id: semVersie
         uses: RonaldPhilipsen/semVersie@v2.1.0
         with:
           github-token: ${{ github.token }}
+          add-pr-label: true
+          release-notes-format: .github/semversie-release-notes.md
 
       - name: Export Calculated Tag
         run: |
-          echo "new_tag=${{ steps.semversie.outputs.tag }}" >> $GITHUB_ENV
-          echo "Next version: ${{ steps.semversie.outputs.tag }}"
+          echo "new_tag=${{ steps.semVersie.outputs.tag }}" >> $GITHUB_ENV
+          echo "Next version: ${{ steps.semVersie.outputs.version }}"
+
+      - name: Determine If Draft Update Is Needed
+        id: draft_guard
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          set -euo pipefail
+
+          # semVersie labels are the primary intent signal for release impact.
+          # Handle both prefixed and unprefixed label styles.
+          pr_labels="$(gh pr view "${PR_NUMBER}" --json labels --jq '.labels[].name' 2>/dev/null | tr '\n' ',')"
+
+          if echo "${pr_labels}" | grep -Eq '(^|,)(semVersie:(major|minor|patch)|major|minor|patch)(,|$)'; then
+            echo "PR has release-impact label(s): ${pr_labels}"
+            echo "should_upsert=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          if echo "${pr_labels}" | grep -Eq '(^|,)(semVersie:noimpact|noimpact)(,|$)'; then
+            echo "PR has noimpact label: ${pr_labels}"
+            echo "should_upsert=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          echo "No semVersie impact/noimpact label found; skipping draft update."
+          echo "should_upsert=false" >> "$GITHUB_OUTPUT"
 
       # ----------------------------------------
       # Native Angular build
@@ -237,39 +246,41 @@ jobs:
         working-directory: ./booklore-api
         run: ./gradlew clean build -x test --no-daemon --parallel --build-cache
 
-      # ----------------------------------------
-      # Docker build & push
-      # ----------------------------------------
-      - name: Build and push Docker image
-        uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
-        with:
-          context: .
-          file: Dockerfile.ci
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: |
-            ghcr.io/faustvii/booklore:${{ env.new_tag }}
-            ghcr.io/faustvii/booklore:latest
-          build-args: |
-            APP_VERSION=${{ env.new_tag }}
-            APP_REVISION=${{ github.sha }}
-          cache-from: |
-            type=gha
-            type=registry,ref=ghcr.io/faustvii/booklore:buildcache
-          cache-to: |
-            type=gha,mode=max
-            type=registry,ref=ghcr.io/faustvii/booklore:buildcache,mode=max
-
-      - name: Update GitHub Release Draft
-        uses: release-drafter/release-drafter@6db134d15f3909ccc9eefd369f02bd1e9cffdf97 # v6
-        with:
-          tag: ${{ env.new_tag }}
-          name: "Release ${{ env.new_tag }}"
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-
-      - name: Publish GitHub Draft Release
+      - name: Upsert Draft Release From semVersie Output
+        if: steps.draft_guard.outputs.should_upsert == 'true'
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          gh release edit ${{ env.new_tag }} --draft=true
+          set -euo pipefail
+
+          tag="${{ env.new_tag }}"
+          title="Release ${tag}"
+
+          notes_path="${{ steps.semVersie.outputs.release-notes-file }}"
+          notes_text="${{ steps.semVersie.outputs.release-notes }}"
+
+          if [ -n "${notes_path}" ] && [ -f "${notes_path}" ]; then
+            notes_arg=(--notes-file "${notes_path}")
+          else
+            notes_arg=(--notes "${notes_text}")
+          fi
+
+          existing_draft_tag="$(gh release list --limit 20 --json isDraft,tagName --jq '.[] | select(.isDraft) | .tagName' | head -n 1)"
+          if [ -n "${existing_draft_tag}" ] && [ "${existing_draft_tag}" != "${tag}" ]; then
+            gh release delete "${existing_draft_tag}" --yes
+          fi
+
+          if gh release view "${tag}" >/dev/null 2>&1; then
+            is_draft="$(gh release view "${tag}" --json isDraft --jq '.isDraft')"
+            if [ "${is_draft}" = "true" ]; then
+              gh release edit "${tag}" --title "${title}" "${notes_arg[@]}" --draft=true
+            else
+              echo "Release ${tag} is already published; skipping draft update."
+            fi
+          else
+            gh release create "${tag}" \
+              --title "${title}" \
+              "${notes_arg[@]}" \
+              --target "${{ github.event.pull_request.head.sha }}" \
+              --draft
+          fi
