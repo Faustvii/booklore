@@ -1,27 +1,34 @@
 diff --git a/booklore-api/src/main/java/org/booklore/service/VersionService.java b/booklore-api/src/main/java/org/booklore/service/VersionService.java
-index c305df7f..3d1d4fdf 100644
+index c305df7f..9bcffadf 100644
 --- a/booklore-api/src/main/java/org/booklore/service/VersionService.java
 +++ b/booklore-api/src/main/java/org/booklore/service/VersionService.java
-@@ -32,17 +32,11 @@ public class VersionService {
+@@ -21,7 +21,7 @@ public class VersionService {
+     @Value("${app.version:unknown}")
+     String appVersion;
  
- 
-     public VersionInfo getVersionInfo() {
--        String latest = "unknown";
--        try {
--            latest = fetchLatestGitHubReleaseVersion();
--        } catch (Exception e) {
--            log.warn("Error fetching latest release version");
--        }
--        return new VersionInfo(appVersion, latest);
-+        return new VersionInfo(appVersion, appVersion);
+-    private static final String GITHUB_REPO = "booklore-app/booklore";
++    private static final String GITHUB_REPO = "faustvii/booklore";
+     private static final String BASE_URI = "https://api.github.com/repos/" + GITHUB_REPO;
+     private static final int MAX_RELEASES = 15;
+     private static final RestClient REST_CLIENT = RestClient.builder()
+@@ -45,7 +45,6 @@ public class VersionService {
+         return fetchReleaseNotesSince(appVersion);
      }
  
-     public List<ReleaseNote> getChangelogSinceCurrentVersion() {
--        return fetchReleaseNotesSince(appVersion);
-+        return new ArrayList<>();
-     }
- 
- 
+-
+     public String fetchLatestGitHubReleaseVersion() {
+         try {
+             String response = REST_CLIENT.get()
+@@ -87,7 +86,7 @@ public class VersionService {
+                 if (tag == null || !isVersionGreater(tag, currentVersion)) {
+                     continue;
+                 }
+-                String url = "https://github.com/booklore-app/booklore" + "/releases/tag/" + tag;
++                String url = "https://github.com/" + GITHUB_REPO + "/releases/tag/" + tag;
+                 LocalDateTime published = LocalDateTime.parse(release.path("published_at").asText(), DateTimeFormatter.ISO_DATE_TIME);
+                 updates.add(new ReleaseNote(tag, release.path("name").asText(tag), release.path("body").asText(""), url, published));
+             }
+
 diff --git a/booklore-api/src/test/java/org/booklore/service/VersionServiceTest.java b/booklore-api/src/test/java/org/booklore/service/VersionServiceTest.java
 index d95758bd..3c19c38f 100644
 --- a/booklore-api/src/test/java/org/booklore/service/VersionServiceTest.java
