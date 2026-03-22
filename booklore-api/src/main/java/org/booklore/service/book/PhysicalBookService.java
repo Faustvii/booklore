@@ -16,6 +16,7 @@ import org.booklore.repository.CategoryRepository;
 import org.booklore.repository.LibraryRepository;
 import org.booklore.util.BookCoverUtils;
 import org.booklore.util.FileService;
+import org.booklore.util.RemoteUrlSanitizer;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -42,6 +43,7 @@ public class PhysicalBookService {
     private final CategoryRepository categoryRepository;
     private final BookMapper bookMapper;
     private final FileService fileService;
+    private final RemoteUrlSanitizer remoteUrlSanitizer;
 
     @Transactional
     public Book createPhysicalBook(CreatePhysicalBookRequest request) {
@@ -84,7 +86,8 @@ public class PhysicalBookService {
 
         if (request.getThumbnailUrl() != null && !request.getThumbnailUrl().isBlank()) {
             try {
-                fileService.createThumbnailFromUrl(savedBook.getId(), request.getThumbnailUrl());
+                String sanitizedThumbnailUrl = remoteUrlSanitizer.sanitizeHttpUrl(request.getThumbnailUrl()).toString();
+                fileService.createThumbnailFromUrl(savedBook.getId(), sanitizedThumbnailUrl);
                 savedBook.getMetadata().setCoverUpdatedOn(Instant.now());
                 savedBook.setBookCoverHash(BookCoverUtils.generateCoverHash());
                 savedBook = bookRepository.save(savedBook);

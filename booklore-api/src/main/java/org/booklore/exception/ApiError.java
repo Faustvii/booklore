@@ -26,6 +26,8 @@ public enum ApiError {
     CACHE_TOO_LARGE(HttpStatus.BAD_REQUEST, "Book archive is too large to cache with current settings"),
     DIRECTORY_CREATION_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to create the directory: %s"),
     INVALID_LIBRARY_PATH(HttpStatus.BAD_REQUEST, "Invalid library path"),
+    INVALID_PATH_INPUT(HttpStatus.BAD_REQUEST, "Invalid path input: %s"),
+    INVALID_REMOTE_URL_INPUT(HttpStatus.BAD_REQUEST, "Invalid remote URL input: %s"),
     FILE_ALREADY_EXISTS(HttpStatus.CONFLICT, "File already exists"),
     INVALID_QUERY_PARAMETERS(HttpStatus.BAD_REQUEST, "Query parameters are required for the search."),
     SHELF_ALREADY_EXISTS(HttpStatus.CONFLICT, "Shelf already exists: %s"),

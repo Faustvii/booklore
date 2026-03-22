@@ -12,6 +12,7 @@ import org.booklore.model.entity.BookEntity;
 import org.booklore.model.entity.BookMetadataEntity;
 import org.booklore.model.enums.BookFileType;
 import org.booklore.service.appsettings.AppSettingService;
+import org.booklore.util.RemoteUrlSanitizer;
 import org.booklore.util.SecureXmlUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,6 +38,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URLDecoder;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -51,7 +55,9 @@ import java.util.UUID;
 public class EpubMetadataWriter implements MetadataWriter {
 
     private static final String OPF_NS = "http://www.idpf.org/2007/opf";
+    private static final HttpClient HTTP_CLIENT = HttpClient.newHttpClient();
     private final AppSettingService appSettingService;
+    private final RemoteUrlSanitizer remoteUrlSanitizer;
 
     @Override
     public void saveMetadataToFile(File epubFile, BookMetadataEntity metadata, String thumbnailUrl, MetadataClearFlags clear) {
@@ -343,7 +349,7 @@ public class EpubMetadataWriter implements MetadataWriter {
             return;
         }
 
-        byte[] coverData = loadImage(url);
+        byte[] coverData = loadRemoteImage(url);
         if (coverData == null) {
             log.warn("Failed to load image from URL: {}", url);
             return;
@@ -515,10 +521,36 @@ public class EpubMetadataWriter implements MetadataWriter {
     }
 
     private byte[] loadImage(String pathOrUrl) {
-        try (InputStream stream = pathOrUrl.startsWith("http") ? URI.create(pathOrUrl).toURL().openStream() : new FileInputStream(pathOrUrl)) {
-            return stream.readAllBytes();
-        } catch (IOException e) {
+        try {
+            if (pathOrUrl.startsWith("http")) {
+                return loadRemoteImage(pathOrUrl);
+            }
+            try (InputStream stream = new FileInputStream(pathOrUrl)) {
+                return stream.readAllBytes();
+            }
+        } catch (Exception e) {
             log.warn("Failed to load image from {}: {}", pathOrUrl, e.getMessage());
+            return null;
+        }
+    }
+
+    private byte[] loadRemoteImage(String remoteUrl) {
+        try {
+            URI sanitized = remoteUrlSanitizer.sanitizeHttpUrl(remoteUrl);
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(sanitized)
+                    .GET()
+                    .build();
+
+            HttpResponse<byte[]> response = HTTP_CLIENT.send(request, HttpResponse.BodyHandlers.ofByteArray());
+            if (response.statusCode() < 200 || response.statusCode() >= 300) {
+                log.warn("Failed to load remote image from {}: HTTP {}", remoteUrl, response.statusCode());
+                return null;
+            }
+            return response.body();
+        } catch (Exception e) {
+            log.warn("Failed to load remote image from {}: {}", remoteUrl, e.getMessage());
             return null;
         }
     }

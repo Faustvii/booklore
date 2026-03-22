@@ -2,6 +2,7 @@ package org.booklore.service.metadata;
 
 import org.booklore.config.AppProperties;
 import org.booklore.exception.APIException;
+import org.booklore.exception.ApiError;
 import org.booklore.model.dto.settings.AppSettings;
 import org.booklore.model.dto.settings.MetadataPersistenceSettings;
 import org.booklore.model.entity.*;
@@ -29,6 +30,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.net.URI;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -108,7 +110,7 @@ class BookCoverServiceTest {
         void updateCoverFromUrlThrowsWhenBookNotFound() {
             when(bookRepository.findById(1L)).thenReturn(Optional.empty());
 
-            assertThatThrownBy(() -> service.updateCoverFromUrl(1L, "http://example.com/cover.jpg"))
+                assertThatThrownBy(() -> service.updateCoverFromUrl(1L, URI.create("http://example.com/cover.jpg")))
                     .isInstanceOf(APIException.class);
         }
 
@@ -150,7 +152,7 @@ class BookCoverServiceTest {
             BookEntity book = buildBook(1L, true);
             when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
 
-            assertThatThrownBy(() -> service.updateCoverFromUrl(1L, "http://example.com"))
+                assertThatThrownBy(() -> service.updateCoverFromUrl(1L, URI.create("http://example.com")))
                     .isInstanceOf(APIException.class)
                     .hasMessageContaining("locked");
         }
@@ -185,7 +187,7 @@ class BookCoverServiceTest {
             BookEntity book = buildBookWithAudiobookLock(1L, true);
             when(bookRepository.findByIdWithBookFiles(1L)).thenReturn(Optional.of(book));
 
-            assertThatThrownBy(() -> service.updateAudiobookCoverFromUrl(1L, "http://example.com"))
+                assertThatThrownBy(() -> service.updateAudiobookCoverFromUrl(1L, URI.create("http://example.com")))
                     .isInstanceOf(APIException.class)
                     .hasMessageContaining("locked");
         }
@@ -493,13 +495,14 @@ class BookCoverServiceTest {
             when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
             when(bookRepository.findCoverUpdateInfoByIds(any())).thenReturn(List.of());
 
-            service.updateCoverFromUrl(1L, "https://example.com/cover.jpg");
+            service.updateCoverFromUrl(1L, URI.create("https://example.com/cover.jpg"));
 
             verify(fileService).createThumbnailFromUrl(1L, "https://example.com/cover.jpg");
             verify(bookRepository).save(book);
             assertThat(book.getMetadata().getCoverUpdatedOn()).isNotNull();
             assertThat(book.getBookCoverHash()).isNotNull();
         }
+
     }
 
     @Nested
@@ -557,7 +560,7 @@ class BookCoverServiceTest {
             when(bookRepository.findByIdWithBookFiles(1L)).thenReturn(Optional.of(book));
             when(bookRepository.findCoverUpdateInfoByIds(any())).thenReturn(List.of());
 
-            service.updateAudiobookCoverFromUrl(1L, "https://example.com/audiobook-cover.jpg");
+            service.updateAudiobookCoverFromUrl(1L, URI.create("https://example.com/audiobook-cover.jpg"));
 
             verify(fileService).createAudiobookThumbnailFromUrl(1L, "https://example.com/audiobook-cover.jpg");
             verify(bookRepository).save(book);
@@ -569,7 +572,7 @@ class BookCoverServiceTest {
         void throwsWhenBookNotFound() {
             when(bookRepository.findByIdWithBookFiles(1L)).thenReturn(Optional.empty());
 
-            assertThatThrownBy(() -> service.updateAudiobookCoverFromUrl(1L, "https://example.com"))
+                assertThatThrownBy(() -> service.updateAudiobookCoverFromUrl(1L, URI.create("https://example.com")))
                     .isInstanceOf(APIException.class);
         }
     }
@@ -983,7 +986,7 @@ class BookCoverServiceTest {
             try (MockedStatic<FileFingerprint> fpMock = mockStatic(FileFingerprint.class)) {
                 fpMock.when(() -> FileFingerprint.generateHash(any())).thenReturn("abc123");
 
-                service.updateCoverFromUrl(1L, "https://example.com/cover.jpg");
+                service.updateCoverFromUrl(1L, URI.create("https://example.com/cover.jpg"));
 
                 verify(metadataWriterFactory).getWriter(BookFileType.EPUB);
                 assertThat(primaryFile.getCurrentHash()).isEqualTo("abc123");
@@ -997,7 +1000,7 @@ class BookCoverServiceTest {
             when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
             when(bookRepository.findCoverUpdateInfoByIds(any())).thenReturn(List.of());
 
-            service.updateCoverFromUrl(1L, "https://example.com/cover.jpg");
+            service.updateCoverFromUrl(1L, URI.create("https://example.com/cover.jpg"));
 
             verify(metadataWriterFactory, never()).getWriter(any());
         }
@@ -1014,7 +1017,7 @@ class BookCoverServiceTest {
             BookCoverUpdateProjection projection = mock(BookCoverUpdateProjection.class);
             when(bookRepository.findCoverUpdateInfoByIds(List.of(1L))).thenReturn(List.of(projection));
 
-            service.updateCoverFromUrl(1L, "https://example.com/cover.jpg");
+            service.updateCoverFromUrl(1L, URI.create("https://example.com/cover.jpg"));
 
             verify(notificationService).sendMessage(any(), eq(List.of(projection)));
         }
@@ -1025,7 +1028,7 @@ class BookCoverServiceTest {
             when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
             when(bookRepository.findCoverUpdateInfoByIds(any())).thenReturn(List.of());
 
-            service.updateCoverFromUrl(1L, "https://example.com/cover.jpg");
+            service.updateCoverFromUrl(1L, URI.create("https://example.com/cover.jpg"));
 
             verify(notificationService, never()).sendMessage(any(), anyList());
         }
@@ -1081,7 +1084,7 @@ class BookCoverServiceTest {
             when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
             when(bookRepository.findCoverUpdateInfoByIds(any())).thenReturn(List.of());
 
-            service.updateCoverFromUrl(1L, "https://example.com/cover.jpg");
+            service.updateCoverFromUrl(1L, URI.create("https://example.com/cover.jpg"));
 
             verify(metadataWriterFactory, never()).getWriter(any());
             verify(bookRepository).save(book);
@@ -1099,7 +1102,7 @@ class BookCoverServiceTest {
             when(bookRepository.findByIdWithBookFiles(1L)).thenReturn(Optional.of(book));
             when(bookRepository.findCoverUpdateInfoByIds(any())).thenReturn(List.of());
 
-            service.updateAudiobookCoverFromUrl(1L, "https://example.com/audiobook-cover.jpg");
+            service.updateAudiobookCoverFromUrl(1L, URI.create("https://example.com/audiobook-cover.jpg"));
 
             verify(metadataWriterFactory, never()).getWriter(any());
             verify(bookRepository).save(book);
