@@ -9,6 +9,7 @@ import org.booklore.model.entity.BookFileEntity;
 import org.booklore.model.entity.BookMetadataEntity;
 import org.booklore.model.entity.LibraryPathEntity;
 import org.booklore.service.appsettings.AppSettingService;
+import org.booklore.util.RemoteUrlSanitizer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -37,6 +38,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.when;
 
 class EpubMetadataWriterTest {
@@ -45,6 +47,7 @@ class EpubMetadataWriterTest {
     private BookMetadataEntity metadata;
     private BookEntity bookEntity;
     private AppSettingService appSettingService;
+    private RemoteUrlSanitizer remoteUrlSanitizer;
 
     @TempDir
     Path tempDir;
@@ -52,6 +55,7 @@ class EpubMetadataWriterTest {
     @BeforeEach
     void setUp() {
         appSettingService = mock(AppSettingService.class);
+        remoteUrlSanitizer = mock(RemoteUrlSanitizer.class);
         MetadataPersistenceSettings.FormatSettings epubFormatSettings = MetadataPersistenceSettings.FormatSettings.builder()
                 .enabled(true)
                 .maxFileSizeInMb(100)
@@ -65,8 +69,9 @@ class EpubMetadataWriterTest {
         AppSettings appSettings = mock(AppSettings.class);
         when(appSettings.getMetadataPersistenceSettings()).thenReturn(metadataPersistenceSettings);
         when(appSettingService.getAppSettings()).thenReturn(appSettings);
+        when(remoteUrlSanitizer.sanitizeHttpUrl(anyString())).thenAnswer(invocation -> java.net.URI.create(invocation.getArgument(0, String.class)));
 
-        writer = new EpubMetadataWriter(appSettingService);
+        writer = new EpubMetadataWriter(appSettingService, remoteUrlSanitizer);
         metadata = new BookMetadataEntity();
         metadata.setTitle("Test Book");
         AuthorEntity author = new AuthorEntity();

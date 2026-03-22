@@ -22,6 +22,7 @@ import org.booklore.service.file.FileMovingHelper;
 import org.booklore.service.monitoring.MonitoringRegistrationService;
 import org.booklore.service.metadata.extractor.MetadataExtractorFactory;
 import org.booklore.util.PathPatternResolver;
+import org.booklore.util.PathSanitizer;
 import org.springframework.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -58,6 +59,7 @@ public class FileUploadService {
     private final FileMovingHelper fileMovingHelper;
     private final MonitoringRegistrationService monitoringRegistrationService;
     private final AuditService auditService;
+    private final PathSanitizer pathSanitizer;
 
     public void uploadFile(MultipartFile file, long libraryId, long pathId) {
         validateFile(file);
@@ -258,13 +260,10 @@ public class FileUploadService {
         if (originalFileName == null) {
             throw new IllegalArgumentException("File must have a name");
         }
-        // Prevent Path Traversal by extracting only the base file name
+
         String cleanPath = StringUtils.cleanPath(originalFileName);
         String baseFileName = StringUtils.getFilename(cleanPath);
-        if (baseFileName == null || baseFileName.isEmpty() || baseFileName.equals("..")) {
-            throw new IllegalArgumentException("Invalid filename");
-        }
-        return baseFileName;
+        return pathSanitizer.sanitizeFilenameComponent(baseFileName);
     }
 
     private BookFileExtension getFileExtension(String fileName) {

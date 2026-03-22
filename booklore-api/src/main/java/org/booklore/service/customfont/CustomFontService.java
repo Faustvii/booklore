@@ -9,6 +9,7 @@ import org.booklore.model.entity.CustomFontEntity;
 import org.booklore.model.enums.FontFormat;
 import org.booklore.repository.CustomFontRepository;
 import org.booklore.repository.UserRepository;
+import org.booklore.util.PathSanitizer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.FileSystemResource;
@@ -42,6 +43,7 @@ public class CustomFontService {
     private final UserRepository userRepository;
     private final CustomFontMapper customFontMapper;
     private final AppProperties appProperties;
+    private final PathSanitizer pathSanitizer;
 
     private static final int MAX_FONTS_PER_USER = 10;
     private static final long MAX_FILE_SIZE_BYTES = 5L * 1024 * 1024;
@@ -72,9 +74,7 @@ public class CustomFontService {
 
             Path fontDir = getFontDirectory(userId);
             Files.createDirectories(fontDir);
-            fontPath = fontDir.resolve(fileName);
-
-            validatePath(fontPath, fontDir);
+            fontPath = pathSanitizer.resolveRelativePath(fontDir, fileName);
 
             file.transferTo(fontPath.toFile());
 
@@ -128,9 +128,7 @@ public class CustomFontService {
 
         try {
             Path fontDir = getFontDirectory(userId);
-            Path fontPath = fontDir.resolve(font.getFileName());
-
-            validatePath(fontPath, fontDir);
+            Path fontPath = pathSanitizer.resolveRelativePath(fontDir, font.getFileName());
 
             Files.deleteIfExists(fontPath);
         } catch (IOException e) {
@@ -161,14 +159,7 @@ public class CustomFontService {
                 .orElseThrow(() -> new IllegalArgumentException("Font not found or access denied"));
 
         Path fontDir = getFontDirectory(userId);
-        Path fontPath = fontDir.resolve(font.getFileName());
-
-        try {
-            validatePath(fontPath, fontDir);
-        } catch (IOException e) {
-            log.error("Invalid font path for user {}: {}", userId, fontPath, e);
-            throw new IllegalArgumentException("Invalid font file path");
-        }
+        Path fontPath = pathSanitizer.resolveRelativePath(fontDir, font.getFileName());
 
         File fontFile = fontPath.toFile();
 
@@ -237,20 +228,6 @@ public class CustomFontService {
 
     private Path getFontDirectory(Long userId) {
         return Paths.get(appProperties.getPathConfig(), CUSTOM_FONTS_DIR, String.valueOf(userId));
-    }
-
-    /**
-     * Validates that the resolved path stays within the expected parent directory
-     * to prevent directory traversal attacks.
-     */
-    private void validatePath(Path resolvedPath, Path expectedParent) throws IOException {
-        Path normalizedPath = resolvedPath.toAbsolutePath().normalize();
-        Path normalizedParent = expectedParent.toAbsolutePath().normalize();
-
-        if (!normalizedPath.startsWith(normalizedParent)) {
-            log.error("Path traversal attempt detected: {} does not start with {}", normalizedPath, normalizedParent);
-            throw new IOException("Invalid file path: path traversal detected");
-        }
     }
 
     /**

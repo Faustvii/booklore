@@ -29,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.net.URI;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -103,19 +104,18 @@ public class BookCoverService {
         notifyBookCoverUpdate(bookEntity);
     }
 
-    /**
-     * Update cover image from a URL for a single book.
-     */
     @Transactional
-    public void updateCoverFromUrl(Long bookId, String url) {
+    public void updateCoverFromUrl(Long bookId, URI sanitizedUrl) {
         BookEntity bookEntity = bookRepository.findById(bookId).orElseThrow(() -> ApiError.BOOK_NOT_FOUND.createException(bookId));
 
         if (isCoverLocked(bookEntity)) {
             throw ApiError.METADATA_LOCKED.createException();
         }
 
-        fileService.createThumbnailFromUrl(bookId, url);
-        writeCoverToBookFile(bookEntity, (writer, book) -> writer.replaceCoverImageFromUrl(book, url));
+        String sanitizedUrlString = sanitizedUrl.toString();
+
+        fileService.createThumbnailFromUrl(bookId, sanitizedUrlString);
+        writeCoverToBookFile(bookEntity, (writer, book) -> writer.replaceCoverImageFromUrl(book, sanitizedUrlString));
         updateBookCoverMetadata(bookEntity);
         bookRepository.save(bookEntity);
         notifyBookCoverUpdate(bookEntity);
@@ -143,19 +143,18 @@ public class BookCoverService {
         notifyBookCoverUpdate(bookEntity);
     }
 
-    /**
-     * Update audiobook cover image from a URL for a single book.
-     */
     @Transactional
-    public void updateAudiobookCoverFromUrl(Long bookId, String url) {
+    public void updateAudiobookCoverFromUrl(Long bookId, URI sanitizedUrl) {
         BookEntity bookEntity = bookRepository.findByIdWithBookFiles(bookId).orElseThrow(() -> ApiError.BOOK_NOT_FOUND.createException(bookId));
 
         if (isAudiobookCoverLocked(bookEntity)) {
             throw ApiError.METADATA_LOCKED.createException();
         }
 
-        fileService.createAudiobookThumbnailFromUrl(bookId, url);
-        writeAudiobookCoverToFile(bookEntity, (writer, book) -> writer.replaceCoverImageFromUrl(book, url));
+        String sanitizedUrlString = sanitizedUrl.toString();
+
+        fileService.createAudiobookThumbnailFromUrl(bookId, sanitizedUrlString);
+        writeAudiobookCoverToFile(bookEntity, (writer, book) -> writer.replaceCoverImageFromUrl(book, sanitizedUrlString));
         updateAudiobookCoverMetadata(bookEntity);
         bookRepository.save(bookEntity);
         notifyBookCoverUpdate(bookEntity);

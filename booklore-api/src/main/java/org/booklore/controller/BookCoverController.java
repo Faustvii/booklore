@@ -4,12 +4,15 @@ import org.booklore.config.security.annotation.CheckBookAccess;
 import org.booklore.model.dto.CoverImage;
 import org.booklore.model.dto.request.BulkBookIdsRequest;
 import org.booklore.model.dto.request.CoverFetchRequest;
+import org.booklore.model.dto.request.CoverUrlRequest;
 import org.booklore.service.metadata.BookCoverService;
 import org.booklore.service.metadata.DuckDuckGoCoverService;
+import org.booklore.util.RemoteUrlSanitizer;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,8 +20,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.net.URI;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/books")
@@ -28,6 +31,7 @@ public class BookCoverController {
 
     private final BookCoverService bookCoverService;
     private final DuckDuckGoCoverService duckDuckGoCoverService;
+    private final RemoteUrlSanitizer remoteUrlSanitizer;
 
     @Operation(summary = "Upload cover image from file", description = "Upload a cover image for a book from a file. Requires metadata edit permission or admin.")
     @ApiResponse(responseCode = "200", description = "Cover image uploaded successfully")
@@ -47,8 +51,9 @@ public class BookCoverController {
     @CheckBookAccess(bookIdParam = "bookId")
     public void uploadCoverFromUrl(
             @Parameter(description = "ID of the book") @PathVariable Long bookId,
-            @Parameter(description = "URL body") @RequestBody Map<String, String> body) {
-        bookCoverService.updateCoverFromUrl(bookId, body.get("url"));
+            @Parameter(description = "URL body") @Valid @RequestBody CoverUrlRequest body) {
+        URI sanitizedUrl = remoteUrlSanitizer.sanitizeHttpUrl(body.getUrl());
+        bookCoverService.updateCoverFromUrl(bookId, sanitizedUrl);
     }
 
     @Operation(summary = "Upload audiobook cover image from file", description = "Upload an audiobook cover image for a book from a file. Requires metadata edit permission or admin.")
@@ -69,8 +74,9 @@ public class BookCoverController {
     @CheckBookAccess(bookIdParam = "bookId")
     public void uploadAudiobookCoverFromUrl(
             @Parameter(description = "ID of the book") @PathVariable Long bookId,
-            @Parameter(description = "URL body") @RequestBody Map<String, String> body) {
-        bookCoverService.updateAudiobookCoverFromUrl(bookId, body.get("url"));
+            @Parameter(description = "URL body") @Valid @RequestBody CoverUrlRequest body) {
+        URI sanitizedUrl = remoteUrlSanitizer.sanitizeHttpUrl(body.getUrl());
+        bookCoverService.updateAudiobookCoverFromUrl(bookId, sanitizedUrl);
     }
 
     @Operation(summary = "Regenerate audiobook cover for a book", description = "Regenerate audiobook cover for a specific book by extracting from the audiobook file. Requires metadata edit permission or admin.")
