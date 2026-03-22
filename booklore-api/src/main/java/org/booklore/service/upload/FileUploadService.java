@@ -261,7 +261,17 @@ public class FileUploadService {
         // Prevent Path Traversal by extracting only the base file name
         String cleanPath = StringUtils.cleanPath(originalFileName);
         String baseFileName = StringUtils.getFilename(cleanPath);
-        if (baseFileName == null || baseFileName.isEmpty() || baseFileName.equals("..")) {
+        // Ensure the resulting name is a single safe path component
+        if (baseFileName == null || baseFileName.isEmpty()) {
+            throw new IllegalArgumentException("Invalid filename");
+        }
+        // Reject special directory references
+        if (".".equals(baseFileName) || "..".equals(baseFileName)) {
+            throw new IllegalArgumentException("Invalid filename");
+        }
+        // Reject any path separators or parent directory sequences
+        if (baseFileName.contains("/") || baseFileName.contains("\\") ||
+                baseFileName.contains("..") || baseFileName.contains("../") || baseFileName.contains("..\\")) {
             throw new IllegalArgumentException("Invalid filename");
         }
         return baseFileName;
