@@ -24,6 +24,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.Collections;
+import java.util.Locale;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -33,6 +34,8 @@ import java.util.regex.Pattern;
 public class KoboServerProxy {
 
     private static final Pattern KOBO_API_PREFIX_PATTERN = Pattern.compile("^/api/kobo/[^/]+");
+    private static final String KOBO_STORE_HOST = "storeapi.kobo.com";
+    private static final String KOBO_CDN_HOST = "cdn.kobo.com";
     private final HttpClient httpClient = HttpClient.newBuilder().connectTimeout(Duration.ofMinutes(1)).build();
     private final ObjectMapper objectMapper;
     private final BookloreSyncTokenGenerator bookloreSyncTokenGenerator;
@@ -70,8 +73,10 @@ public class KoboServerProxy {
 
     public ResponseEntity<Resource> proxyExternalUrl(String url) {
         try {
+            URI approvedUri = rebuildAllowlistedHostUri(URI.create(url), KOBO_CDN_HOST);
+
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(url))
+                    .uri(approvedUri)
                     .GET()
                     .build();
 
@@ -89,15 +94,8 @@ public class KoboServerProxy {
 
     private ResponseEntity<JsonNode> executeProxyRequest(HttpServletRequest request, Object body, String path, boolean includeSyncToken, BookloreSyncToken syncToken) {
         try {
-            String koboBaseUrl = "https://storeapi.kobo.com";
-
             String queryString = request.getQueryString();
-            String uriString = koboBaseUrl + path;
-            if (queryString != null && !queryString.isBlank()) {
-                uriString += "?" + queryString;
-            }
-
-            URI uri = URI.create(uriString);
+            URI uri = buildKoboStoreUri(path, queryString);
             log.debug("Kobo proxy URL: {}", uri);
 
             String bodyString = body != null ? objectMapper.writeValueAsString(body) : "{}";
@@ -152,6 +150,37 @@ public class KoboServerProxy {
         } catch (Exception e) {
             log.error("Failed to proxy request to Kobo", e);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to proxy request to Kobo", e);
+        }
+    }
+
+    private URI buildKoboStoreUri(String path, String queryString) {
+        String normalizedPath = (path == null || path.isBlank()) ? "/" : (path.startsWith("/") ? path : "/" + path);
+        try {
+            URI candidate = new URI("https", null, KOBO_STORE_HOST, -1, normalizedPath, queryString, null);
+            return rebuildAllowlistedHostUri(candidate, KOBO_STORE_HOST);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Invalid Kobo proxy URI", e);
+        }
+    }
+
+    private URI rebuildAllowlistedHostUri(URI uri, String expectedHost) {
+        String host = uri.getHost();
+        if (host == null || !expectedHost.equals(host.toLowerCase(Locale.ROOT))) {
+            throw new IllegalArgumentException("URL host is not allowed");
+        }
+
+        try {
+            return new URI(
+                    uri.getScheme(),
+                    null,
+                    expectedHost,
+                    uri.getPort(),
+                    uri.getPath(),
+                    uri.getQuery(),
+                    null
+            );
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Invalid URL", e);
         }
     }
 }

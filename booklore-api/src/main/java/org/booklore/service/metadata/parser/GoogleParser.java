@@ -46,6 +46,7 @@ public class GoogleParser implements BookParser {
     private final AppSettingService appSettingService;
     private final HttpClient httpClient;
     private static final String GOOGLE_BOOKS_API_URL = "https://www.googleapis.com/books/v1/volumes";
+    private static final String GOOGLE_BOOKS_HOST = "www.googleapis.com";
     private final AtomicLong lastRequestTime = new AtomicLong(0);
 
     @Autowired
@@ -154,11 +155,12 @@ public class GoogleParser implements BookParser {
                     .queryParam("maxResults", maxResults);
             
             URI uri = uriBuilder.build().toUri();
+                URI approvedUri = rebuildAllowlistedHostUri(uri, GOOGLE_BOOKS_HOST);
 
-            log.info("Google Books API URL: {}", uri);
+                log.info("Google Books API URL: {}", approvedUri);
 
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(uri)
+                    .uri(approvedUri)
                     .GET()
                     .build();
 
@@ -610,6 +612,27 @@ public class GoogleParser implements BookParser {
             }
         }
         lastRequestTime.set(System.currentTimeMillis());
+    }
+
+    private URI rebuildAllowlistedHostUri(URI uri, String expectedHost) {
+        String host = uri.getHost();
+        if (host == null || !expectedHost.equalsIgnoreCase(host)) {
+            throw new IllegalArgumentException("URL host is not allowed");
+        }
+
+        try {
+            return new URI(
+                    uri.getScheme(),
+                    null,
+                    expectedHost,
+                    uri.getPort(),
+                    uri.getPath(),
+                    uri.getQuery(),
+                    null
+            );
+        } catch (Exception ex) {
+            throw new IllegalArgumentException("URL could not be normalized", ex);
+        }
     }
 
     /**

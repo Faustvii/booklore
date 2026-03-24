@@ -20,6 +20,7 @@ import java.util.concurrent.atomic.AtomicLong;
 public class AudnexusAuthorParser implements AuthorParser {
 
     private static final String BASE_URL = "https://api.audnex.us";
+    private static final String AUDNEXUS_HOST = "api.audnex.us";
     private static final long MIN_REQUEST_INTERVAL_MS = 150;
 
     private final HttpClient httpClient;
@@ -41,11 +42,12 @@ public class AudnexusAuthorParser implements AuthorParser {
                     .queryParam("region", region)
                     .build()
                     .toUri();
+                URI approvedUri = rebuildAllowlistedHostUri(uri, AUDNEXUS_HOST);
 
             log.info("Audnexus author search URL: {}", uri);
 
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(uri)
+                    .uri(approvedUri)
                     .GET()
                     .build();
 
@@ -89,11 +91,12 @@ public class AudnexusAuthorParser implements AuthorParser {
                     .queryParam("region", region)
                     .build()
                     .toUri();
+                URI approvedUri = rebuildAllowlistedHostUri(uri, AUDNEXUS_HOST);
 
             log.info("Audnexus author quick search URL: {}", uri);
 
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(uri)
+                    .uri(approvedUri)
                     .GET()
                     .build();
 
@@ -121,15 +124,17 @@ public class AudnexusAuthorParser implements AuthorParser {
         try {
             waitForRateLimit();
 
-            URI uri = UriComponentsBuilder.fromUriString(BASE_URL + "/authors/" + asin)
+                URI uri = UriComponentsBuilder.fromUriString(BASE_URL)
+                    .pathSegment("authors", asin)
                     .queryParam("region", region)
                     .build()
                     .toUri();
+                URI approvedUri = rebuildAllowlistedHostUri(uri, AUDNEXUS_HOST);
 
             log.info("Audnexus author detail URL: {}", uri);
 
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(uri)
+                    .uri(approvedUri)
                     .GET()
                     .build();
 
@@ -173,5 +178,26 @@ public class AudnexusAuthorParser implements AuthorParser {
             }
         }
         lastRequestTime.set(System.currentTimeMillis());
+    }
+
+    private URI rebuildAllowlistedHostUri(URI uri, String expectedHost) {
+        String host = uri.getHost();
+        if (host == null || !expectedHost.equalsIgnoreCase(host)) {
+            throw new IllegalArgumentException("URL host is not allowed");
+        }
+
+        try {
+            return new URI(
+                    uri.getScheme(),
+                    null,
+                    expectedHost,
+                    uri.getPort(),
+                    uri.getPath(),
+                    uri.getQuery(),
+                    null
+            );
+        } catch (Exception ex) {
+            throw new IllegalArgumentException("URL could not be normalized", ex);
+        }
     }
 }

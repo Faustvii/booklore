@@ -83,7 +83,8 @@ public class SecurityConfig {
                         .authenticationEntryPoint((request, response, authException) -> {
                             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                             response.setHeader("WWW-Authenticate", "Basic realm=\"Booklore OPDS\"");
-                            response.getWriter().write("HTTP Status 401 - " + authException.getMessage());
+                            response.getWriter().write("HTTP Status 401");
+                            log.info("HTTP Status 401 - Unauthorized access attempt", authException);
                         })
                 );
 
@@ -105,7 +106,8 @@ public class SecurityConfig {
                         .authenticationEntryPoint((request, response, authException) -> {
                             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                             response.setHeader("WWW-Authenticate", "Basic realm=\"Booklore Komga API\"");
-                            response.getWriter().write("HTTP Status 401 - " + authException.getMessage());
+                            response.getWriter().write("HTTP Status 401");
+                            log.info("HTTP Status 401 - Unauthorized access attempt", authException);
                         })
                 );
 

@@ -37,6 +37,7 @@ import java.util.stream.Collectors;
 public class ComicvineBookParser implements BookParser, DetailedMetadataProvider {
 
     private static final String COMICVINE_URL = "https://comicvine.gamespot.com/api/";
+    private static final String COMICVINE_HOST = "comicvine.gamespot.com";
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private static final Pattern DIGIT_PATTERN = Pattern.compile("\\d+");
     private static final Pattern SERIES_ISSUE_PATTERN = Pattern.compile("^(.+?)\\s+#?(\\d+(?:\\.\\d+)?)(?:\\s|$)", Pattern.CASE_INSENSITIVE);
@@ -465,8 +466,10 @@ public class ComicvineBookParser implements BookParser, DetailedMetadataProvider
 
         try {
             log.debug("ComicVine API call #{} to {}", callNumber, endpoint);
+            URI approvedUri = rebuildAllowlistedHostUri(uri, COMICVINE_HOST);
+
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(uri)
+                .uri(approvedUri)
                     .header("User-Agent", "BookLore/1.0 (Book and Comic Metadata Fetcher; +https://github.com/booklore-app/booklore)")
                     .GET()
                     .build();
@@ -896,6 +899,27 @@ public class ComicvineBookParser implements BookParser, DetailedMetadataProvider
             return Math.abs(reqNum - retNum) < 0.0001;
         } catch (NumberFormatException e) {
             return requested.equalsIgnoreCase(returned);
+        }
+    }
+
+    private URI rebuildAllowlistedHostUri(URI uri, String expectedHost) {
+        String host = uri.getHost();
+        if (host == null || !expectedHost.equalsIgnoreCase(host)) {
+            throw new IllegalArgumentException("URL host is not allowed");
+        }
+
+        try {
+            return new URI(
+                    uri.getScheme(),
+                    null,
+                    expectedHost,
+                    uri.getPort(),
+                    uri.getPath(),
+                    uri.getQuery(),
+                    null
+            );
+        } catch (Exception ex) {
+            throw new IllegalArgumentException("URL could not be normalized", ex);
         }
     }
     
