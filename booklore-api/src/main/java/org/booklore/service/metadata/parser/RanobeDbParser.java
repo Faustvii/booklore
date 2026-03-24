@@ -35,6 +35,7 @@ import java.util.stream.IntStream;
 public class RanobeDbParser implements BookParser {
     private static final String RANOBEDB_URL = "https://ranobedb.org/api/v0/";
     private static final String RANOBEDB_IMAGE_URL = "https://images.ranobedb.org/";
+    private static final String RANOBEDB_HOST = "ranobedb.org";
 
     private final AppSettingService appSettingService;
     private final HttpClient httpClient = HttpClient.newHttpClient();
@@ -129,9 +130,10 @@ public class RanobeDbParser implements BookParser {
                   .queryParam("rfl", "or")
                   .build()
                   .toUri();
+              URI approvedUri = rebuildAllowlistedHostUri(uri, RANOBEDB_HOST);
 
           HttpRequest request = HttpRequest.newBuilder()
-                  .uri(uri)
+                  .uri(approvedUri)
                   .header("User-Agent", "BookLore/1.0 (Book and Comic Metadata Fetcher; +https://github.com/booklore-app/booklore)")
                   .GET()
                   .build();
@@ -186,9 +188,10 @@ public class RanobeDbParser implements BookParser {
                     .pathSegment("book", String.valueOf(bookId))
                     .build()
                     .toUri();
+                URI approvedUri = rebuildAllowlistedHostUri(uri, RANOBEDB_HOST);
 
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(uri)
+                    .uri(approvedUri)
                     .header("User-Agent", "BookLore/1.0 (Book and Comic Metadata Fetcher; +https://github.com/booklore-app/booklore)")
                     .GET()
                     .build();
@@ -289,6 +292,27 @@ public class RanobeDbParser implements BookParser {
         } catch (DateTimeParseException e) {
             log.debug("Could not parse date: {}", dateInt);
             return null;
+        }
+    }
+
+    private URI rebuildAllowlistedHostUri(URI uri, String expectedHost) {
+        String host = uri.getHost();
+        if (host == null || !expectedHost.equalsIgnoreCase(host)) {
+            throw new IllegalArgumentException("URL host is not allowed");
+        }
+
+        try {
+            return new URI(
+                    uri.getScheme(),
+                    null,
+                    expectedHost,
+                    uri.getPort(),
+                    uri.getPath(),
+                    uri.getQuery(),
+                    null
+            );
+        } catch (Exception ex) {
+            throw new IllegalArgumentException("URL could not be normalized", ex);
         }
     }
 }

@@ -90,4 +90,18 @@ class RemoteUrlSanitizerTest {
                 .isInstanceOf(APIException.class)
                 .hasMessageContaining("URL host is not allowed");
     }
+
+    @Test
+    void rejectsUserInfoInUrl() {
+        assertThatThrownBy(() -> sanitizer.sanitizeHttpUrl("https://user:pass@media-amazon.com/image.jpg"))
+                .isInstanceOf(APIException.class)
+                .hasMessageContaining("URL user info is not allowed");
+    }
+
+    @Test
+    void rejectsNonStandardPort() {
+        assertThatThrownBy(() -> sanitizer.sanitizeHttpUrl("https://media-amazon.com:8443/image.jpg"))
+                .isInstanceOf(APIException.class)
+                .hasMessageContaining("URL port is not allowed");
+    }
 }

@@ -538,10 +538,6 @@ public class EpubMetadataWriter implements MetadataWriter {
         try {
             URI sanitized = remoteUrlSanitizer.sanitizeHttpUrl(remoteUrl);
 
-            if (!isHostAllowedByExactComparison(sanitized)) {
-                throw new IllegalArgumentException("URL host is not allowed");
-            }
-
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(sanitized)
                     .GET()
@@ -557,16 +553,6 @@ public class EpubMetadataWriter implements MetadataWriter {
             log.warn("Failed to load remote image from {}: {}", remoteUrl, e.getMessage());
             return null;
         }
-    }
-
-    private boolean isHostAllowedByExactComparison(URI sanitized) {
-        // Keep explicit URI host equality checks so CodeQL can recognize this as a host guard.
-        return "media-amazon.com".equals(sanitized.getHost())
-                || "m.media-amazon.com".equals(sanitized.getHost())
-                || "ssl-images-amazon.com".equals(sanitized.getHost())
-                || "images-na.ssl-images-amazon.com".equals(sanitized.getHost())
-                || "cloudfront.net".equals(sanitized.getHost())
-                || "d28hgpri8am2if.cloudfront.net".equals(sanitized.getHost());
     }
 
     private void addFolderContentsToZip(ZipFile zipFile, File baseDir, File currentDir) throws IOException {

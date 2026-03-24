@@ -36,6 +36,7 @@ import java.nio.file.Paths;
 import java.time.Instant;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -50,6 +51,23 @@ public class FileService {
     private final RestTemplate noRedirectRestTemplate;
 
     private static final int MAX_REDIRECTS = 5;
+
+        private static final Set<String> ALLOWED_IMAGE_HOSTS = Set.of(
+            "media-amazon.com",
+            "m.media-amazon.com",
+            "ssl-images-amazon.com",
+            "images-na.ssl-images-amazon.com",
+            "cloudfront.net",
+            "d28hgpri8am2if.cloudfront.net",
+            "cdn.kobo.com",
+            "books.google.com",
+            "books.googleusercontent.com",
+            "lh3.googleusercontent.com",
+            "comicvine.gamespot.com",
+            "images.ranobedb.org",
+            "i.gr-assets.com",
+            "s.gr-assets.com"
+        );
 
 
     private static final double TARGET_COVER_ASPECT_RATIO = 1.5;
@@ -268,7 +286,7 @@ public class FileService {
         int redirectCount = 0;
 
         while (redirectCount <= MAX_REDIRECTS) {
-            URI uri = URI.create(currentUrl);
+            URI uri = rebuildAllowlistedHostUri(URI.create(currentUrl));
             if (!"http".equalsIgnoreCase(uri.getScheme()) && !"https".equalsIgnoreCase(uri.getScheme())) {
                 throw new IOException("Only HTTP and HTTPS protocols are allowed");
             }
@@ -298,7 +316,7 @@ public class FileService {
             log.debug("Downloading image from: {}", currentUrl);
 
             ResponseEntity<byte[]> response = noRedirectRestTemplate.exchange(
-                    currentUrl,
+                    uri,
                     HttpMethod.GET,
                     entity,
                     byte[].class
@@ -333,6 +351,8 @@ public class FileService {
                     }
                 }
 
+                redirectUri = rebuildAllowlistedHostUri(redirectUri);
+
                 currentUrl = redirectUri.toString();
                 redirectCount++;
             } else {
@@ -341,6 +361,32 @@ public class FileService {
         }
 
         throw new IOException("Too many redirects (max " + MAX_REDIRECTS + ")");
+    }
+
+    private URI rebuildAllowlistedHostUri(URI uri) throws IOException {
+        String host = uri.getHost();
+        if (host == null) {
+            throw new IOException("Invalid URL: no host found in " + uri);
+        }
+
+        String normalizedHost = host.toLowerCase(Locale.ROOT);
+        if (!ALLOWED_IMAGE_HOSTS.contains(normalizedHost)) {
+            throw new SecurityException("URL host is not allowed: " + normalizedHost);
+        }
+
+        try {
+            return new URI(
+                    uri.getScheme(),
+                    null,
+                    normalizedHost,
+                    uri.getPort(),
+                    uri.getPath(),
+                    uri.getQuery(),
+                    null
+            );
+        } catch (URISyntaxException e) {
+            throw new IOException("Invalid URL: " + uri, e);
+        }
     }
 
     private boolean isRawIpAddress(String host) {
