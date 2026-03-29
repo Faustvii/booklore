@@ -15,8 +15,8 @@ import org.booklore.service.library.LibraryProcessingService;
 import org.booklore.util.FileUtils;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -29,14 +29,13 @@ import java.util.concurrent.*;
 
 @Slf4j
 @Service
-@AllArgsConstructor
 public class LibraryFileEventProcessor {
 
-    private static final long DEBOUNCE_MS = 500L;
-    private static final long FOLDER_CREATE_DEBOUNCE_MS = 5000L;
-    private static final long PENDING_DELETION_GRACE_MS = 8000L;
-    private static final long STABILITY_CHECK_INTERVAL_MS = 3000L;
-    private static final long STABILITY_MAX_WAIT_MS = 120000L;
+    private static final long DEFAULT_DEBOUNCE_MS = 500L;
+    private static final long DEFAULT_FOLDER_CREATE_DEBOUNCE_MS = 5000L;
+    private static final long DEFAULT_PENDING_DELETION_GRACE_MS = 8000L;
+    private static final long DEFAULT_STABILITY_CHECK_INTERVAL_MS = 3000L;
+    private static final long DEFAULT_STABILITY_MAX_WAIT_MS = 120000L;
     private static final int MIN_AUDIO_FILES_FOR_FOLDER_AUDIOBOOK = 2;
 
     private final BlockingQueue<FileEvent> eventQueue = new LinkedBlockingQueue<>();
@@ -46,22 +45,84 @@ public class LibraryFileEventProcessor {
     private final BookFilePersistenceService bookFilePersistenceService;
     private final LibraryProcessingService libraryProcessingService;
     private final PendingDeletionPool pendingDeletionPool;
+    private final long debounceMs;
+    private final long folderCreateDebounceMs;
+    private final long pendingDeletionGraceMs;
+    private final long stabilityCheckIntervalMs;
+    private final long stabilityMaxWaitMs;
 
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    private final ScheduledExecutorService scheduler;
     private final ConcurrentMap<Path, ScheduledFuture<?>> pendingDeletes = new ConcurrentHashMap<>();
     private final ConcurrentMap<Path, ScheduledFuture<?>> pendingFolderCreates = new ConcurrentHashMap<>();
     private final Set<Path> filesFromPendingFolder = ConcurrentHashMap.newKeySet();
+    private volatile Thread eventProcessorThread;
+    private volatile boolean running;
+
+    @Autowired
+    public LibraryFileEventProcessor(
+            LibraryRepository libraryRepository,
+            BookRepository bookRepository,
+            BookFileTransactionalHandler bookFileTransactionalHandler,
+            BookFilePersistenceService bookFilePersistenceService,
+            LibraryProcessingService libraryProcessingService,
+            PendingDeletionPool pendingDeletionPool) {
+        this(
+                libraryRepository,
+                bookRepository,
+                bookFileTransactionalHandler,
+                bookFilePersistenceService,
+                libraryProcessingService,
+                pendingDeletionPool,
+                DEFAULT_DEBOUNCE_MS,
+                DEFAULT_FOLDER_CREATE_DEBOUNCE_MS,
+                DEFAULT_PENDING_DELETION_GRACE_MS,
+                DEFAULT_STABILITY_CHECK_INTERVAL_MS,
+                DEFAULT_STABILITY_MAX_WAIT_MS
+        );
+    }
+
+    LibraryFileEventProcessor(
+            LibraryRepository libraryRepository,
+            BookRepository bookRepository,
+            BookFileTransactionalHandler bookFileTransactionalHandler,
+            BookFilePersistenceService bookFilePersistenceService,
+            LibraryProcessingService libraryProcessingService,
+            PendingDeletionPool pendingDeletionPool,
+            long debounceMs,
+            long folderCreateDebounceMs,
+            long pendingDeletionGraceMs,
+            long stabilityCheckIntervalMs,
+            long stabilityMaxWaitMs) {
+        this.libraryRepository = libraryRepository;
+        this.bookRepository = bookRepository;
+        this.bookFileTransactionalHandler = bookFileTransactionalHandler;
+        this.bookFilePersistenceService = bookFilePersistenceService;
+        this.libraryProcessingService = libraryProcessingService;
+        this.pendingDeletionPool = pendingDeletionPool;
+        this.debounceMs = debounceMs;
+        this.folderCreateDebounceMs = folderCreateDebounceMs;
+        this.pendingDeletionGraceMs = pendingDeletionGraceMs;
+        this.stabilityCheckIntervalMs = stabilityCheckIntervalMs;
+        this.stabilityMaxWaitMs = stabilityMaxWaitMs;
+        this.scheduler = Executors.newScheduledThreadPool(1);
+    }
 
     @PostConstruct
     public void init() {
-        Thread.ofVirtual().start(() -> {
+        if (running) {
+            return;
+        }
+        running = true;
+        eventProcessorThread = Thread.ofVirtual().start(() -> {
             log.info("LibraryFileEventProcessor virtual thread started.");
-            while (!Thread.currentThread().isInterrupted()) {
+            while (running && !Thread.currentThread().isInterrupted()) {
                 try {
                     handleEvent(eventQueue.take());
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
-                    log.warn("LibraryFileEventProcessor virtual thread interrupted.");
+                    if (running) {
+                        log.warn("LibraryFileEventProcessor virtual thread interrupted.");
+                    }
                 } catch (Exception e) {
                     log.error("Error while processing file event", e);
                 }
@@ -76,7 +137,7 @@ public class LibraryFileEventProcessor {
             ScheduledFuture<?> existing = pendingDeletes.put(path, scheduler.schedule(() -> {
                 eventQueue.offer(new FileEvent(eventKind, libraryId, path, isDirectory));
                 pendingDeletes.remove(path);
-            }, DEBOUNCE_MS, TimeUnit.MILLISECONDS));
+            }, debounceMs, TimeUnit.MILLISECONDS));
 
             if (existing != null) existing.cancel(false);
         } else if (eventKind == StandardWatchEventKinds.ENTRY_CREATE) {
@@ -87,12 +148,12 @@ public class LibraryFileEventProcessor {
             }
 
             if (isDirectory) {
-                log.debug("[DEBOUNCE] Scheduling folder create for '{}' with {}ms delay", path, FOLDER_CREATE_DEBOUNCE_MS);
+                log.debug("[DEBOUNCE] Scheduling folder create for '{}' with {}ms delay", path, folderCreateDebounceMs);
                 ScheduledFuture<?> existingFolder = pendingFolderCreates.put(path, scheduler.schedule(() -> {
                     eventQueue.offer(new FileEvent(eventKind, libraryId, path, true));
                     pendingFolderCreates.remove(path);
                     filesFromPendingFolder.removeIf(f -> f.startsWith(path));
-                }, FOLDER_CREATE_DEBOUNCE_MS, TimeUnit.MILLISECONDS));
+                }, folderCreateDebounceMs, TimeUnit.MILLISECONDS));
 
                 if (existingFolder != null) existingFolder.cancel(false);
             } else {
@@ -108,7 +169,7 @@ public class LibraryFileEventProcessor {
                             eventQueue.offer(new FileEvent(eventKind, libraryId, folderPath, true));
                             pendingFolderCreates.remove(folderPath);
                             filesFromPendingFolder.removeIf(f -> f.startsWith(folderPath));
-                        }, FOLDER_CREATE_DEBOUNCE_MS, TimeUnit.MILLISECONDS));
+                        }, folderCreateDebounceMs, TimeUnit.MILLISECONDS));
                         log.debug("[DEBOUNCE] File '{}' tracked, reset folder debounce for '{}'", path.getFileName(), folderPath);
                         break;
                     }
@@ -184,9 +245,9 @@ public class LibraryFileEventProcessor {
                         var book = bookFile.getBook();
                         ScheduledFuture<?> timer = scheduler.schedule(
                                 () -> pendingDeletionPool.expireFileDeletion(path),
-                                PENDING_DELETION_GRACE_MS, TimeUnit.MILLISECONDS);
+                            pendingDeletionGraceMs, TimeUnit.MILLISECONDS);
                         pendingDeletionPool.addFileDeletion(path, library.getId(), bookFile, book, timer);
-                        log.info("[PENDING_DELETE] Book '{}' deferred deletion (grace period {}ms)", fileName, PENDING_DELETION_GRACE_MS);
+                        log.info("[PENDING_DELETE] Book '{}' deferred deletion (grace period {}ms)", fileName, pendingDeletionGraceMs);
                     }, () -> log.debug("[NOT_FOUND] BookFile for deleted path '{}' not found (likely renamed/moved)", path));
 
         } catch (Exception e) {
@@ -476,10 +537,10 @@ public class LibraryFileEventProcessor {
 
             ScheduledFuture<?> timer = scheduler.schedule(
                     () -> pendingDeletionPool.expireFolderDeletion(folderPath),
-                    PENDING_DELETION_GRACE_MS, TimeUnit.MILLISECONDS);
+                    pendingDeletionGraceMs, TimeUnit.MILLISECONDS);
             pendingDeletionPool.addFolderDeletion(folderPath, library.getId(), booksWithFiles, timer);
             log.info("[PENDING_DELETE] {} books under '{}' deferred deletion (grace period {}ms)",
-                    booksWithFiles.size(), folderPath, PENDING_DELETION_GRACE_MS);
+                    booksWithFiles.size(), folderPath, pendingDeletionGraceMs);
         } catch (Exception e) {
             log.warn("[ERROR] Folder delete '{}': {}", folderPath, e.getMessage());
         }
@@ -520,7 +581,7 @@ public class LibraryFileEventProcessor {
             }
 
             long elapsed = System.currentTimeMillis() - startTime;
-            if (elapsed >= STABILITY_MAX_WAIT_MS) {
+            if (elapsed >= stabilityMaxWaitMs) {
                 log.warn("[STABILITY] Max wait exceeded for '{}', processing anyway", path);
                 onStable.run();
                 return;
@@ -529,10 +590,10 @@ public class LibraryFileEventProcessor {
             FileTime mtime = Files.getLastModifiedTime(path);
             long msSinceMod = System.currentTimeMillis() - mtime.toMillis();
 
-            if (msSinceMod < STABILITY_CHECK_INTERVAL_MS) {
-                log.debug("[STABILITY] File '{}' modified {}ms ago, rechecking in {}ms", path, msSinceMod, STABILITY_CHECK_INTERVAL_MS);
+            if (msSinceMod < stabilityCheckIntervalMs) {
+                log.debug("[STABILITY] File '{}' modified {}ms ago, rechecking in {}ms", path, msSinceMod, stabilityCheckIntervalMs);
                 scheduler.schedule(() -> checkStability(path, onStable, startTime),
-                        STABILITY_CHECK_INTERVAL_MS, TimeUnit.MILLISECONDS);
+                        stabilityCheckIntervalMs, TimeUnit.MILLISECONDS);
             } else {
                 onStable.run();
             }
@@ -544,6 +605,11 @@ public class LibraryFileEventProcessor {
 
     @PreDestroy
     public void shutdown() {
+        running = false;
+        Thread thread = eventProcessorThread;
+        if (thread != null) {
+            thread.interrupt();
+        }
         scheduler.shutdownNow();
         log.info("Shutting down LibraryFileEventProcessor...");
     }
