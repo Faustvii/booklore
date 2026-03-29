@@ -43,9 +43,9 @@ dependencies {
     implementation 'io.projectreactor:reactor-core'
 
     // --- Database & Migration ---
-    implementation 'org.mariadb.jdbc:mariadb-java-client:3.5.7'
+    implementation 'org.postgresql:postgresql'
     implementation 'org.springframework.boot:spring-boot-starter-flyway'
-    implementation 'org.flywaydb:flyway-mysql:12.0.3'
+    implementation 'org.flywaydb:flyway-database-postgresql:12.0.3'
 
     // --- Security & Authentication ---
     implementation 'io.jsonwebtoken:jjwt-api:0.13.0'
@@ -114,10 +114,14 @@ dependencies {
     implementation 'com.github.ben-manes.caffeine:caffeine:3.2.3'
 
     // --- Test Dependencies ---
+    testImplementation platform('org.testcontainers:testcontainers-bom:1.21.3')
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.boot:spring-boot-test-autoconfigure'
     testImplementation 'org.assertj:assertj-core:3.27.7'
     testImplementation "org.mockito:mockito-inline:5.2.0"
+    testImplementation 'org.testcontainers:junit-jupiter'
+    testImplementation 'org.testcontainers:jdbc'
+    testImplementation 'org.testcontainers:postgresql'
     testRuntimeOnly 'com.h2database:h2'
 }
 
