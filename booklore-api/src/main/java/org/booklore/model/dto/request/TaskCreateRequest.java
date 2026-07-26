@@ -25,8 +25,7 @@ public class TaskCreateRequest {
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "taskType", include = JsonTypeInfo.As.EXTERNAL_PROPERTY)
     @JsonSubTypes({
-            @JsonSubTypes.Type(value = LibraryRescanOptions.class, name = "REFRESH_LIBRARY_METADATA"),
-            @JsonSubTypes.Type(value = MetadataRefreshRequest.class, name = "REFRESH_METADATA_MANUAL"),
+            @JsonSubTypes.Type(value = LibraryRescanOptions.class, name = "LIBRARY_RESCAN"),
     })
     private Object options;
 

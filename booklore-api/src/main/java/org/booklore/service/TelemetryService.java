@@ -4,19 +4,15 @@ import org.booklore.model.dto.BookloreTelemetry;
 import org.booklore.model.dto.Installation;
 import org.booklore.model.dto.InstallationPing;
 import org.booklore.model.dto.settings.AppSettings;
-import org.booklore.model.dto.settings.MetadataProviderSettings;
-import org.booklore.model.dto.settings.MetadataPublicReviewsSettings;
 import org.booklore.model.dto.settings.UserSettingKey;
 import org.booklore.model.entity.LibraryEntity;
 import org.booklore.model.enums.BookFileType;
-import org.booklore.model.enums.MetadataProvider;
 import org.booklore.model.enums.ProvisioningMethod;
 import org.booklore.repository.*;
 import org.booklore.service.appsettings.AppSettingService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,6 +61,7 @@ public class TelemetryService {
         long oidcUsers = userRepository.countByProvisioningMethod(ProvisioningMethod.OIDC);
 
         AppSettings settings = appSettingService.getAppSettings();
+        Installation installation = installationService.getOrCreateInstallation();
 
         BookloreTelemetry.BookStatistics bookStatistics = BookloreTelemetry.BookStatistics.builder()
                 .totalBooks(bookRepository.count())
@@ -74,11 +71,6 @@ public class TelemetryService {
         List<BookloreTelemetry.LibraryStatistics> libraryStatisticsList = libraryRepository.findAll().stream()
                 .map(this::mapLibraryStatistics)
                 .collect(Collectors.toList());
-
-        String[] enabledMetadataProviders = getEnabledMetadataProviders(settings.getMetadataProviderSettings());
-        String[] enabledReviewMetadataProviders = getEnabledReviewMetadataProviders(settings.getMetadataPublicReviewsSettings());
-
-        Installation installation = installationService.getOrCreateInstallation();
 
         return BookloreTelemetry.builder()
                 .telemetryVersion(2)
@@ -104,13 +96,8 @@ public class TelemetryService {
                         .oidcEnabled(oidcUsers > 0)
                         .build())
                 .metadataStatistics(BookloreTelemetry.MetadataStatistics.builder()
-                        .enabledMetadataProviders(enabledMetadataProviders)
-                        .enabledReviewMetadataProviders(enabledReviewMetadataProviders)
                         .saveMetadataToFile(settings.getMetadataPersistenceSettings().getSaveToOriginalFile().isAnyFormatEnabled())
                         .moveFileViaPattern(settings.getMetadataPersistenceSettings().isMoveFilesToLibraryPattern())
-                        .autoBookSearchEnabled(settings.isAutoBookSearch())
-                        .similarBookRecommendationsEnabled(settings.isSimilarBookRecommendation())
-                        .metadataDownloadOnBookdropEnabled(settings.isMetadataDownloadOnBookdrop())
                         .build())
                 .opdsStatistics(BookloreTelemetry.OpdsStatistics.builder()
                         .opdsEnabled(settings.isOpdsServerEnabled())
@@ -147,36 +134,5 @@ public class TelemetryService {
                 .watchEnabled(lib.isWatch())
                 .iconType(lib.getIconType() != null ? lib.getIconType().name() : null)
                 .build();
-    }
-
-    private String[] getEnabledMetadataProviders(MetadataProviderSettings providers) {
-        List<String> enabled = new ArrayList<>();
-        if (providers.getAmazon() != null && providers.getAmazon().isEnabled())
-            enabled.add(MetadataProvider.Amazon.name());
-        if (providers.getGoogle() != null && providers.getGoogle().isEnabled())
-            enabled.add(MetadataProvider.Google.name());
-        if (providers.getGoodReads() != null && providers.getGoodReads().isEnabled())
-            enabled.add(MetadataProvider.GoodReads.name());
-        if (providers.getHardcover() != null && providers.getHardcover().isEnabled())
-            enabled.add(MetadataProvider.Hardcover.name());
-        if (providers.getComicvine() != null && providers.getComicvine().isEnabled())
-            enabled.add(MetadataProvider.Comicvine.name());
-        if (providers.getRanobedb() != null && providers.getRanobedb().isEnabled())
-            enabled.add(MetadataProvider.Ranobedb.name());
-        if (providers.getDouban() != null && providers.getDouban().isEnabled())
-            enabled.add(MetadataProvider.Douban.name());
-        if (providers.getLubimyczytac() != null && providers.getLubimyczytac().isEnabled())
-            enabled.add(MetadataProvider.Lubimyczytac.name());
-        return enabled.toArray(new String[0]);
-    }
-
-    private String[] getEnabledReviewMetadataProviders(MetadataPublicReviewsSettings reviewSettings) {
-        List<String> enabled = new ArrayList<>();
-        if (reviewSettings.getProviders() != null) {
-            reviewSettings.getProviders().stream()
-                    .filter(MetadataPublicReviewsSettings.ReviewProviderConfig::isEnabled)
-                    .forEach(cfg -> enabled.add(cfg.getProvider().name()));
-        }
-        return enabled.toArray(new String[0]);
     }
 }

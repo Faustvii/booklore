@@ -1,4 +1,4 @@
-package org.booklore.service.metadata.parser;
+package org.booklore.service.author;
 
 import org.booklore.model.dto.AuthorSearchResult;
 

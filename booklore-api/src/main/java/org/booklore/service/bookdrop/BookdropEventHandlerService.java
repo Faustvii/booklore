@@ -8,7 +8,6 @@ import org.booklore.model.websocket.LogNotification;
 import org.booklore.model.websocket.Topic;
 import org.booklore.repository.BookdropFileRepository;
 import org.booklore.service.NotificationService;
-import org.booklore.service.appsettings.AppSettingService;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +32,6 @@ public class BookdropEventHandlerService {
     private final BookdropFileRepository bookdropFileRepository;
     private final NotificationService notificationService;
     private final BookdropNotificationService bookdropNotificationService;
-    private final AppSettingService appSettingService;
     private final BookdropMetadataService bookdropMetadataService;
 
     private static final long STABILITY_CHECK_INTERVAL_MS = 500;
@@ -130,13 +128,7 @@ public class BookdropEventHandlerService {
 
                 bookdropFileEntity = bookdropFileRepository.save(bookdropFileEntity);
 
-                if (appSettingService.getAppSettings().isMetadataDownloadOnBookdrop()) {
-                    bookdropMetadataService.attachInitialMetadata(bookdropFileEntity.getId());
-                    bookdropMetadataService.attachFetchedMetadata(bookdropFileEntity.getId());
-                } else {
-                    bookdropMetadataService.attachInitialMetadata(bookdropFileEntity.getId());
-                    log.info("Metadata download is disabled. Only initial metadata extracted for file: {}", bookdropFileEntity.getFileName());
-                }
+                bookdropMetadataService.attachInitialMetadata(bookdropFileEntity.getId());
 
                 bookdropNotificationService.sendBookdropFileSummaryNotification();
 

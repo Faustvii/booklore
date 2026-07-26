@@ -72,6 +72,6 @@ public class LibraryRescanTask implements Task {
 
     @Override
     public TaskType getTaskType() {
-        return TaskType.REFRESH_LIBRARY_METADATA;
+        return TaskType.LIBRARY_RESCAN;
     }
 }

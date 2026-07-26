@@ -2,30 +2,47 @@ package org.booklore.controller;
 
 import org.booklore.config.security.annotation.CheckBookAccess;
 import org.booklore.exception.ApiError;
+import org.booklore.mapper.BookMetadataMapper;
+import org.booklore.model.MetadataUpdateContext;
+import org.booklore.model.MetadataUpdateWrapper;
 import org.booklore.model.dto.Book;
 import org.booklore.model.dto.BookRecommendation;
+import org.booklore.model.dto.BookMetadata;
 import org.booklore.model.dto.BookViewerSettings;
 import org.booklore.model.dto.request.AttachBookFileRequest;
+import org.booklore.model.dto.request.BulkMetadataUpdateRequest;
 import org.booklore.model.dto.request.CreatePhysicalBookRequest;
+import org.booklore.model.dto.request.DeleteMetadataRequest;
 import org.booklore.model.dto.request.DuplicateDetectionRequest;
+import org.booklore.model.dto.request.MergeMetadataRequest;
 import org.booklore.model.dto.request.PersonalRatingUpdateRequest;
 import org.booklore.model.dto.request.ReadProgressRequest;
 import org.booklore.model.dto.request.ReadStatusUpdateRequest;
 import org.booklore.model.dto.request.ShelvesAssignmentRequest;
+import org.booklore.model.dto.request.ToggleAllLockRequest;
+import org.booklore.model.dto.request.ToggleFieldLocksRequest;
 import org.booklore.model.dto.response.AttachBookFileResponse;
 import org.booklore.model.dto.response.BookDeletionResponse;
 import org.booklore.model.dto.response.BookStatusUpdateResponse;
 import org.booklore.model.dto.response.DuplicateGroup;
 import org.booklore.model.dto.response.PersonalRatingUpdateResponse;
+import org.booklore.model.entity.BookEntity;
+import org.booklore.model.enums.MetadataReplaceMode;
 import org.booklore.model.enums.ResetProgressType;
+import org.booklore.model.enums.AuditAction;
+import org.booklore.repository.BookRepository;
+import org.booklore.service.metadata.MetadataManagementService;
+import org.booklore.service.metadata.MetadataMatchService;
 import org.booklore.service.book.BookFileAttachmentService;
 import org.booklore.service.book.BookService;
 import org.booklore.service.book.BookUpdateService;
 import org.booklore.service.book.DuplicateDetectionService;
 import org.booklore.service.book.PhysicalBookService;
 import org.booklore.service.metadata.BookMetadataService;
+import org.booklore.service.metadata.BookMetadataUpdater;
 import org.booklore.service.progress.ReadingProgressService;
 import org.booklore.service.recommender.BookRecommendationService;
+import org.booklore.service.audit.AuditService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -59,6 +76,12 @@ public class BookController {
     private final BookRecommendationService bookRecommendationService;
     private final BookFileAttachmentService bookFileAttachmentService;
     private final BookMetadataService bookMetadataService;
+    private final BookMetadataUpdater bookMetadataUpdater;
+    private final BookMetadataMapper bookMetadataMapper;
+    private final MetadataMatchService metadataMatchService;
+    private final BookRepository bookRepository;
+    private final MetadataManagementService metadataManagementService;
+    private final AuditService auditService;
     private final ReadingProgressService readingProgressService;
     private final PhysicalBookService physicalBookService;
     private final DuplicateDetectionService duplicateDetectionService;
@@ -307,5 +330,92 @@ public class BookController {
             @Parameter(description = "ID of the target book to attach the files to") @PathVariable Long targetBookId,
             @Parameter(description = "Request containing source book IDs and delete option") @RequestBody @Valid AttachBookFileRequest request) {
         return ResponseEntity.ok(bookFileAttachmentService.attachBookFiles(targetBookId, request.getSourceBookIds(), request.isMoveFiles()));
+    }
+
+    @Operation(summary = "Update book metadata", description = "Update metadata for a book. Requires metadata edit permission or admin.")
+    @ApiResponse(responseCode = "200", description = "Metadata updated successfully")
+    @PutMapping("/{bookId}/metadata")
+    @PreAuthorize("@securityUtil.canEditMetadata() or @securityUtil.isAdmin()")
+    @CheckBookAccess(bookIdParam = "bookId")
+    public ResponseEntity<BookMetadata> updateMetadata(
+            @Parameter(description = "Metadata update wrapper") @RequestBody MetadataUpdateWrapper metadataUpdateWrapper,
+            @Parameter(description = "ID of the book") @PathVariable long bookId,
+            @Parameter(description = "Merge categories") @RequestParam(defaultValue = "false") boolean mergeCategories,
+            @Parameter(description = "Replace mode") @RequestParam(defaultValue = "REPLACE_ALL") MetadataReplaceMode replaceMode) {
+        BookEntity bookEntity = bookRepository.findAllWithMetadataByIds(java.util.Collections.singleton(bookId)).stream()
+                .findFirst()
+                .orElseThrow(() -> ApiError.BOOK_NOT_FOUND.createException(bookId));
+
+        MetadataUpdateContext context = MetadataUpdateContext.builder()
+                .bookEntity(bookEntity)
+                .metadataUpdateWrapper(metadataUpdateWrapper)
+                .updateThumbnail(true)
+                .mergeCategories(mergeCategories)
+                .replaceMode(replaceMode)
+                .mergeMoods(false)
+                .mergeTags(false)
+                .build();
+
+        bookMetadataUpdater.setBookMetadata(context);
+        bookRepository.save(bookEntity);
+        auditService.log(AuditAction.METADATA_UPDATED, "Book", bookId, "Updated metadata for book: " + bookEntity.getMetadata().getTitle());
+        BookMetadata bookMetadata = bookMetadataMapper.toBookMetadata(bookEntity.getMetadata(), true);
+        return ResponseEntity.ok(bookMetadata);
+    }
+
+    @Operation(summary = "Bulk edit book metadata", description = "Bulk update metadata for multiple books. Requires metadata edit permission or admin.")
+    @ApiResponse(responseCode = "204", description = "Bulk metadata updated successfully")
+    @PutMapping("/bulk-edit-metadata")
+    @PreAuthorize("@securityUtil.canBulkEditMetadata() or @securityUtil.isAdmin()")
+    public ResponseEntity<Void> bulkEditMetadata(@Parameter(description = "Bulk metadata update request") @RequestBody BulkMetadataUpdateRequest bulkMetadataUpdateRequest) {
+        boolean mergeCategories = bulkMetadataUpdateRequest.isMergeCategories();
+        boolean mergeMoods = bulkMetadataUpdateRequest.isMergeMoods();
+        boolean mergeTags = bulkMetadataUpdateRequest.isMergeTags();
+        bookMetadataService.bulkUpdateMetadata(bulkMetadataUpdateRequest, mergeCategories, mergeMoods, mergeTags);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Toggle all metadata locks", description = "Toggle all metadata locks for books. Requires metadata edit permission or admin.")
+    @ApiResponse(responseCode = "200", description = "Metadata locks toggled successfully")
+    @PutMapping("/metadata/toggle-all-lock")
+    @PreAuthorize("@securityUtil.canBulkLockUnlockMetadata() or @securityUtil.isAdmin()")
+    public ResponseEntity<List<BookMetadata>> toggleAllMetadata(@Parameter(description = "Toggle all lock request") @RequestBody ToggleAllLockRequest request) {
+        return ResponseEntity.ok(bookMetadataService.toggleAllLock(request));
+    }
+
+    @Operation(summary = "Toggle field locks for metadata", description = "Toggle field locks for book metadata. Requires metadata edit permission or admin.")
+    @ApiResponse(responseCode = "200", description = "Field locks toggled successfully")
+    @PutMapping("/metadata/toggle-field-locks")
+    @PreAuthorize("@securityUtil.canEditMetadata() or @securityUtil.isAdmin()")
+    public ResponseEntity<List<BookMetadata>> toggleFieldLocks(@Parameter(description = "Toggle field locks request") @RequestBody ToggleFieldLocksRequest request) {
+        bookMetadataService.toggleFieldLocks(request.getBookIds(), request.getFieldActions());
+        return ResponseEntity.ok().build();
+    }
+
+    @Operation(summary = "Recalculate metadata match scores", description = "Recalculate match scores for all metadata. Requires admin.")
+    @ApiResponse(responseCode = "204", description = "Match scores recalculated successfully")
+    @PostMapping("/metadata/recalculate-match-scores")
+    @PreAuthorize("@securityUtil.isAdmin()")
+    public ResponseEntity<Void> recalculateMatchScores() {
+        metadataMatchService.recalculateAllMatchScores();
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Consolidate metadata", description = "Merge metadata values. Requires metadata edit permission or admin.")
+    @ApiResponse(responseCode = "204", description = "Metadata consolidated successfully")
+    @PostMapping("/metadata/manage/consolidate")
+    @PreAuthorize("@securityUtil.canBulkEditMetadata() or @securityUtil.isAdmin()")
+    public ResponseEntity<Void> mergeMetadata(@Parameter(description = "Merge metadata request") @Valid @RequestBody MergeMetadataRequest request) {
+        metadataManagementService.consolidateMetadata(request.getMetadataType(), request.getTargetValues(), request.getValuesToMerge());
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Delete metadata values", description = "Delete metadata values. Requires metadata edit permission or admin.")
+    @ApiResponse(responseCode = "204", description = "Metadata deleted successfully")
+    @PostMapping("/metadata/manage/delete")
+    @PreAuthorize("@securityUtil.canBulkEditMetadata() or @securityUtil.isAdmin()")
+    public ResponseEntity<Void> deleteMetadata(@Parameter(description = "Delete metadata request") @Valid @RequestBody DeleteMetadataRequest request) {
+        metadataManagementService.deleteMetadata(request.getMetadataType(), request.getValuesToDelete());
+        return ResponseEntity.noContent().build();
     }
 }

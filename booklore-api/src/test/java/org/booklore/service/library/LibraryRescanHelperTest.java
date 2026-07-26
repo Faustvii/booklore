@@ -229,7 +229,7 @@ class LibraryRescanHelperTest {
         assertEquals(3, payloads.size());
         assertEquals(0, payloads.getFirst().getProgress());
         assertEquals(TaskStatus.IN_PROGRESS, payloads.get(0).getTaskStatus());
-        assertEquals(TaskType.REFRESH_LIBRARY_METADATA, payloads.get(0).getTaskType());
+        assertEquals(TaskType.LIBRARY_RESCAN, payloads.get(0).getTaskType());
         assertEquals(TaskStatus.IN_PROGRESS, payloads.get(1).getTaskStatus());
         assertEquals(100, payloads.get(2).getProgress());
         assertEquals(TaskStatus.COMPLETED, payloads.get(2).getTaskStatus());

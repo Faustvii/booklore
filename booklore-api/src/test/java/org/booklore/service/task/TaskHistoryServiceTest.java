@@ -48,7 +48,7 @@ class TaskHistoryServiceTest {
     @Test
     void testCreateTask_savesEntity() {
         String taskId = "task1";
-        TaskType type = TaskType.REFRESH_LIBRARY_METADATA;
+        TaskType type = TaskType.LIBRARY_RESCAN;
         Long userId = 123L;
         Map<String, Object> options = new HashMap<>();
         options.put("key", "value");
@@ -103,7 +103,7 @@ class TaskHistoryServiceTest {
         String taskId = "task3";
         TaskHistoryEntity entity = TaskHistoryEntity.builder()
                 .id(taskId)
-                .type(TaskType.REFRESH_LIBRARY_METADATA)
+                .type(TaskType.LIBRARY_RESCAN)
                 .status(TaskStatus.ACCEPTED)
                 .progressPercentage(0)
                 .createdAt(FIXED_TIME)
@@ -132,7 +132,7 @@ class TaskHistoryServiceTest {
     void testGetLatestTasksForEachType_success() {
         TaskHistoryEntity importTask = TaskHistoryEntity.builder()
                 .id("t1")
-                .type(TaskType.REFRESH_LIBRARY_METADATA)
+                .type(TaskType.LIBRARY_RESCAN)
                 .status(TaskStatus.COMPLETED)
                 .progressPercentage(100)
                 .createdAt(FIXED_TIME)
@@ -153,7 +153,7 @@ class TaskHistoryServiceTest {
 
         assertNotNull(response);
         List<TasksHistoryResponse.TaskHistory> histories = response.getTaskHistories();
-        assertTrue(histories.stream().anyMatch(h -> TaskType.REFRESH_LIBRARY_METADATA.equals(h.getType()) && "t1".equals(h.getId())));
+        assertTrue(histories.stream().anyMatch(h -> TaskType.LIBRARY_RESCAN.equals(h.getType()) && "t1".equals(h.getId())));
         assertTrue(histories.stream().anyMatch(h -> TaskType.SYNC_LIBRARY_FILES.equals(h.getType()) && "t2".equals(h.getId())));
         assertFalse(histories.stream().anyMatch(h -> h.getType() != null && h.getType().isHiddenFromUI()));
         assertTrue(histories.stream().anyMatch(h -> h.getId() == null));
@@ -187,7 +187,7 @@ class TaskHistoryServiceTest {
     @Test
     void testCreateTask_withNullOptions() {
         String taskId = "taskNullOptions";
-        TaskType type = TaskType.CLEANUP_TEMP_METADATA;
+        TaskType type = TaskType.CLEANUP_DELETED_BOOKS;
         Long userId = 456L;
 
         ArgumentCaptor<TaskHistoryEntity> captor = ArgumentCaptor.forClass(TaskHistoryEntity.class);
@@ -204,7 +204,7 @@ class TaskHistoryServiceTest {
         String taskId = "taskNullMsg";
         TaskHistoryEntity entity = TaskHistoryEntity.builder()
                 .id(taskId)
-                .type(TaskType.CLEANUP_TEMP_METADATA)
+                .type(TaskType.CLEANUP_DELETED_BOOKS)
                 .status(TaskStatus.ACCEPTED)
                 .progressPercentage(0)
                 .createdAt(FIXED_TIME)
@@ -226,7 +226,7 @@ class TaskHistoryServiceTest {
         String taskId = "taskNullError";
         TaskHistoryEntity entity = TaskHistoryEntity.builder()
                 .id(taskId)
-                .type(TaskType.CLEANUP_TEMP_METADATA)
+                .type(TaskType.CLEANUP_DELETED_BOOKS)
                 .status(TaskStatus.ACCEPTED)
                 .progressPercentage(0)
                 .createdAt(FIXED_TIME)
@@ -305,7 +305,7 @@ class TaskHistoryServiceTest {
         Map<String, Object> options = new HashMap<>();
         options.put("bookIds", Set.of(10L, 20L, 30L));
 
-        String desc = captureAuditDescription(TaskType.REFRESH_METADATA_MANUAL, options);
+        String desc = captureAuditDescription(TaskType.UPDATE_BOOK_RECOMMENDATIONS, options);
 
         assertTrue(desc.startsWith("Started task:"));
         assertTrue(desc.contains("3 books, IDs:"));
@@ -321,7 +321,7 @@ class TaskHistoryServiceTest {
         Map<String, Object> options = new HashMap<>();
         options.put("bookIds", Set.of(42L));
 
-        String desc = captureAuditDescription(TaskType.REFRESH_METADATA_MANUAL, options);
+        String desc = captureAuditDescription(TaskType.UPDATE_BOOK_RECOMMENDATIONS, options);
 
         assertTrue(desc.contains("1 books, IDs: 42)"));
     }
@@ -331,7 +331,7 @@ class TaskHistoryServiceTest {
         Map<String, Object> options = new HashMap<>();
         options.put("libraryId", 7L);
 
-        String desc = captureAuditDescription(TaskType.REFRESH_LIBRARY_METADATA, options);
+        String desc = captureAuditDescription(TaskType.LIBRARY_RESCAN, options);
 
         assertTrue(desc.contains("Library ID: 7"));
     }
@@ -341,7 +341,7 @@ class TaskHistoryServiceTest {
         Map<String, Object> options = new HashMap<>();
         options.put("bookIds", Collections.emptySet());
 
-        String desc = captureAuditDescription(TaskType.REFRESH_METADATA_MANUAL, options);
+        String desc = captureAuditDescription(TaskType.UPDATE_BOOK_RECOMMENDATIONS, options);
 
         assertFalse(desc.contains("books"));
         assertFalse(desc.contains("Library ID"));
@@ -349,16 +349,16 @@ class TaskHistoryServiceTest {
 
     @Test
     void testBuildTaskDescription_withNullOptions() {
-        String desc = captureAuditDescription(TaskType.REFRESH_METADATA_MANUAL, null);
+        String desc = captureAuditDescription(TaskType.UPDATE_BOOK_RECOMMENDATIONS, null);
 
-        assertEquals("Started task: Refresh Metadata", desc);
+        assertEquals("Started task: Update Book Recommendations", desc);
     }
 
     @Test
     void testBuildTaskDescription_withEmptyOptions() {
-        String desc = captureAuditDescription(TaskType.REFRESH_METADATA_MANUAL, new HashMap<>());
+        String desc = captureAuditDescription(TaskType.UPDATE_BOOK_RECOMMENDATIONS, new HashMap<>());
 
-        assertEquals("Started task: Refresh Metadata", desc);
+        assertEquals("Started task: Update Book Recommendations", desc);
     }
 
     @Test
@@ -377,7 +377,7 @@ class TaskHistoryServiceTest {
         options.put("bookIds", Set.of(1L, 2L));
         options.put("libraryId", 5L);
 
-        String desc = captureAuditDescription(TaskType.REFRESH_METADATA_MANUAL, options);
+        String desc = captureAuditDescription(TaskType.UPDATE_BOOK_RECOMMENDATIONS, options);
 
         assertTrue(desc.contains("2 books, IDs:"));
         assertFalse(desc.contains("Library ID"));
@@ -391,7 +391,7 @@ class TaskHistoryServiceTest {
         Map<String, Object> options = new HashMap<>();
         options.put("bookIds", ids);
 
-        String desc = captureAuditDescription(TaskType.REFRESH_METADATA_MANUAL, options);
+        String desc = captureAuditDescription(TaskType.UPDATE_BOOK_RECOMMENDATIONS, options);
 
         assertTrue(desc.length() <= 1024, "Description length " + desc.length() + " exceeds 1024");
         assertTrue(desc.contains("500 books, IDs:"));
@@ -406,7 +406,7 @@ class TaskHistoryServiceTest {
         Map<String, Object> options = new HashMap<>();
         options.put("bookIds", ids);
 
-        String desc = captureAuditDescription(TaskType.REFRESH_METADATA_MANUAL, options);
+        String desc = captureAuditDescription(TaskType.UPDATE_BOOK_RECOMMENDATIONS, options);
 
         assertTrue(desc.length() <= 1024, "Description length " + desc.length() + " exceeds 1024");
         assertTrue(desc.contains("2000 books, IDs:"));

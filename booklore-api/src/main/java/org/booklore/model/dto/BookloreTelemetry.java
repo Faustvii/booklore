@@ -53,13 +53,8 @@ public class BookloreTelemetry {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class MetadataStatistics {
-        private String[] enabledMetadataProviders;
-        private String[] enabledReviewMetadataProviders;
         private boolean saveMetadataToFile;
         private boolean moveFileViaPattern;
-        private boolean autoBookSearchEnabled;
-        private boolean similarBookRecommendationsEnabled;
-        private boolean metadataDownloadOnBookdropEnabled;
     }
 
     @Builder

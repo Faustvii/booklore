@@ -45,7 +45,7 @@ public class BookReviewUpdateService {
 
     private void addReviewsToEntity(List<BookReview> reviews, BookMetadataEntity entity) {
         for (var review : reviews) {
-            if (review == null || review.getMetadataProvider() == null) continue;
+            if (review == null) continue;
             BookReviewEntity reviewEntity = createReviewEntity(review, entity);
             entity.getReviews().add(reviewEntity);
         }
@@ -54,7 +54,7 @@ public class BookReviewUpdateService {
     private void replaceReviewsInEntity(List<BookReview> reviews, BookMetadataEntity entity) {
         entity.getReviews().clear();
         Set<BookReviewEntity> newReviews = reviews.stream()
-                .filter(review -> review != null && review.getMetadataProvider() != null)
+                .filter(Objects::nonNull)
                 .map(review -> createReviewEntity(review, entity))
                 .collect(Collectors.toSet());
         entity.getReviews().addAll(newReviews);
@@ -63,7 +63,6 @@ public class BookReviewUpdateService {
     private BookReviewEntity createReviewEntity(BookReview review, BookMetadataEntity entity) {
         return BookReviewEntity.builder()
                 .bookMetadata(entity)
-                .metadataProvider(review.getMetadataProvider())
                 .reviewerName(review.getReviewerName())
                 .title(review.getTitle())
                 .rating(review.getRating())
@@ -77,20 +76,16 @@ public class BookReviewUpdateService {
     }
 
     private void applyReviewLimitsAndUpdate(BookMetadataEntity entity) {
-        Set<BookReviewEntity> limitedReviews = applyReviewLimitsPerProvider(entity.getReviews());
+        Set<BookReviewEntity> limitedReviews = applyReviewLimits(entity.getReviews());
         entity.getReviews().clear();
         entity.getReviews().addAll(limitedReviews);
     }
 
-    private Set<BookReviewEntity> applyReviewLimitsPerProvider(Set<BookReviewEntity> reviews) {
+    private Set<BookReviewEntity> applyReviewLimits(Set<BookReviewEntity> reviews) {
         return reviews.stream()
-                .collect(Collectors.groupingBy(BookReviewEntity::getMetadataProvider))
-                .entrySet()
-                .stream()
-                .flatMap(entry -> entry.getValue().stream()
-                        .sorted(Comparator.comparing(BookReviewEntity::getDate,
-                                Comparator.nullsLast(Comparator.reverseOrder())))
-                        .limit(5))
+                .sorted(Comparator.comparing(BookReviewEntity::getDate,
+                        Comparator.nullsLast(Comparator.reverseOrder())))
+                .limit(5)
                 .collect(Collectors.toSet());
     }
 

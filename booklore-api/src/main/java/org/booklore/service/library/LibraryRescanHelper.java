@@ -131,7 +131,7 @@ public class LibraryRescanHelper {
         try {
             TaskProgressPayload payload = TaskProgressPayload.builder()
                     .taskId(taskId)
-                    .taskType(TaskType.REFRESH_LIBRARY_METADATA)
+                    .taskType(TaskType.LIBRARY_RESCAN)
                     .message(message)
                     .progress(progress)
                     .taskStatus(taskStatus)
