@@ -1,7 +1,7 @@
 # Task 02 — Remove Provider-Sourced Book Reviews
 
 **Priority:** P2  
-**Status:** To Do  
+**Status:** Done  
 **Scope:** Backend + Frontend
 
 ---
@@ -34,8 +34,8 @@
 
 ## Acceptance Criteria
 
-- [ ] App starts without errors
-- [ ] No book detail page shows a reviews section
-- [ ] New Flyway migration drops the table cleanly
-- [ ] No dangling references to removed classes
-- [ ] All existing tests pass; remove or update tests that covered removed code
+- [x] App starts without errors
+- [x] No book detail page shows a reviews section
+- [x] New Flyway migration drops the table cleanly
+- [x] No dangling references to removed classes
+- [x] All existing tests pass; remove or update tests that covered removed code
