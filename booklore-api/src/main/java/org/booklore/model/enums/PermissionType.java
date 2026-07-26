@@ -6,7 +6,6 @@ import lombok.Getter;
 public enum PermissionType {
 
     ADMIN("permissionAdmin"),
-    UPLOAD("permissionUpload"),
     DOWNLOAD("permissionDownload"),
     EDIT_METADATA("permissionEditMetadata"),
     MANAGE_LIBRARY("permissionManageLibrary"),
@@ -16,7 +15,6 @@ public enum PermissionType {
     SYNC_KOBO("permissionSyncKobo"),
     ACCESS_OPDS("permissionAccessOpds"),
     MANAGE_METADATA_CONFIG("permissionManageMetadataConfig"),
-    ACCESS_BOOKDROP("permissionAccessBookdrop"),
     ACCESS_LIBRARY_STATS("permissionAccessLibraryStats"),
     ACCESS_USER_STATS("permissionAccessUserStats"),
     ACCESS_TASK_MANAGER("permissionAccessTaskManager"),

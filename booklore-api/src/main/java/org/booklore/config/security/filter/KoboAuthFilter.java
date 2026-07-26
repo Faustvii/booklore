@@ -86,7 +86,6 @@ public class KoboAuthFilter extends OncePerRequestFilter {
     private List<GrantedAuthority> getAuthorities(UserPermissionsEntity permissions) {
         List<GrantedAuthority> authorities = new ArrayList<>();
         if (permissions != null) {
-            addAuthorityIfPermissionGranted(authorities, "ROLE_UPLOAD", permissions.isPermissionUpload());
             addAuthorityIfPermissionGranted(authorities, "ROLE_DOWNLOAD", permissions.isPermissionDownload());
             addAuthorityIfPermissionGranted(authorities, "ROLE_EDIT_METADATA", permissions.isPermissionEditMetadata());
             addAuthorityIfPermissionGranted(authorities, "ROLE_MANAGE_LIBRARY", permissions.isPermissionManageLibrary());

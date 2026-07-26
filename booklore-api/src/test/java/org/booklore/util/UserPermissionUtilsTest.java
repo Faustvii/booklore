@@ -43,7 +43,6 @@ class UserPermissionUtilsTest {
     @Test
     void testHasPermission_allPermissionsFalse() {
         UserPermissionsEntity perms = UserPermissionsEntity.builder()
-                .permissionUpload(false)
                 .permissionDownload(false)
                 .permissionEditMetadata(false)
                 .permissionManageLibrary(false)
@@ -53,7 +52,6 @@ class UserPermissionUtilsTest {
                 .permissionSyncKoreader(false)
                 .permissionSyncKobo(false)
                 .permissionManageMetadataConfig(false)
-                .permissionAccessBookdrop(false)
                 .permissionAccessLibraryStats(false)
                 .permissionAccessUserStats(false)
                 .permissionAccessTaskManager(false)
@@ -72,7 +70,6 @@ class UserPermissionUtilsTest {
     @Test
     void testHasPermission_allPermissionsTrue() {
         UserPermissionsEntity perms = UserPermissionsEntity.builder()
-                .permissionUpload(true)
                 .permissionDownload(true)
                 .permissionEditMetadata(true)
                 .permissionManageLibrary(true)
@@ -82,7 +79,6 @@ class UserPermissionUtilsTest {
                 .permissionSyncKoreader(true)
                 .permissionSyncKobo(true)
                 .permissionManageMetadataConfig(true)
-                .permissionAccessBookdrop(true)
                 .permissionAccessLibraryStats(true)
                 .permissionAccessUserStats(true)
                 .permissionAccessTaskManager(true)
@@ -100,7 +96,6 @@ class UserPermissionUtilsTest {
 
     private UserPermissionsEntity createPermissionsWith(PermissionType permissionType, boolean value) {
         UserPermissionsEntity.UserPermissionsEntityBuilder builder = UserPermissionsEntity.builder()
-                .permissionUpload(false)
                 .permissionDownload(false)
                 .permissionEditMetadata(false)
                 .permissionManageLibrary(false)
@@ -110,7 +105,6 @@ class UserPermissionUtilsTest {
                 .permissionSyncKoreader(false)
                 .permissionSyncKobo(false)
                 .permissionManageMetadataConfig(false)
-                .permissionAccessBookdrop(false)
                 .permissionAccessLibraryStats(false)
                 .permissionAccessUserStats(false)
                 .permissionAccessTaskManager(false)
@@ -121,7 +115,6 @@ class UserPermissionUtilsTest {
                 .permissionAdmin(false);
 
         switch (permissionType) {
-            case UPLOAD -> builder.permissionUpload(value);
             case DOWNLOAD -> builder.permissionDownload(value);
             case EDIT_METADATA -> builder.permissionEditMetadata(value);
             case MANAGE_LIBRARY -> builder.permissionManageLibrary(value);
@@ -131,7 +124,6 @@ class UserPermissionUtilsTest {
             case SYNC_KOREADER -> builder.permissionSyncKoreader(value);
             case SYNC_KOBO -> builder.permissionSyncKobo(value);
             case MANAGE_METADATA_CONFIG -> builder.permissionManageMetadataConfig(value);
-            case ACCESS_BOOKDROP -> builder.permissionAccessBookdrop(value);
             case ACCESS_LIBRARY_STATS -> builder.permissionAccessLibraryStats(value);
             case ACCESS_USER_STATS -> builder.permissionAccessUserStats(value);
             case ACCESS_TASK_MANAGER -> builder.permissionAccessTaskManager(value);
@@ -149,7 +141,6 @@ class UserPermissionUtilsTest {
     private BookLoreUser.UserPermissions createBookLoreUserPermissionsWith(PermissionType permissionType, boolean value) {
         BookLoreUser.UserPermissions perms = new BookLoreUser.UserPermissions();
         perms.setAdmin(false);
-        perms.setCanUpload(false);
         perms.setCanDownload(false);
         perms.setCanEditMetadata(false);
         perms.setCanManageLibrary(false);
@@ -159,7 +150,6 @@ class UserPermissionUtilsTest {
         perms.setCanSyncKoReader(false);
         perms.setCanSyncKobo(false);
         perms.setCanManageMetadataConfig(false);
-        perms.setCanAccessBookdrop(false);
         perms.setCanAccessLibraryStats(false);
         perms.setCanAccessUserStats(false);
         perms.setCanAccessTaskManager(false);
@@ -169,7 +159,6 @@ class UserPermissionUtilsTest {
         perms.setDemoUser(false);
 
         switch (permissionType) {
-            case UPLOAD -> perms.setCanUpload(value);
             case DOWNLOAD -> perms.setCanDownload(value);
             case EDIT_METADATA -> perms.setCanEditMetadata(value);
             case MANAGE_LIBRARY -> perms.setCanManageLibrary(value);
@@ -179,7 +168,6 @@ class UserPermissionUtilsTest {
             case SYNC_KOREADER -> perms.setCanSyncKoReader(value);
             case SYNC_KOBO -> perms.setCanSyncKobo(value);
             case MANAGE_METADATA_CONFIG -> perms.setCanManageMetadataConfig(value);
-            case ACCESS_BOOKDROP -> perms.setCanAccessBookdrop(value);
             case ACCESS_LIBRARY_STATS -> perms.setCanAccessLibraryStats(value);
             case ACCESS_USER_STATS -> perms.setCanAccessUserStats(value);
             case ACCESS_TASK_MANAGER -> perms.setCanAccessTaskManager(value);

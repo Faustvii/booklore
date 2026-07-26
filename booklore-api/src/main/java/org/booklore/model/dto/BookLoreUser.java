@@ -29,7 +29,6 @@ public class BookLoreUser {
     @Data
     public static class UserPermissions {
         private boolean isAdmin;
-        private boolean canUpload;
         private boolean canDownload;
         private boolean canEditMetadata;
         private boolean canManageLibrary;
@@ -39,7 +38,6 @@ public class BookLoreUser {
         private boolean canDeleteBook;
         private boolean canAccessOpds;
         private boolean canManageMetadataConfig;
-        private boolean canAccessBookdrop;
         private boolean canAccessLibraryStats;
         private boolean canAccessUserStats;
         private boolean canAccessTaskManager;

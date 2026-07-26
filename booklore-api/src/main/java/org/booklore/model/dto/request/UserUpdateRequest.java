@@ -14,7 +14,6 @@ public class UserUpdateRequest {
     @Data
     public static class Permissions {
         private boolean isAdmin;
-        private boolean canUpload;
         private boolean canDownload;
         private boolean canEditMetadata;
         private boolean canManageLibrary;
@@ -24,7 +23,6 @@ public class UserUpdateRequest {
         private boolean canSyncKoReader;
         private boolean canSyncKobo;
         private boolean canManageMetadataConfig;
-        private boolean canAccessBookdrop;
         private boolean canAccessLibraryStats;
         private boolean canAccessUserStats;
         private boolean canAccessTaskManager;

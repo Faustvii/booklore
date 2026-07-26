@@ -18,14 +18,6 @@ public enum UserPermission {
             UserPermissionsEntity::isPermissionAdmin,
             UserPermissionsEntity::setPermissionAdmin
     ),
-    CAN_UPLOAD(
-            "Upload books",
-            BookLoreUser.UserPermissions::isCanUpload,
-            BookLoreUser.UserPermissions::setCanUpload,
-            UserUpdateRequest.Permissions::isCanUpload,
-            UserPermissionsEntity::isPermissionUpload,
-            UserPermissionsEntity::setPermissionUpload
-    ),
     CAN_DOWNLOAD(
             "Download books",
             BookLoreUser.UserPermissions::isCanDownload,
@@ -97,14 +89,6 @@ public enum UserPermission {
             UserUpdateRequest.Permissions::isCanManageMetadataConfig,
             UserPermissionsEntity::isPermissionManageMetadataConfig,
             UserPermissionsEntity::setPermissionManageMetadataConfig
-    ),
-    CAN_ACCESS_BOOKDROP(
-            "Access bookdrop",
-            BookLoreUser.UserPermissions::isCanAccessBookdrop,
-            BookLoreUser.UserPermissions::setCanAccessBookdrop,
-            UserUpdateRequest.Permissions::isCanAccessBookdrop,
-            UserPermissionsEntity::isPermissionAccessBookdrop,
-            UserPermissionsEntity::setPermissionAccessBookdrop
     ),
     CAN_ACCESS_LIBRARY_STATS(
             "Access library stats",
