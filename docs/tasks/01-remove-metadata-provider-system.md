@@ -1,7 +1,7 @@
 # Task 01 — Remove Metadata Provider Querying System
 
 **Priority:** P1 (highest — also fixes active runtime bug)  
-**Status:** To Do  
+**Status:** Done  
 **Scope:** Backend + Frontend
 
 ---
@@ -57,9 +57,9 @@ This is the largest removal and causes an active production bug: `getActiveTasks
 
 ## Acceptance Criteria
 
-- [ ] App starts without errors
-- [ ] No references to removed classes remain (compile clean)
-- [ ] `getActiveTasks`-equivalent endpoint no longer exists
-- [ ] Library scan still works and reads embedded metadata correctly
-- [ ] New Flyway migration drops the two tables cleanly
-- [ ] All existing tests pass; remove or update tests that covered removed code
+- [x] App starts without errors
+- [x] No references to removed classes remain (compile clean)
+- [x] `getActiveTasks`-equivalent endpoint no longer exists
+- [x] Library scan still works and reads embedded metadata correctly
+- [x] New Flyway migration drops the two tables cleanly
+- [x] All existing tests pass; remove or update tests that covered removed code
