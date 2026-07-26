@@ -246,16 +246,6 @@ export class MetadataViewerComponent implements OnInit, OnChanges, AfterViewChec
 
             // Add allowed submenus based on user permissions
 
-            if (userState?.user?.permissions.canUpload || userState?.user?.permissions.admin) {
-              items.push({
-                label: this.t.translate('metadata.viewer.menuUploadFile'),
-                icon: 'pi pi-upload',
-                command: () => {
-                  this.bookDialogHelperService.openAdditionalFileUploaderDialog(book);
-                },
-              });
-            }
-
             const hasFiles = this.hasAnyFiles(book);
 
             if (hasFiles && (userState?.user?.permissions.canManageLibrary || userState?.user?.permissions.admin) && appSettings?.diskType === 'LOCAL') {

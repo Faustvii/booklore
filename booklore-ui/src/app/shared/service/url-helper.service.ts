@@ -108,11 +108,6 @@ export class UrlHelperService {
     return this.appendToken(url);
   }
 
-  getBookdropCoverUrl(bookdropId: number): string {
-    const url = `${this.mediaBaseUrl}/bookdrop/${bookdropId}/cover`;
-    return this.appendToken(url);
-  }
-
   getBookUrl(book: Book) {
     return this.router.createUrlTree(['/book', book.id], {
       queryParams: {tab: 'view'}

@@ -377,31 +377,6 @@
     "cancelButton": "",
     "addButton": ""
   },
-  "fileUploader": {
-    "title": "",
-    "unknownTitle": "",
-    "selectFileType": "",
-    "typeAlternativeFormat": "",
-    "typeSupplementary": "",
-    "statusUploading": "",
-    "statusUploaded": "",
-    "statusUploadFailed": "",
-    "statusTooLarge": "",
-    "statusReady": "",
-    "statusFailed": "",
-    "dragDropText": "",
-    "supportedFormats": "",
-    "maxFileSize": "",
-    "uploadForBook": "",
-    "thisBook": "",
-    "toast": {
-      "fileTooLargeSummary": "",
-      "fileTooLargeDetail": "",
-      "fileTooLargeError": "",
-      "uploadFailedUnknown": ""
-    },
-    "supplementaryAllFormats": ""
-  },
   "filter": {
     "title": "",
     "showingFirst100": "",

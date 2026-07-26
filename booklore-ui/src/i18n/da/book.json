@@ -425,31 +425,6 @@
     "failedIsbnsLabel": "",
     "doneButton": ""
   },
-  "fileUploader": {
-    "title": "",
-    "unknownTitle": "",
-    "selectFileType": "",
-    "typeAlternativeFormat": "",
-    "typeSupplementary": "",
-    "statusUploading": "",
-    "statusUploaded": "",
-    "statusUploadFailed": "",
-    "statusTooLarge": "",
-    "statusReady": "",
-    "statusFailed": "",
-    "dragDropText": "",
-    "supportedFormats": "",
-    "supplementaryAllFormats": "",
-    "maxFileSize": "",
-    "uploadForBook": "",
-    "thisBook": "",
-    "toast": {
-      "fileTooLargeSummary": "",
-      "fileTooLargeDetail": "",
-      "fileTooLargeError": "",
-      "uploadFailedUnknown": ""
-    }
-  },
   "filter": {
     "title": "",
     "showingFirst100": "",

@@ -88,15 +88,15 @@
 
                 <div class="user-summary">
                   <div class="permission-badges">
-                    <div class="permission-badge" [attr.data-level]="getPermissionLevel(getBookManagementPermissionsCount(user), 5)"
+                    <div class="permission-badge" [attr.data-level]="getPermissionLevel(getBookManagementPermissionsCount(user), 4)"
                          [pTooltip]="t('permBadges.bookMgmt', { count: getBookManagementPermissionsCount(user) })">
                       <i class="pi pi-book"></i>
-                      <span>{{ getBookManagementPermissionsCount(user) }}/5</span>
+                      <span>{{ getBookManagementPermissionsCount(user) }}/4</span>
                     </div>
-                    <div class="permission-badge" [attr.data-level]="getPermissionLevel(getSystemAccessPermissionsCount(user), 3)"
+                    <div class="permission-badge" [attr.data-level]="getPermissionLevel(getSystemAccessPermissionsCount(user), 2)"
                          [pTooltip]="t('permBadges.systemAccess', { count: getSystemAccessPermissionsCount(user) })">
                       <i class="pi pi-eye"></i>
-                      <span>{{ getSystemAccessPermissionsCount(user) }}/3</span>
+                      <span>{{ getSystemAccessPermissionsCount(user) }}/2</span>
                     </div>
                     <div class="permission-badge" [attr.data-level]="getPermissionLevel(getSystemConfigPermissionsCount(user), 5)"
                          [pTooltip]="t('permBadges.systemConfig', { count: getSystemConfigPermissionsCount(user) })">
@@ -246,10 +246,6 @@
                         </h5>
                         <div class="permission-items">
                           <div class="permission-item">
-                            <p-checkbox [binary]="true" [(ngModel)]="user.permissions.canUpload" [disabled]="isPermissionDisabled(user)" inputId="upload-{{user.id}}"></p-checkbox>
-                            <label [for]="'upload-'+user.id">{{ t('perms.uploadBooks') }}</label>
-                          </div>
-                          <div class="permission-item">
                             <p-checkbox [binary]="true" [(ngModel)]="user.permissions.canDownload" [disabled]="isPermissionDisabled(user)" inputId="download-{{user.id}}"></p-checkbox>
                             <label [for]="'download-'+user.id">{{ t('perms.downloadBooks') }}</label>
                           </div>
@@ -274,10 +270,6 @@
                           {{ t('permGroups.systemAccess') }}
                         </h5>
                         <div class="permission-items">
-                          <div class="permission-item">
-                            <p-checkbox [binary]="true" [(ngModel)]="user.permissions.canAccessBookdrop" [disabled]="isPermissionDisabled(user)" inputId="bookdrop-{{user.id}}"></p-checkbox>
-                            <label [for]="'bookdrop-'+user.id">{{ t('perms.accessBookdrop') }}</label>
-                          </div>
                           <div class="permission-item">
                             <p-checkbox [binary]="true" [(ngModel)]="user.permissions.canAccessLibraryStats" [disabled]="isPermissionDisabled(user)" inputId="stats-{{user.id}}"></p-checkbox>
                             <label [for]="'stats-'+user.id">{{ t('perms.viewLibraryStats') }}</label>

@@ -48,7 +48,6 @@ import {TagComponent} from '../../../shared/components/tag/tag.component';
 })
 export class AuthenticationSettingsComponent implements OnInit {
   availablePermissions = [
-    {label: 'Upload Books', value: 'permissionUpload', selected: false, translationKey: 'perms.uploadBooks'},
     {label: 'Download Books', value: 'permissionDownload', selected: false, translationKey: 'perms.downloadBooks'},
     {label: 'Edit Book Metadata', value: 'permissionEditMetadata', selected: false, translationKey: 'perms.editMetadata'},
     {label: 'Manage Library', value: 'permissionManipulateLibrary', selected: false, translationKey: 'perms.manageLibrary'},

@@ -382,31 +382,6 @@
     "addButton": "Dodaj fizično knjigo",
     "fetchMetadataTooltip": "Pridobi metapodatke po ISBN"
   },
-  "fileUploader": {
-    "title": "Naloži dodatno datoteko",
-    "unknownTitle": "Neznan naslov",
-    "selectFileType": "Izberi vrsto datoteke",
-    "typeAlternativeFormat": "Alternativni format",
-    "typeSupplementary": "Dodatna datoteka",
-    "statusUploading": "Nalaganje",
-    "statusUploaded": "Naloženo",
-    "statusUploadFailed": "Nalaganje ni uspelo",
-    "statusTooLarge": "Prevelika datoteka",
-    "statusReady": "Pripravljeno",
-    "statusFailed": "Napaka",
-    "dragDropText": "Povleci in spusti datoteko sem za nalaganje.",
-    "supportedFormats": "",
-    "maxFileSize": "Največja velikost: {{ size }} na datoteko",
-    "uploadForBook": "Naloži dodatno datoteko za <strong>{{ title }}</strong>.",
-    "thisBook": "to knjigo",
-    "toast": {
-      "fileTooLargeSummary": "Prevelika datoteka",
-      "fileTooLargeDetail": "{{ fileName }} presega omejitev {{ maxSize }}",
-      "fileTooLargeError": "Datoteka presega največjo dovoljeno velikost {{ maxSize }}",
-      "uploadFailedUnknown": "Nalaganje ni uspelo zaradi neznane napake."
-    },
-    "supplementaryAllFormats": "Za dodatne datoteke so podprte vse oblike zapisa datotek."
-  },
   "filter": {
     "title": "Filtri",
     "showingFirst100": "Prikazanih prvih 100 elementov",

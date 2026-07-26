@@ -2,7 +2,6 @@ import {inject, Injectable, Type} from '@angular/core';
 import {DialogService, DynamicDialogRef} from 'primeng/dynamicdialog';
 import {GithubSupportDialog} from '../components/github-support-dialog/github-support-dialog';
 import {LibraryCreatorComponent} from '../../features/library-creator/library-creator.component';
-import {BookUploaderComponent} from '../components/book-uploader/book-uploader.component';
 import {UserProfileDialogComponent} from '../../features/settings/user-profile-dialog/user-profile-dialog.component';
 import {MagicShelfComponent} from '../../features/magic-shelf/component/magic-shelf-component';
 import {DashboardSettingsComponent} from '../../features/dashboard/components/dashboard-settings/dashboard-settings.component';
@@ -11,8 +10,6 @@ import {CreateUserDialogComponent} from '../../features/settings/user-management
 import {CreateEmailRecipientDialogComponent} from '../../features/settings/email-v2/create-email-recipient-dialog/create-email-recipient-dialog.component';
 import {CreateEmailProviderDialogComponent} from '../../features/settings/email-v2/create-email-provider-dialog/create-email-provider-dialog.component';
 import {DirectoryPickerComponent} from '../components/directory-picker/directory-picker.component';
-import {BookdropFinalizeResultDialogComponent} from '../../features/bookdrop/component/bookdrop-finalize-result-dialog/bookdrop-finalize-result-dialog.component';
-import {BookdropFinalizeResult} from '../../features/bookdrop/service/bookdrop.service';
 import {ShelfEditDialogComponent} from '../../features/book/components/shelf-edit-dialog/shelf-edit-dialog.component';
 import {IconPickerComponent} from '../components/icon-picker/icon-picker-component';
 
@@ -109,13 +106,6 @@ export class DialogLauncherService {
     })
   }
 
-  openFileUploadDialog(): DynamicDialogRef | null {
-    return this.openDialog(BookUploaderComponent, {
-      showHeader: false,
-      styleClass: `${DialogSize.MD} ${DialogStyle.MINIMAL}`,
-    });
-  }
-
   openCreateUserDialog(): DynamicDialogRef | null {
     return this.openDialog(CreateUserDialogComponent, {
       showHeader: false,
@@ -166,16 +156,6 @@ export class DialogLauncherService {
     return this.openDialog(CreateEmailProviderDialogComponent, {
       showHeader: false,
       styleClass: `${DialogSize.MD} ${DialogStyle.MINIMAL}`,
-    });
-  }
-
-  openBookdropFinalizeResultDialog(result: BookdropFinalizeResult): DynamicDialogRef | null {
-    return this.openDialog(BookdropFinalizeResultDialogComponent, {
-      showHeader: false,
-      styleClass: `${DialogSize.MD} ${DialogStyle.MINIMAL}`,
-      data: {
-        result: result,
-      },
     });
   }
 

@@ -2,7 +2,7 @@ import {inject, Injectable} from '@angular/core';
 import {Observable, throwError} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import {catchError, tap} from 'rxjs/operators';
-import {AdditionalFile, AdditionalFileType, Book, DetachBookFileResponse, DuplicateDetectionRequest, DuplicateGroup} from '../model/book.model';
+import {AdditionalFile, Book, DetachBookFileResponse, DuplicateDetectionRequest, DuplicateGroup} from '../model/book.model';
 import {API_CONFIG} from '../../../core/config/api-config';
 import {MessageService} from 'primeng/api';
 import {FileDownloadService} from '../../../shared/service/file-download.service';
@@ -130,69 +130,6 @@ export class BookFileService {
           severity: 'error',
           summary: this.t.translate('book.bookService.toast.fileDeleteFailedSummary'),
           detail: error?.error?.message || error?.message || this.t.translate('book.bookService.toast.fileDeleteFailedDetail')
-        });
-        return throwError(() => error);
-      })
-    );
-  }
-
-  uploadAdditionalFile(bookId: number, file: File, fileType: AdditionalFileType): Observable<AdditionalFile> {
-    const formData = new FormData();
-    formData.append('file', file);
-
-    const isBook = fileType === AdditionalFileType.ALTERNATIVE_FORMAT;
-    formData.append('isBook', String(isBook));
-
-    if (isBook) {
-      const lower = (file?.name || '').toLowerCase();
-      const ext = lower.includes('.') ? lower.substring(lower.lastIndexOf('.') + 1) : '';
-      const EXTENSION_TO_BOOK_TYPE: Record<string, string> = {
-        pdf: 'PDF',
-        epub: 'EPUB',
-        cbz: 'CBX', cbr: 'CBX', cb7: 'CBX',
-        mobi: 'MOBI',
-        azw3: 'AZW3', azw: 'AZW3',
-        fb2: 'FB2',
-        m4b: 'AUDIOBOOK', m4a: 'AUDIOBOOK', mp3: 'AUDIOBOOK', opus: 'AUDIOBOOK',
-      };
-      const bookType = EXTENSION_TO_BOOK_TYPE[ext] ?? null;
-
-      if (bookType) {
-        formData.append('bookType', bookType);
-      }
-    }
-    return this.http.post<AdditionalFile>(`${this.url}/${bookId}/files`, formData).pipe(
-      tap((newFile) => {
-        const currentState = this.bookStateService.getCurrentBookState();
-        const updatedBooks = (currentState.books || []).map(book => {
-          if (book.id === bookId) {
-            const updatedBook = {...book};
-            if (fileType === AdditionalFileType.ALTERNATIVE_FORMAT) {
-              updatedBook.alternativeFormats = [...(book.alternativeFormats || []), newFile];
-            } else {
-              updatedBook.supplementaryFiles = [...(book.supplementaryFiles || []), newFile];
-            }
-            return updatedBook;
-          }
-          return book;
-        });
-
-        this.bookStateService.updateBookState({
-          ...currentState,
-          books: updatedBooks
-        });
-
-        this.messageService.add({
-          severity: 'success',
-          summary: this.t.translate('book.bookService.toast.fileUploadedSummary'),
-          detail: this.t.translate('book.bookService.toast.fileUploadedDetail')
-        });
-      }),
-      catchError(error => {
-        this.messageService.add({
-          severity: 'error',
-          summary: this.t.translate('book.bookService.toast.uploadFailedSummary'),
-          detail: error?.error?.message || error?.message || this.t.translate('book.bookService.toast.uploadFailedDetail')
         });
         return throwError(() => error);
       })

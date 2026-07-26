@@ -295,7 +295,6 @@ export interface User {
   assignedLibraries: Library[];
   permissions: {
     admin: boolean;
-    canUpload: boolean;
     canDownload: boolean;
     canEmailBook: boolean;
     canDeleteBook: boolean;
@@ -305,7 +304,6 @@ export interface User {
     canSyncKoReader: boolean;
     canSyncKobo: boolean;
     canAccessOpds: boolean;
-    canAccessBookdrop: boolean;
     canAccessLibraryStats: boolean;
     canAccessUserStats: boolean;
     canAccessTaskManager: boolean;

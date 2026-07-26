@@ -112,7 +112,6 @@ export interface AppSettings {
   oidcEnabled: boolean;
   oidcProviderDetails: OidcProviderDetails;
   oidcAutoProvisionDetails: OidcAutoProvisionDetails;
-  maxFileUploadSizeInMb: number;
   metadataMatchWeights: MetadataMatchWeights;
   metadataPersistenceSettings: MetadataPersistenceSettings;
   koboSettings: KoboSettings;
@@ -132,7 +131,6 @@ export enum AppSettingKey {
   OIDC_ENABLED = 'OIDC_ENABLED',
   OIDC_PROVIDER_DETAILS = 'OIDC_PROVIDER_DETAILS',
   OIDC_AUTO_PROVISION_DETAILS = 'OIDC_AUTO_PROVISION_DETAILS',
-  MAX_FILE_UPLOAD_SIZE_IN_MB = 'MAX_FILE_UPLOAD_SIZE_IN_MB',
   AUTO_BOOK_SEARCH = 'AUTO_BOOK_SEARCH',
   SIMILAR_BOOK_RECOMMENDATION = 'SIMILAR_BOOK_RECOMMENDATION',
   METADATA_MATCH_WEIGHTS = 'METADATA_MATCH_WEIGHTS',

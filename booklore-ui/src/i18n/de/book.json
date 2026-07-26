@@ -382,31 +382,6 @@
     "addButton": "Physisches Buch hinzufügen",
     "fetchMetadataTooltip": "Metadaten anhand der ISBN abrufen"
   },
-  "fileUploader": {
-    "title": "Zusätzliche Datei hochladen",
-    "unknownTitle": "Unbekannter Titel",
-    "selectFileType": "Dateityp auswählen",
-    "typeAlternativeFormat": "Alternatives Format",
-    "typeSupplementary": "Zusätzliche Datei",
-    "statusUploading": "Wird hochgeladen",
-    "statusUploaded": "Hochgeladen",
-    "statusUploadFailed": "Hochladen fehlgeschlagen",
-    "statusTooLarge": "Zu groß",
-    "statusReady": "Bereit",
-    "statusFailed": "Fehlgeschlagen",
-    "dragDropText": "Ziehen Sie eine Datei hierher, um sie hochzuladen.",
-    "supportedFormats": "",
-    "maxFileSize": "Maximale Dateigröße: {{ size }} pro Datei",
-    "uploadForBook": "Eine zusätzliche Datei für <strong>{{ title }}</strong> hochladen.",
-    "thisBook": "dieses Buch",
-    "toast": {
-      "fileTooLargeSummary": "Datei zu groß",
-      "fileTooLargeDetail": "{{ fileName }} überschreitet die maximale Dateigröße von {{ maxSize }}",
-      "fileTooLargeError": "Datei überschreitet die maximale Größe von {{ maxSize }}",
-      "uploadFailedUnknown": "Hochladen aufgrund eines unbekannten Fehlers fehlgeschlagen."
-    },
-    "supplementaryAllFormats": "Für Zusatzdateien werden alle Dateiformate unterstützt."
-  },
   "filter": {
     "title": "Filter",
     "showingFirst100": "Die ersten 100 Einträge werden angezeigt",

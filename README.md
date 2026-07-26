@@ -46,7 +46,6 @@ Organize, read, annotate, sync across devices, and share, all without relying on
 | 📖 | **Built-in Reader** | Open PDFs, EPUBs, and comics right in the browser with annotations, highlights, and reading progress |
 | 🔄 | **Device Sync** | Connect your Kobo, use any OPDS-compatible app, or sync progress with KOReader. Your library follows you everywhere |
 | 👥 | **Multi-User Ready** | Individual shelves, progress, and preferences per user with local or OIDC authentication |
-| 📥 | **BookDrop** | Drop files into a watched folder and BookLore detects, enriches, and queues them for import automatically |
 | 📧 | **One-Click Sharing** | Send any book to a Kindle, an email address, or a friend instantly |
 
 ---
@@ -119,7 +118,6 @@ services:
     volumes:
       - ./data:/app/data
       - ./books:/books
-      - ./bookdrop:/bookdrop
     healthcheck:
       test: wget -q -O - http://localhost:6060/api/v1/healthcheck
       interval: 60s
@@ -177,33 +175,6 @@ See BookLore in action before deploying your own instance.
 
 > [!NOTE]
 > This is a standard user account. Admin features like library creation, user management, and system settings are only available on your own instance.
-
----
-
-## 📥 BookDrop: Zero-Effort Import
-
-Drop book files into a folder. BookLore picks them up, pulls metadata, and queues everything for your review.
-
-```mermaid
-graph LR
-    A[📁 Drop Files] --> B[🔍 Auto-Detect]
-    B --> C[📊 Extract Metadata]
-    C --> D[✅ Review & Import]
-```
-
-| Step | What Happens |
-|:---|:---|
-| 1. **Watch** | BookLore monitors the BookDrop folder around the clock |
-| 2. **Detect** | New files are picked up and parsed automatically |
-| 3. **Enrich** | Metadata is fetched from Google Books and Open Library |
-| 4. **Import** | You review, tweak if needed, and add to your library |
-
-Mount the volume in `docker-compose.yml`:
-
-```yaml
-volumes:
-  - ./bookdrop:/bookdrop
-```
 
 ---
 
