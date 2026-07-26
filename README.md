@@ -76,23 +76,22 @@ Create a `.env` file:
 
 ```ini
 # Application
+TZ=Etc/UTC
 APP_USER_ID=1000
 APP_GROUP_ID=1000
-TZ=Etc/UTC
 
 # Database
-DATABASE_URL=jdbc:mariadb://mariadb:3306/booklore
+DATABASE_URL=jdbc:postgresql://postgres:5432/booklore
 DB_USER=booklore
 DB_PASSWORD=ChangeMe_BookLoreApp_2025!
 
 # Storage: LOCAL (default) or NETWORK (disables file operations, see Network Storage section below)
 DISK_TYPE=LOCAL
 
-# MariaDB
-DB_USER_ID=1000
-DB_GROUP_ID=1000
-MYSQL_ROOT_PASSWORD=ChangeMe_MariaDBRoot_2025!
-MYSQL_DATABASE=booklore
+# Postgres
+POSTGRES_DB=booklore
+POSTGRES_USER=booklore
+POSTGRES_PASSWORD=ChangeMe_Postgres_2025!
 ```
 
 ### Step 2: Docker Compose
@@ -105,16 +104,15 @@ services:
     image: booklore/booklore:latest
     # Alternative: ghcr.io/booklore-app/booklore:latest
     container_name: booklore
+    user: "${APP_USER_ID:-1000}:${APP_GROUP_ID:-1000}"
     environment:
-      - USER_ID=${APP_USER_ID}
-      - GROUP_ID=${APP_GROUP_ID}
       - TZ=${TZ}
       - DATABASE_URL=${DATABASE_URL}
       - DATABASE_USERNAME=${DB_USER}
       - DATABASE_PASSWORD=${DB_PASSWORD}
       - DISK_TYPE=${DISK_TYPE}
     depends_on:
-      mariadb:
+      postgres:
         condition: service_healthy
     ports:
       - "6060:6060"
@@ -130,22 +128,19 @@ services:
       timeout: 10s
     restart: unless-stopped
 
-  mariadb:
-    image: lscr.io/linuxserver/mariadb:11.4.5
-    container_name: mariadb
+  postgres:
+    image: postgres:17
+    container_name: postgres
     environment:
-      - PUID=${DB_USER_ID}
-      - PGID=${DB_GROUP_ID}
       - TZ=${TZ}
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
-      - MYSQL_USER=${DB_USER}
-      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     volumes:
-      - ./mariadb/config:/config
+      - ./postgres/data:/var/lib/postgresql/data
     restart: unless-stopped
     healthcheck:
-      test: [ "CMD", "mariadb-admin", "ping", "-h", "localhost" ]
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
       interval: 5s
       timeout: 5s
       retries: 10
