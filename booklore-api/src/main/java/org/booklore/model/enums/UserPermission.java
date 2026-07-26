@@ -170,14 +170,6 @@ public enum UserPermission {
             UserPermissionsEntity::isPermissionBulkRegenerateCover,
             UserPermissionsEntity::setPermissionBulkRegenerateCover
     ),
-    CAN_MOVE_ORGANIZE_FILES(
-            "Move/organize files",
-            BookLoreUser.UserPermissions::isCanMoveOrganizeFiles,
-            BookLoreUser.UserPermissions::setCanMoveOrganizeFiles,
-            UserUpdateRequest.Permissions::isCanMoveOrganizeFiles,
-            UserPermissionsEntity::isPermissionMoveOrganizeFiles,
-            UserPermissionsEntity::setPermissionMoveOrganizeFiles
-    ),
     CAN_BULK_LOCK_UNLOCK_METADATA(
             "Bulk lock/unlock metadata",
             BookLoreUser.UserPermissions::isCanBulkLockUnlockMetadata,

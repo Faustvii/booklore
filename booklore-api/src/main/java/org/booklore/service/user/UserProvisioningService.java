@@ -71,7 +71,6 @@ public class UserProvisioningService {
         perms.setPermissionBulkCustomFetchMetadata(true);
         perms.setPermissionBulkEditMetadata(true);
         perms.setPermissionBulkRegenerateCover(true);
-        perms.setPermissionMoveOrganizeFiles(true);
         perms.setPermissionBulkLockUnlockMetadata(true);
         perms.setPermissionBulkResetBookloreReadProgress(true);
         perms.setPermissionBulkResetKoReaderReadProgress(true);
@@ -118,7 +117,6 @@ public class UserProvisioningService {
         permissions.setPermissionBulkCustomFetchMetadata(request.isPermissionBulkCustomFetchMetadata());
         permissions.setPermissionBulkEditMetadata(request.isPermissionBulkEditMetadata());
         permissions.setPermissionBulkRegenerateCover(request.isPermissionBulkRegenerateCover());
-        permissions.setPermissionMoveOrganizeFiles(request.isPermissionMoveOrganizeFiles());
         permissions.setPermissionBulkLockUnlockMetadata(request.isPermissionBulkLockUnlockMetadata());
         permissions.setPermissionBulkResetBookloreReadProgress(request.isPermissionBulkResetBookloreReadProgress());
         permissions.setPermissionBulkResetKoReaderReadProgress(request.isPermissionBulkResetKoReaderReadProgress());

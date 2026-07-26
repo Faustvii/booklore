@@ -49,7 +49,6 @@ public class BookLoreUser {
         private boolean canBulkCustomFetchMetadata;
         private boolean canBulkEditMetadata;
         private boolean canBulkRegenerateCover;
-        private boolean canMoveOrganizeFiles;
         private boolean canBulkLockUnlockMetadata;
         private boolean canBulkResetBookloreReadProgress;
         private boolean canBulkResetKoReaderReadProgress;

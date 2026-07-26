@@ -44,7 +44,6 @@ public class UserCreateRequest {
     private boolean permissionBulkCustomFetchMetadata;
     private boolean permissionBulkEditMetadata;
     private boolean permissionBulkRegenerateCover;
-    private boolean permissionMoveOrganizeFiles;
     private boolean permissionBulkLockUnlockMetadata;
     private boolean permissionBulkResetBookloreReadProgress;
     private boolean permissionBulkResetKoReaderReadProgress;
