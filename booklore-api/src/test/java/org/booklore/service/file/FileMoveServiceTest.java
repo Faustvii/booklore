@@ -1,22 +1,16 @@
 package org.booklore.service.file;
 
-import jakarta.persistence.EntityManager;
 import org.booklore.config.AppProperties;
-import org.booklore.mapper.BookMapper;
 import org.booklore.mapper.LibraryMapper;
 import org.booklore.model.dto.FileMoveResult;
 import org.booklore.model.dto.Library;
-import org.booklore.model.dto.request.FileMoveRequest;
 import org.booklore.model.entity.BookEntity;
 import org.booklore.model.entity.BookFileEntity;
 import org.booklore.model.entity.LibraryEntity;
 import org.booklore.model.entity.LibraryPathEntity;
 import org.booklore.model.enums.BookFileType;
-import org.booklore.model.websocket.Topic;
 import org.booklore.repository.BookAdditionalFileRepository;
 import org.booklore.repository.BookRepository;
-import org.booklore.repository.LibraryRepository;
-import org.booklore.service.NotificationService;
 import org.booklore.service.metadata.sidecar.SidecarMetadataWriter;
 import org.booklore.service.monitoring.MonitoringRegistrationService;
 import org.junit.jupiter.api.BeforeEach;
@@ -45,13 +39,9 @@ class FileMoveServiceTest {
     @Mock private AppProperties appProperties;
     @Mock private BookRepository bookRepository;
     @Mock private BookAdditionalFileRepository bookFileRepository;
-    @Mock private LibraryRepository libraryRepository;
     @Mock private FileMoveHelper fileMoveHelper;
     @Mock private MonitoringRegistrationService monitoringRegistrationService;
     @Mock private LibraryMapper libraryMapper;
-    @Mock private BookMapper bookMapper;
-    @Mock private NotificationService notificationService;
-    @Mock private EntityManager entityManager;
     @Mock private org.springframework.transaction.support.TransactionTemplate transactionTemplate;
     @Mock private SidecarMetadataWriter sidecarMetadataWriter;
 
@@ -61,13 +51,11 @@ class FileMoveServiceTest {
 
     static class TestableFileMoveService extends FileMoveService {
         TestableFileMoveService(AppProperties appProperties, BookRepository bookRepository, BookAdditionalFileRepository bookFileRepository,
-                                LibraryRepository libraryRepository, FileMoveHelper fileMoveHelper,
-                                MonitoringRegistrationService monitoringRegistrationService, LibraryMapper libraryMapper,
-                                BookMapper bookMapper, NotificationService notificationService, EntityManager entityManager,
-                                org.springframework.transaction.support.TransactionTemplate transactionTemplate,
+                                FileMoveHelper fileMoveHelper, MonitoringRegistrationService monitoringRegistrationService,
+                                LibraryMapper libraryMapper, org.springframework.transaction.support.TransactionTemplate transactionTemplate,
                                 SidecarMetadataWriter sidecarMetadataWriter) {
-            super(appProperties, bookRepository, bookFileRepository, libraryRepository, fileMoveHelper,
-                    monitoringRegistrationService, libraryMapper, bookMapper, notificationService, entityManager, transactionTemplate, sidecarMetadataWriter);
+            super(appProperties, bookRepository, bookFileRepository, fileMoveHelper,
+                    monitoringRegistrationService, libraryMapper, transactionTemplate, sidecarMetadataWriter);
         }
 
         @Override
@@ -79,7 +67,7 @@ class FileMoveServiceTest {
     @BeforeEach
     void setUp() {
         when(appProperties.isLocalStorage()).thenReturn(true);
-        
+
         // Mock simple execution for transaction template
         doAnswer(invocation -> {
             java.util.function.Consumer<org.springframework.transaction.TransactionStatus> action = invocation.getArgument(0);
@@ -87,8 +75,8 @@ class FileMoveServiceTest {
             return null;
         }).when(transactionTemplate).executeWithoutResult(any());
 
-        service = spy(new TestableFileMoveService(appProperties, bookRepository, bookFileRepository, libraryRepository,
-                fileMoveHelper, monitoringRegistrationService, libraryMapper, bookMapper, notificationService, entityManager, transactionTemplate, sidecarMetadataWriter));
+        service = spy(new TestableFileMoveService(appProperties, bookRepository, bookFileRepository,
+                fileMoveHelper, monitoringRegistrationService, libraryMapper, transactionTemplate, sidecarMetadataWriter));
 
         library = new LibraryEntity();
         library.setId(1L);
@@ -760,378 +748,22 @@ class FileMoveServiceTest {
     }
 
     @Nested
-    @DisplayName("bulkMoveFiles - Success Cases")
-    class BulkMoveFilesSuccess {
-
-        private LibraryEntity targetLibrary;
-        private LibraryPathEntity targetLibraryPath;
-
-        @BeforeEach
-        void setUpTarget() {
-            targetLibrary = new LibraryEntity();
-            targetLibrary.setId(2L);
-
-            targetLibraryPath = new LibraryPathEntity();
-            targetLibraryPath.setId(20L);
-            targetLibraryPath.setPath("/target");
-            targetLibraryPath.setLibrary(targetLibrary);
-            targetLibrary.setLibraryPaths(List.of(targetLibraryPath));
-        }
-
-        private void mockBulkMoveSetup(BookEntity book, Path targetPath) throws IOException {
-            when(bookRepository.findById(100L)).thenReturn(Optional.of(book));
-            when(bookRepository.findByIdWithBookFiles(100L)).thenReturn(Optional.of(book));
-            when(libraryRepository.findById(2L)).thenReturn(Optional.of(targetLibrary));
-
-            when(fileMoveHelper.getFileNamingPattern(targetLibrary)).thenReturn("{title}");
-            when(fileMoveHelper.generateNewFilePath(eq(book), eq(targetLibraryPath), anyString())).thenReturn(targetPath);
-            when(fileMoveHelper.generateNewFilePath(eq(book), any(BookFileEntity.class), eq(targetLibraryPath), anyString()))
-                    .thenAnswer(inv -> {
-                        BookFileEntity bf = inv.getArgument(1);
-                        String ext = bf.getFileName().contains(".") ? bf.getFileName().substring(bf.getFileName().lastIndexOf('.')) : "";
-                        return targetPath.getParent().resolve("NewName" + ext);
-                    });
-            when(fileMoveHelper.extractSubPath(any(), eq(targetLibraryPath))).thenReturn("new");
-            when(fileMoveHelper.validateSourceExists(any(), anyBoolean())).thenReturn(true);
-            when(fileMoveHelper.moveFileWithBackup(any())).thenAnswer(inv -> ((Path) inv.getArgument(0)).resolveSibling("temp"));
-            doNothing().when(fileMoveHelper).commitMove(any(), any());
-            when(monitoringRegistrationService.getPathsForLibraries(anySet())).thenReturn(Set.of(Paths.get("/library"), Paths.get("/target")));
-        }
-
-        @Test
-        @DisplayName("moves single book to target library")
-        void movesSingleBook() throws IOException {
-            BookFileEntity epub = createBookFile(1L, "Book.epub", "path", true, false);
-            BookEntity book = createBook(List.of(epub));
-            Path target = Paths.get("/target/new/NewName.epub");
-
-            mockBulkMoveSetup(book, target);
-
-            FileMoveRequest request = new FileMoveRequest();
-            FileMoveRequest.Move move = new FileMoveRequest.Move();
-            move.setBookId(100L);
-            move.setTargetLibraryId(2L);
-            move.setTargetLibraryPathId(20L);
-            request.setMoves(List.of(move));
-
-            service.bulkMoveFiles(request);
-
-            verify(fileMoveHelper).commitMove(any(), any());
-            verify(bookRepository).updateLibrary(100L, 2L, targetLibraryPath);
-            verify(notificationService).sendMessage(eq(Topic.BOOK_UPDATE), any());
-        }
-
-        @Test
-        @DisplayName("moves multi-format book with all files")
-        void movesMultiFormatBook() throws IOException {
-            BookFileEntity epub = createBookFile(1L, "Book.epub", "path", true, false);
-            BookFileEntity pdf = createBookFile(2L, "Book.pdf", "path", true, false);
-            BookFileEntity cover = createBookFile(3L, "cover.jpg", "path", false, false);
-            BookEntity book = createBook(List.of(epub, pdf, cover));
-            Path target = Paths.get("/target/new/NewName.epub");
-
-            mockBulkMoveSetup(book, target);
-
-            FileMoveRequest request = new FileMoveRequest();
-            FileMoveRequest.Move move = new FileMoveRequest.Move();
-            move.setBookId(100L);
-            move.setTargetLibraryId(2L);
-            move.setTargetLibraryPathId(20L);
-            request.setMoves(List.of(move));
-
-            service.bulkMoveFiles(request);
-
-            verify(fileMoveHelper, times(3)).moveFileWithBackup(any());
-            verify(fileMoveHelper, times(3)).commitMove(any(), any());
-            verify(bookFileRepository, times(3)).updateFileNameAndSubPath(anyLong(), anyString(), anyString());
-        }
-
-        @Test
-        @DisplayName("updates database after all file moves")
-        void updatesDatabaseAfterMoves() throws IOException {
-            BookFileEntity epub = createBookFile(1L, "Book.epub", "path", true, false);
-            BookEntity book = createBook(List.of(epub));
-            Path target = Paths.get("/target/new/NewName.epub");
-
-            mockBulkMoveSetup(book, target);
-
-            FileMoveRequest request = new FileMoveRequest();
-            FileMoveRequest.Move move = new FileMoveRequest.Move();
-            move.setBookId(100L);
-            move.setTargetLibraryId(2L);
-            move.setTargetLibraryPathId(20L);
-            request.setMoves(List.of(move));
-
-            service.bulkMoveFiles(request);
-
-            verify(bookFileRepository).updateFileNameAndSubPath(anyLong(), anyString(), anyString());
-            verify(bookRepository).updateLibrary(eq(100L), eq(2L), eq(targetLibraryPath));
-        }
-
-        @Test
-        @DisplayName("sends notification after successful move")
-        void sendsNotification() throws IOException {
-            BookFileEntity epub = createBookFile(1L, "Book.epub", "path", true, false);
-            BookEntity book = createBook(List.of(epub));
-            Path target = Paths.get("/target/new/NewName.epub");
-
-            mockBulkMoveSetup(book, target);
-
-            FileMoveRequest request = new FileMoveRequest();
-            FileMoveRequest.Move move = new FileMoveRequest.Move();
-            move.setBookId(100L);
-            move.setTargetLibraryId(2L);
-            move.setTargetLibraryPathId(20L);
-            request.setMoves(List.of(move));
-
-            service.bulkMoveFiles(request);
-
-            verify(notificationService).sendMessage(eq(Topic.BOOK_UPDATE), any());
-        }
-
-        @Test
-        @DisplayName("clears entity manager after move")
-        void clearsEntityManager() throws IOException {
-            BookFileEntity epub = createBookFile(1L, "Book.epub", "path", true, false);
-            BookEntity book = createBook(List.of(epub));
-            Path target = Paths.get("/target/new/NewName.epub");
-
-            mockBulkMoveSetup(book, target);
-
-            FileMoveRequest request = new FileMoveRequest();
-            FileMoveRequest.Move move = new FileMoveRequest.Move();
-            move.setBookId(100L);
-            move.setTargetLibraryId(2L);
-            move.setTargetLibraryPathId(20L);
-            request.setMoves(List.of(move));
-
-            service.bulkMoveFiles(request);
-
-            verify(entityManager).clear();
-        }
-    }
-
-    @Nested
-    @DisplayName("bulkMoveFiles - Failure Cases")
-    class BulkMoveFilesFailure {
-
-        @BeforeEach
-        void setUpMonitoring() {
-            when(monitoringRegistrationService.getPathsForLibraries(anySet())).thenReturn(Collections.emptySet());
-        }
-
-        @Test
-        @DisplayName("skips gracefully when book not found")
-        void skipsWhenBookNotFound() throws IOException {
-            when(bookRepository.findById(100L)).thenReturn(Optional.empty());
-            when(bookRepository.findByIdWithBookFiles(100L)).thenReturn(Optional.empty());
-
-            FileMoveRequest request = new FileMoveRequest();
-            FileMoveRequest.Move move = new FileMoveRequest.Move();
-            move.setBookId(100L);
-            move.setTargetLibraryId(2L);
-            move.setTargetLibraryPathId(20L);
-            request.setMoves(List.of(move));
-
-            service.bulkMoveFiles(request);
-
-            verify(fileMoveHelper, never()).moveFileWithBackup(any());
-            verify(bookRepository, never()).updateLibrary(anyLong(), anyLong(), any());
-        }
-
-        @Test
-        @DisplayName("skips gracefully when target library not found")
-        void skipsWhenTargetLibraryNotFound() throws IOException {
-            BookFileEntity epub = createBookFile(1L, "Book.epub", "path", true, false);
-            BookEntity book = createBook(List.of(epub));
-
-            when(bookRepository.findById(100L)).thenReturn(Optional.of(book));
-            when(bookRepository.findByIdWithBookFiles(100L)).thenReturn(Optional.of(book));
-            when(libraryRepository.findById(2L)).thenReturn(Optional.empty());
-            when(monitoringRegistrationService.getPathsForLibraries(anySet())).thenReturn(Set.of(Paths.get("/library")));
-
-            FileMoveRequest request = new FileMoveRequest();
-            FileMoveRequest.Move move = new FileMoveRequest.Move();
-            move.setBookId(100L);
-            move.setTargetLibraryId(2L);
-            move.setTargetLibraryPathId(20L);
-            request.setMoves(List.of(move));
-
-            service.bulkMoveFiles(request);
-
-            verify(fileMoveHelper, never()).moveFileWithBackup(any());
-        }
-
-        @Test
-        @DisplayName("skips gracefully when target library path not found")
-        void skipsWhenLibraryPathNotFound() throws IOException {
-            BookFileEntity epub = createBookFile(1L, "Book.epub", "path", true, false);
-            BookEntity book = createBook(List.of(epub));
-
-            LibraryEntity targetLibrary = new LibraryEntity();
-            targetLibrary.setId(2L);
-            LibraryPathEntity differentPath = new LibraryPathEntity();
-            differentPath.setId(99L); // Different ID than requested
-            differentPath.setPath("/other");
-            differentPath.setLibrary(targetLibrary);
-            targetLibrary.setLibraryPaths(List.of(differentPath));
-
-            when(bookRepository.findById(100L)).thenReturn(Optional.of(book));
-            when(bookRepository.findByIdWithBookFiles(100L)).thenReturn(Optional.of(book));
-            when(libraryRepository.findById(2L)).thenReturn(Optional.of(targetLibrary));
-            when(monitoringRegistrationService.getPathsForLibraries(anySet())).thenReturn(Set.of(Paths.get("/library")));
-
-            FileMoveRequest request = new FileMoveRequest();
-            FileMoveRequest.Move move = new FileMoveRequest.Move();
-            move.setBookId(100L);
-            move.setTargetLibraryId(2L);
-            move.setTargetLibraryPathId(20L); // Doesn't exist in target library
-            request.setMoves(List.of(move));
-
-            service.bulkMoveFiles(request);
-
-            verify(fileMoveHelper, never()).moveFileWithBackup(any());
-        }
-
-        @Test
-        @DisplayName("skips when book has no files")
-        void skipsWhenBookHasNoFiles() throws IOException {
-            BookEntity book = createBook(List.of());
-
-            LibraryEntity targetLibrary = new LibraryEntity();
-            targetLibrary.setId(2L);
-            LibraryPathEntity targetPath = new LibraryPathEntity();
-            targetPath.setId(20L);
-            targetPath.setPath("/target");
-            targetPath.setLibrary(targetLibrary);
-            targetLibrary.setLibraryPaths(List.of(targetPath));
-
-            when(bookRepository.findById(100L)).thenReturn(Optional.of(book));
-            when(bookRepository.findByIdWithBookFiles(100L)).thenReturn(Optional.of(book));
-            when(libraryRepository.findById(2L)).thenReturn(Optional.of(targetLibrary));
-            when(monitoringRegistrationService.getPathsForLibraries(anySet())).thenReturn(Set.of(Paths.get("/library")));
-
-            FileMoveRequest request = new FileMoveRequest();
-            FileMoveRequest.Move move = new FileMoveRequest.Move();
-            move.setBookId(100L);
-            move.setTargetLibraryId(2L);
-            move.setTargetLibraryPathId(20L);
-            request.setMoves(List.of(move));
-
-            service.bulkMoveFiles(request);
-
-            verify(fileMoveHelper, never()).moveFileWithBackup(any());
-        }
-    }
-
-    @Nested
-    @DisplayName("bulkMoveFiles - Monitoring Cases")
-    class BulkMoveFilesMonitoring {
-
-        @Test
-        @DisplayName("unregisters all affected libraries before moves")
-        void unregistersAllLibraries() throws IOException {
-            BookFileEntity epub = createBookFile(1L, "Book.epub", "path", true, false);
-            BookEntity book = createBook(List.of(epub));
-
-            LibraryEntity targetLibrary = new LibraryEntity();
-            targetLibrary.setId(2L);
-            LibraryPathEntity targetPath = new LibraryPathEntity();
-            targetPath.setId(20L);
-            targetPath.setPath("/target");
-            targetPath.setLibrary(targetLibrary);
-            targetLibrary.setLibraryPaths(List.of(targetPath));
-
-            when(bookRepository.findById(100L)).thenReturn(Optional.of(book));
-            when(bookRepository.findByIdWithBookFiles(100L)).thenReturn(Optional.of(book));
-            when(libraryRepository.findById(1L)).thenReturn(Optional.of(library));
-            when(libraryRepository.findById(2L)).thenReturn(Optional.of(targetLibrary));
-            when(monitoringRegistrationService.getPathsForLibraries(anySet())).thenReturn(Set.of(Paths.get("/library"), Paths.get("/target")));
-            when(libraryMapper.toLibrary(any(LibraryEntity.class))).thenReturn(Library.builder().build());
-
-            when(fileMoveHelper.getFileNamingPattern(targetLibrary)).thenReturn("{title}");
-            when(fileMoveHelper.generateNewFilePath(eq(book), eq(targetPath), anyString())).thenReturn(Paths.get("/target/new/NewName.epub"));
-            when(fileMoveHelper.generateNewFilePath(eq(book), any(BookFileEntity.class), eq(targetPath), anyString())).thenReturn(Paths.get("/target/new/NewName.epub"));
-            when(fileMoveHelper.extractSubPath(any(), eq(targetPath))).thenReturn("new");
-            when(fileMoveHelper.validateSourceExists(any(), anyBoolean())).thenReturn(true);
-            when(fileMoveHelper.moveFileWithBackup(any())).thenAnswer(inv -> ((Path) inv.getArgument(0)).resolveSibling("temp"));
-            doNothing().when(fileMoveHelper).commitMove(any(), any());
-
-            FileMoveRequest request = new FileMoveRequest();
-            FileMoveRequest.Move move = new FileMoveRequest.Move();
-            move.setBookId(100L);
-            move.setTargetLibraryId(2L);
-            move.setTargetLibraryPathId(20L);
-            request.setMoves(List.of(move));
-
-            service.bulkMoveFiles(request);
-
-            verify(monitoringRegistrationService).unregisterLibraries(anySet());
-        }
-
-        @Test
-        @DisplayName("re-registers all affected libraries after moves")
-        void reRegistersAllLibraries() throws IOException {
-            BookFileEntity epub = createBookFile(1L, "Book.epub", "path", true, false);
-            BookEntity book = createBook(List.of(epub));
-
-            LibraryEntity targetLibrary = new LibraryEntity();
-            targetLibrary.setId(2L);
-            LibraryPathEntity targetPath = new LibraryPathEntity();
-            targetPath.setId(20L);
-            targetPath.setPath("/target");
-            targetPath.setLibrary(targetLibrary);
-            targetLibrary.setLibraryPaths(List.of(targetPath));
-
-            when(bookRepository.findById(100L)).thenReturn(Optional.of(book));
-            when(bookRepository.findByIdWithBookFiles(100L)).thenReturn(Optional.of(book));
-            when(libraryRepository.findById(1L)).thenReturn(Optional.of(library));
-            when(libraryRepository.findById(2L)).thenReturn(Optional.of(targetLibrary));
-            when(monitoringRegistrationService.getPathsForLibraries(anySet())).thenReturn(Set.of(Paths.get("/library"), Paths.get("/target")));
-            when(libraryMapper.toLibrary(any(LibraryEntity.class))).thenReturn(Library.builder().build());
-
-            when(fileMoveHelper.getFileNamingPattern(targetLibrary)).thenReturn("{title}");
-            when(fileMoveHelper.generateNewFilePath(eq(book), eq(targetPath), anyString())).thenReturn(Paths.get("/target/new/NewName.epub"));
-            when(fileMoveHelper.generateNewFilePath(eq(book), any(BookFileEntity.class), eq(targetPath), anyString())).thenReturn(Paths.get("/target/new/NewName.epub"));
-            when(fileMoveHelper.extractSubPath(any(), eq(targetPath))).thenReturn("new");
-            when(fileMoveHelper.validateSourceExists(any(), anyBoolean())).thenReturn(true);
-            when(fileMoveHelper.moveFileWithBackup(any())).thenAnswer(inv -> ((Path) inv.getArgument(0)).resolveSibling("temp"));
-            doNothing().when(fileMoveHelper).commitMove(any(), any());
-
-            FileMoveRequest request = new FileMoveRequest();
-            FileMoveRequest.Move move = new FileMoveRequest.Move();
-            move.setBookId(100L);
-            move.setTargetLibraryId(2L);
-            move.setTargetLibraryPathId(20L);
-            request.setMoves(List.of(move));
-
-            service.bulkMoveFiles(request);
-
-            // Both source and target libraries should be re-registered
-            verify(monitoringRegistrationService, times(2)).registerLibrary(any());
-        }
-    }
-
-    @Nested
-    @DisplayName("NetworkStorageGating")
+    @DisplayName("moveSingleFile - Network Storage Gating")
     class NetworkStorageGating {
 
         @Test
-        @DisplayName("bulkMoveFiles throws IllegalStateException on network storage")
-        void bulkMoveFiles_networkStorage_throwsIllegalStateException() {
+        @DisplayName("moveSingleFile throws IllegalStateException on network storage")
+        void moveSingleFile_networkStorage_throwsIllegalStateException() {
             when(appProperties.isLocalStorage()).thenReturn(false);
             when(appProperties.getDiskType()).thenReturn("NETWORK");
 
-            FileMoveRequest request = new FileMoveRequest();
-            FileMoveRequest.Move move = new FileMoveRequest.Move();
-            move.setBookId(100L);
-            move.setTargetLibraryId(2L);
-            move.setTargetLibraryPathId(20L);
-            request.setMoves(List.of(move));
+            BookFileEntity epub = createBookFile(1L, "Book.epub", "path", true, false);
+            BookEntity book = createBook(List.of(epub));
 
-            org.assertj.core.api.Assertions.assertThatThrownBy(() -> service.bulkMoveFiles(request))
+            org.assertj.core.api.Assertions.assertThatThrownBy(() -> service.moveSingleFile(book))
                     .isInstanceOf(IllegalStateException.class)
                     .hasMessageContaining("File move operations are only supported on local storage");
         }
     }
+
 }

@@ -103,10 +103,6 @@ public class UserPermissionsEntity {
     @Builder.Default
     private boolean permissionBulkRegenerateCover = false;
 
-    @Column(name = "permission_move_organize_files", nullable = false)
-    @Builder.Default
-    private boolean permissionMoveOrganizeFiles = false;
-
     @Column(name = "permission_bulk_lock_unlock_metadata", nullable = false)
     @Builder.Default
     private boolean permissionBulkLockUnlockMetadata = false;

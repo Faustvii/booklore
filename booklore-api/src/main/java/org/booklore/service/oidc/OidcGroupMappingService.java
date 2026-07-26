@@ -149,7 +149,6 @@ public class OidcGroupMappingService {
             perms.setPermissionBulkCustomFetchMetadata(permissions.contains("permissionBulkCustomFetchMetadata"));
             perms.setPermissionBulkEditMetadata(permissions.contains("permissionBulkEditMetadata"));
             perms.setPermissionBulkRegenerateCover(permissions.contains("permissionBulkRegenerateCover"));
-            perms.setPermissionMoveOrganizeFiles(permissions.contains("permissionMoveOrganizeFiles"));
             perms.setPermissionBulkLockUnlockMetadata(permissions.contains("permissionBulkLockUnlockMetadata"));
             perms.setPermissionBulkResetBookloreReadProgress(permissions.contains("permissionBulkResetBookloreReadProgress"));
             perms.setPermissionBulkResetKoReaderReadProgress(permissions.contains("permissionBulkResetKoReaderReadProgress"));
@@ -175,7 +174,6 @@ public class OidcGroupMappingService {
             if (permissions.contains("permissionBulkCustomFetchMetadata")) perms.setPermissionBulkCustomFetchMetadata(true);
             if (permissions.contains("permissionBulkEditMetadata")) perms.setPermissionBulkEditMetadata(true);
             if (permissions.contains("permissionBulkRegenerateCover")) perms.setPermissionBulkRegenerateCover(true);
-            if (permissions.contains("permissionMoveOrganizeFiles")) perms.setPermissionMoveOrganizeFiles(true);
             if (permissions.contains("permissionBulkLockUnlockMetadata")) perms.setPermissionBulkLockUnlockMetadata(true);
             if (permissions.contains("permissionBulkResetBookloreReadProgress")) perms.setPermissionBulkResetBookloreReadProgress(true);
             if (permissions.contains("permissionBulkResetKoReaderReadProgress")) perms.setPermissionBulkResetKoReaderReadProgress(true);
