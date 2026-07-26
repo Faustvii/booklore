@@ -420,18 +420,6 @@
                 }
               </div>
             </div>
-            <div class="field-group small-field">
-              <label>{{ t('publicReviews') }}</label>
-              <div class="field-with-lock">
-                <input pSize="small" pInputText [disabled]="true" [value]="t('noValue')"/>
-                @if (!book.metadata!['reviewsLocked']) {
-                  <p-button icon="pi pi-lock-open" [outlined]="true" (onClick)="toggleLock('reviews')" severity="success"></p-button>
-                }
-                @if (book.metadata!['reviewsLocked']) {
-                  <p-button icon="pi pi-lock" [outlined]="true" (onClick)="toggleLock('reviews')" severity="warn"></p-button>
-                }
-              </div>
-            </div>
           </div>
 
           <div class="field-row">

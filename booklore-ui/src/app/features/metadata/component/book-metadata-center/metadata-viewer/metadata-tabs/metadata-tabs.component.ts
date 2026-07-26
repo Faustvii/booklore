@@ -4,7 +4,6 @@ import {Book, BookRecommendation, BookType, FileInfo} from '../../../../../book/
 import {Tab, TabList, TabPanel, TabPanels, Tabs} from 'primeng/tabs';
 import {InfiniteScrollDirective} from 'ngx-infinite-scroll';
 import {BookCardLiteComponent} from '../../../../../book/components/book-card-lite/book-card-lite-component';
-import {BookReviewsComponent} from '../../../../../book/components/book-reviews/book-reviews.component';
 import {BookNotesComponent} from '../../../../../book/components/book-notes/book-notes-component';
 import {BookReadingSessionsComponent} from '../../book-reading-sessions/book-reading-sessions.component';
 import {Button} from 'primeng/button';
@@ -66,7 +65,6 @@ export interface DetachBookFileEvent {
     Tabs,
     InfiniteScrollDirective,
     BookCardLiteComponent,
-    BookReviewsComponent,
     BookNotesComponent,
     BookReadingSessionsComponent,
     Button,
