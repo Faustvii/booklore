@@ -1,19 +1,16 @@
 #!/bin/sh
 set -e
 
-USER_ID="${USER_ID:-1000}"
-GROUP_ID="${GROUP_ID:-1000}"
+# Rootless runtime: user and writable dirs are prepared at image build time.
+# For mounted volumes, surface permission issues early with a clear warning.
+mkdir -p /app/data /bookdrop 2>/dev/null || true
 
-# Create group and user if they don't exist
-if ! getent group "$GROUP_ID" >/dev/null 2>&1; then
-    addgroup -g "$GROUP_ID" -S booklore
+CURRENT_UID="$(id -u)"
+CURRENT_GID="$(id -g)"
+
+if [ ! -w /app/data ] || [ ! -w /bookdrop ]; then
+    echo "Warning: /app/data or /bookdrop is not writable by the current non-root user (uid=${CURRENT_UID}, gid=${CURRENT_GID})." >&2
+    echo "Ensure host mounts are writable by uid/gid ${CURRENT_UID}:${CURRENT_GID} or set ACLs accordingly." >&2
 fi
-if ! getent passwd "$USER_ID" >/dev/null 2>&1; then
-    adduser -u "$USER_ID" -G "$(getent group "$GROUP_ID" | cut -d: -f1)" -S -D booklore
-fi
 
-# Ensure data and bookdrop directories exist and are writable by the target user
-mkdir -p /app/data /bookdrop
-chown "$USER_ID:$GROUP_ID" /app/data /bookdrop 2>/dev/null || true
-
-exec su-exec "$USER_ID:$GROUP_ID" "$@"
+exec "$@"
