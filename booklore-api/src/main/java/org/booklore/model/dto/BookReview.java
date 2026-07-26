@@ -1,6 +1,5 @@
 package org.booklore.model.dto;
 
-import org.booklore.model.enums.MetadataProvider;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
@@ -14,7 +13,6 @@ import java.time.Instant;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class BookReview {
     private Long id;
-    private MetadataProvider metadataProvider;
     private String reviewerName;
     private String title;
     private Float rating;

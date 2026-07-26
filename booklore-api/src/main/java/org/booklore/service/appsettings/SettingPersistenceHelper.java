@@ -2,11 +2,8 @@ package org.booklore.service.appsettings;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.booklore.model.dto.request.MetadataRefreshOptions;
 import org.booklore.model.dto.settings.*;
 import org.booklore.model.entity.AppSettingEntity;
-import org.booklore.model.enums.MetadataProvider;
-import org.booklore.model.enums.MetadataReplaceMode;
 import org.booklore.repository.AppSettingsRepository;
 import org.springframework.stereotype.Service;
 import tools.jackson.core.JacksonException;
@@ -81,134 +78,6 @@ public class SettingPersistenceHelper {
         return key.isJson() ? objectMapper.writeValueAsString(val) : val.toString();
     }
 
-    public MetadataProviderSettings getDefaultMetadataProviderSettings() {
-        MetadataProviderSettings defaultMetadataProviderSettings = new MetadataProviderSettings();
-
-        MetadataProviderSettings.Amazon defaultAmazon = new MetadataProviderSettings.Amazon();
-        defaultAmazon.setEnabled(true);
-        defaultAmazon.setCookie(null);
-        defaultAmazon.setDomain("com");
-
-        MetadataProviderSettings.Google defaultGoogle = new MetadataProviderSettings.Google();
-        defaultGoogle.setEnabled(true);
-
-        MetadataProviderSettings.Goodreads defaultGoodreads = new MetadataProviderSettings.Goodreads();
-        defaultGoodreads.setEnabled(true);
-
-        MetadataProviderSettings.Hardcover defaultHardcover = new MetadataProviderSettings.Hardcover();
-        defaultHardcover.setEnabled(false);
-        defaultHardcover.setApiKey(null);
-
-        MetadataProviderSettings.Comicvine defaultComicvine = new MetadataProviderSettings.Comicvine();
-        defaultComicvine.setEnabled(false);
-        defaultComicvine.setApiKey(null);
-
-        MetadataProviderSettings.Douban defaultDouban = new MetadataProviderSettings.Douban();
-        defaultDouban.setEnabled(false);
-
-        MetadataProviderSettings.Ranobedb defaultRanobedb = new MetadataProviderSettings.Ranobedb();
-        defaultRanobedb.setEnabled(false);
-
-        defaultMetadataProviderSettings.setAmazon(defaultAmazon);
-        defaultMetadataProviderSettings.setGoogle(defaultGoogle);
-        defaultMetadataProviderSettings.setGoodReads(defaultGoodreads);
-        defaultMetadataProviderSettings.setHardcover(defaultHardcover);
-        defaultMetadataProviderSettings.setComicvine(defaultComicvine);
-        defaultMetadataProviderSettings.setRanobedb(defaultRanobedb);
-        defaultMetadataProviderSettings.setDouban(defaultDouban);
-
-        return defaultMetadataProviderSettings;
-    }
-
-    MetadataRefreshOptions getDefaultMetadataRefreshOptions() {
-        MetadataRefreshOptions.FieldProvider amazonProvider = MetadataRefreshOptions.FieldProvider.builder()
-                .p1(MetadataProvider.Amazon)
-                .build();
-
-        MetadataRefreshOptions.FieldProvider nullProvider = MetadataRefreshOptions.FieldProvider.builder()
-                .build();
-
-        MetadataRefreshOptions.FieldOptions fieldOptions = MetadataRefreshOptions.FieldOptions.builder()
-                .title(amazonProvider)
-                .subtitle(amazonProvider)
-                .description(amazonProvider)
-                .authors(amazonProvider)
-                .publisher(amazonProvider)
-                .publishedDate(amazonProvider)
-                .seriesName(amazonProvider)
-                .seriesNumber(amazonProvider)
-                .seriesTotal(amazonProvider)
-                .isbn13(amazonProvider)
-                .isbn10(amazonProvider)
-                .language(amazonProvider)
-                .categories(amazonProvider)
-                .cover(amazonProvider)
-                .pageCount(amazonProvider)
-                .asin(nullProvider)
-                .goodreadsId(nullProvider)
-                .comicvineId(nullProvider)
-                .hardcoverId(nullProvider)
-                .googleId(nullProvider)
-                .lubimyczytacId(nullProvider)
-                .amazonRating(nullProvider)
-                .amazonReviewCount(nullProvider)
-                .goodreadsRating(nullProvider)
-                .goodreadsReviewCount(nullProvider)
-                .hardcoverRating(nullProvider)
-                .hardcoverReviewCount(nullProvider)
-                .lubimyczytacRating(nullProvider)
-                .ranobedbId(nullProvider)
-                .ranobedbRating(nullProvider)
-                .moods(nullProvider)
-                .tags(nullProvider)
-                .build();
-
-        MetadataRefreshOptions.EnabledFields enabledFields = MetadataRefreshOptions.EnabledFields.builder()
-                .title(true)
-                .subtitle(true)
-                .description(true)
-                .authors(true)
-                .publisher(true)
-                .publishedDate(true)
-                .seriesName(true)
-                .seriesNumber(true)
-                .seriesTotal(true)
-                .isbn13(true)
-                .isbn10(true)
-                .language(true)
-                .categories(true)
-                .cover(true)
-                .pageCount(true)
-                .asin(true)
-                .goodreadsId(true)
-                .comicvineId(true)
-                .hardcoverId(true)
-                .googleId(true)
-                .lubimyczytacId(true)
-                .amazonRating(true)
-                .amazonReviewCount(true)
-                .goodreadsRating(true)
-                .goodreadsReviewCount(true)
-                .hardcoverRating(true)
-                .hardcoverReviewCount(true)
-                .lubimyczytacRating(true)
-                .ranobedbId(false)
-                .ranobedbRating(false)
-                .moods(true)
-                .tags(true)
-                .build();
-
-        return MetadataRefreshOptions.builder()
-                .libraryId(null)
-                .refreshCovers(false)
-                .mergeCategories(true)
-                .reviewBeforeApply(false)
-                .replaceMode(MetadataReplaceMode.REPLACE_MISSING)
-                .fieldOptions(fieldOptions)
-                .enabledFields(enabledFields)
-                .build();
-    }
-
     public MetadataMatchWeights getDefaultMetadataMatchWeights() {
         return MetadataMatchWeights.builder()
                 .title(10)
@@ -267,30 +136,6 @@ public class SettingPersistenceHelper {
                 .build();
     }
 
-    public MetadataPublicReviewsSettings getDefaultMetadataPublicReviewsSettings() {
-        return MetadataPublicReviewsSettings.builder()
-                .downloadEnabled(true)
-                .autoDownloadEnabled(false)
-                .providers(Set.of(
-                        MetadataPublicReviewsSettings.ReviewProviderConfig.builder()
-                                .provider(MetadataProvider.Amazon)
-                                .enabled(true)
-                                .maxReviews(5)
-                                .build(),
-                        MetadataPublicReviewsSettings.ReviewProviderConfig.builder()
-                                .provider(MetadataProvider.GoodReads)
-                                .enabled(false)
-                                .maxReviews(5)
-                                .build(),
-                        MetadataPublicReviewsSettings.ReviewProviderConfig.builder()
-                                .provider(MetadataProvider.Douban)
-                                .enabled(false)
-                                .maxReviews(5)
-                                .build()
-                ))
-                .build();
-    }
-
     public KoboSettings getDefaultKoboSettings() {
         return KoboSettings.builder()
                 .convertToKepub(false)
@@ -309,26 +154,5 @@ public class SettingPersistenceHelper {
                 .aspectRatioThreshold(2.5)
                 .smartCroppingEnabled(false)
                 .build();
-    }
-
-    public MetadataProviderSpecificFields getDefaultMetadataProviderSpecificFields() {
-        MetadataProviderSpecificFields fields = new MetadataProviderSpecificFields();
-        fields.setAsin(true);
-        fields.setAmazonRating(true);
-        fields.setAmazonReviewCount(true);
-        fields.setGoogleId(true);
-        fields.setGoodreadsId(true);
-        fields.setGoodreadsRating(true);
-        fields.setGoodreadsReviewCount(true);
-        fields.setHardcoverId(true);
-        fields.setHardcoverBookId(true);
-        fields.setHardcoverRating(true);
-        fields.setHardcoverReviewCount(true);
-        fields.setComicvineId(true);
-        fields.setLubimyczytacId(true);
-        fields.setLubimyczytacRating(true);
-        fields.setRanobedbId(true);
-        fields.setRanobedbRating(true);
-        return fields;
     }
 }

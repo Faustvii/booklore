@@ -1,6 +1,5 @@
 package org.booklore.model.entity;
 
-import org.booklore.model.enums.MetadataProvider;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,10 +17,6 @@ public class BookReviewEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(name = "metadata_provider", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private MetadataProvider metadataProvider;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id", nullable = false)

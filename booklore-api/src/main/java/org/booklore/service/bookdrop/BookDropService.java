@@ -31,7 +31,7 @@ import org.booklore.service.file.FileMovingHelper;
 import org.booklore.service.fileprocessor.BookFileProcessor;
 import org.booklore.service.fileprocessor.BookFileProcessorRegistry;
 import org.booklore.service.kobo.KoboAutoShelfService;
-import org.booklore.service.metadata.MetadataRefreshService;
+import org.booklore.service.metadata.BookMetadataUpdater;
 import org.booklore.service.monitoring.MonitoringRegistrationService;
 import org.booklore.util.FileUtils;
 import org.springframework.core.io.FileSystemResource;
@@ -64,7 +64,7 @@ public class BookDropService {
     private final BookRepository bookRepository;
     private final BookdropMonitoringService bookdropMonitoringService;
     private final NotificationService notificationService;
-    private final MetadataRefreshService metadataRefreshService;
+    private final BookMetadataUpdater bookMetadataUpdater;
     private final BookdropNotificationService bookdropNotificationService;
     private final BookFileProcessorRegistry processorRegistry;
     private final AppProperties appProperties;
@@ -481,7 +481,7 @@ public class BookDropService {
                 .mergeTags(true)
                 .build();
 
-        metadataRefreshService.updateBookMetadata(context);
+        bookMetadataUpdater.setBookMetadata(context);
         koboAutoShelfService.autoAddBookToKoboShelves(bookEntity.getId());
 
         cleanupBookdropData(bookdropFile);

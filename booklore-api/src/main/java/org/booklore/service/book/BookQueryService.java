@@ -149,7 +149,6 @@ public class BookQueryService {
             m.setAbridged(null);
             m.setExternalUrl(null);
             m.setThumbnailUrl(null);
-            m.setProvider(null);
             if (m.getAudiobookMetadata() != null) {
                 m.getAudiobookMetadata().setChapters(null);
             }

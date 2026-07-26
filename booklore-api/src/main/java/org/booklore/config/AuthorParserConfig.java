@@ -1,8 +1,8 @@
 package org.booklore.config;
 
 import org.booklore.model.enums.AuthorMetadataSource;
-import org.booklore.service.metadata.parser.AudnexusAuthorParser;
-import org.booklore.service.metadata.parser.AuthorParser;
+import org.booklore.service.author.AudnexusAuthorParser;
+import org.booklore.service.author.AuthorParser;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
