@@ -11,7 +11,6 @@ import org.booklore.repository.BookAdditionalFileRepository;
 import org.booklore.repository.BookRepository;
 import org.booklore.service.book.BookCreatorService;
 import org.booklore.service.metadata.MetadataMatchService;
-import org.booklore.service.metadata.sidecar.SidecarMetadataWriter;
 import org.booklore.util.FileService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,7 +41,6 @@ class AbstractFileProcessorTest {
     @Mock private BookMapper bookMapper;
     @Mock private FileService fileService;
     @Mock private MetadataMatchService metadataMatchService;
-    @Mock private SidecarMetadataWriter sidecarMetadataWriter;
 
     @TempDir
     Path tempDir;
@@ -53,7 +51,7 @@ class AbstractFileProcessorTest {
     void setUp() {
         processor = new TestableFileProcessor(
                 bookRepository, bookAdditionalFileRepository, bookCreatorService,
-                bookMapper, fileService, metadataMatchService, sidecarMetadataWriter
+                bookMapper, fileService, metadataMatchService
         );
     }
 
@@ -197,10 +195,9 @@ class AbstractFileProcessorTest {
                               BookCreatorService bookCreatorService,
                               BookMapper bookMapper,
                               FileService fileService,
-                              MetadataMatchService metadataMatchService,
-                              SidecarMetadataWriter sidecarMetadataWriter) {
+                              MetadataMatchService metadataMatchService) {
             super(bookRepository, bookAdditionalFileRepository, bookCreatorService,
-                    bookMapper, fileService, metadataMatchService, sidecarMetadataWriter);
+                    bookMapper, fileService, metadataMatchService);
         }
 
         @Override
