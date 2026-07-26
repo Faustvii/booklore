@@ -84,7 +84,6 @@ public class MetadataChangeDetectorTest {
                 .categoriesLocked(false)
                 .moodsLocked(false)
                 .tagsLocked(false)
-                .reviewsLocked(false)
                 .authors(List.of(
                         AuthorEntity.builder().id(1L).name("Author One").build(),
                         AuthorEntity.builder().id(2L).name("Author Two").build()
@@ -157,7 +156,6 @@ public class MetadataChangeDetectorTest {
                 .categoriesLocked(false)
                 .moodsLocked(false)
                 .tagsLocked(false)
-                .reviewsLocked(false)
                 .authors(List.of("Author One", "Author Two"))
                 .categories(Set.of("Fiction", "Mystery"))
                 .moods(Set.of("Dark", "Suspenseful"))
@@ -396,7 +394,6 @@ public class MetadataChangeDetectorTest {
                 .hardcoverRatingLocked(false)
                 .hardcoverReviewCountLocked(false)
                 .coverLocked(false)
-                .reviewsLocked(false)
                 .build();
 
         BookMetadata testNew = BookMetadata.builder()
@@ -435,7 +432,6 @@ public class MetadataChangeDetectorTest {
                 .hardcoverRatingLocked(false)
                 .hardcoverReviewCountLocked(false)
                 .coverLocked(false)
-                .reviewsLocked(false)
                 .build();
         boolean result = MetadataChangeDetector.isDifferent(testNew, testExisting, clearFlags);
         assertTrue(result, "Should return true for empty collection to null transition");
@@ -705,7 +701,6 @@ public class MetadataChangeDetectorTest {
                 .hardcoverRatingLocked(false)
                 .hardcoverReviewCountLocked(false)
                 .coverLocked(false)
-                .reviewsLocked(false)
                 .build();
         BookMetadata testNew = BookMetadata.builder()
                 .bookId(1L)
@@ -743,7 +738,6 @@ public class MetadataChangeDetectorTest {
                 .hardcoverRatingLocked(false)
                 .hardcoverReviewCountLocked(false)
                 .coverLocked(false)
-                .reviewsLocked(false)
                 .build();
         boolean result = MetadataChangeDetector.hasValueChanges(testNew, testExisting, clearFlags);
         assertTrue(result, "Should return true for empty set to null transition");
