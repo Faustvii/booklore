@@ -9,7 +9,6 @@ import {RouterOutlet} from '@angular/router';
 import {TranslocoDirective, TranslocoPipe} from '@jsverse/transloco';
 import {AuthInitializationService} from './core/security/auth-initialization-service';
 import {AppConfigService} from './shared/service/app-config.service';
-import {BookdropFileNotification, BookdropFileService} from './features/bookdrop/service/bookdrop-file.service';
 import {Subscription} from 'rxjs';
 import {TaskProgressPayload, TaskService} from './features/settings/task-management/task.service';
 import {LibraryService} from './features/book/service/library.service';
@@ -37,7 +36,6 @@ export class AppComponent implements OnInit, OnDestroy {
   private bookService = inject(BookService);
   private rxStompService = inject(RxStompService);
   private notificationEventService = inject(NotificationEventService);
-  private bookdropFileService = inject(BookdropFileService);
   private taskService = inject(TaskService);
   private libraryService = inject(LibraryService);
   private libraryHealthService = inject(LibraryHealthService);
@@ -129,12 +127,6 @@ export class AppComponent implements OnInit, OnDestroy {
       this.rxStompService.watch('/user/queue/log').subscribe(msg => {
         const logNotification = parseLogNotification(msg.body);
         this.notificationEventService.handleNewNotification(logNotification);
-      })
-    );
-    this.subscriptions.push(
-      this.rxStompService.watch('/user/queue/bookdrop-file').subscribe(msg => {
-        const notification = JSON.parse(msg.body) as BookdropFileNotification;
-        this.bookdropFileService.handleIncomingFile(notification);
       })
     );
     this.subscriptions.push(

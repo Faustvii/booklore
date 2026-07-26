@@ -18,7 +18,6 @@ import {UserService} from '../../../../features/settings/user-management/user.se
 import {Popover} from 'primeng/popover';
 import {takeUntil} from 'rxjs/operators';
 import {Subject} from 'rxjs';
-import {BookdropFileService} from '../../../../features/bookdrop/service/bookdrop-file.service';
 import {DialogLauncherService} from '../../../services/dialog-launcher.service';
 import {UnifiedNotificationBoxComponent} from '../../../components/unified-notification-popover/unified-notification-popover-component';
 import {Severity, LogNotification} from '../../../websocket/model/log-notification.model';
@@ -63,16 +62,12 @@ export class AppTopBarComponent implements OnDestroy {
   @ViewChild('statsMenu') statsMenu: Menu | undefined;
 
   isMenuVisible = true;
-  completedTaskCount = 0;
-  hasActiveOrCompletedTasks = false;
   showPulse = false;
-  hasPendingBookdropFiles = false;
   supportAnimationEnabled = localStorage.getItem(SUPPORT_ANIMATION_KEY) !== 'false';
 
   private eventTimer: number | undefined;
   private destroy$ = new Subject<void>();
 
-  private latestHasPendingFiles = false;
   private latestNotificationSeverity?: Severity;
 
   activeLang = '';
@@ -86,7 +81,6 @@ export class AppTopBarComponent implements OnDestroy {
     private router: Router,
     private authService: AuthService,
     protected userService: UserService,
-    private bookdropFileService: BookdropFileService,
     private dialogLauncher: DialogLauncherService,
     translocoService: TranslocoService
   ) {
@@ -101,15 +95,6 @@ export class AppTopBarComponent implements OnDestroy {
     window.addEventListener('storage', this.onStorageChange);
 
     this.subscribeToNotifications();
-
-    this.bookdropFileService.hasPendingFiles$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((hasPending) => {
-        this.latestHasPendingFiles = hasPending;
-        this.hasPendingBookdropFiles = hasPending;
-        this.updateCompletedTaskCount();
-        this.updateTaskVisibility();
-      });
 
     this.userService.userState$
       .pipe(takeUntil(this.destroy$))
@@ -151,20 +136,12 @@ export class AppTopBarComponent implements OnDestroy {
     this.dialogLauncher.openLibraryCreateDialog();
   }
 
-  openFileUploadDialog(): void {
-    this.dialogLauncher.openFileUploadDialog();
-  }
-
   openUserProfileDialog(): void {
     this.dialogLauncher.openUserProfileDialog();
   }
 
   navigateToSettings() {
     this.router.navigate(['/settings']);
-  }
-
-  navigateToBookdrop() {
-    this.router.navigate(['/bookdrop']);
   }
 
   navigateToMetadataManager() {
@@ -224,14 +201,6 @@ export class AppTopBarComponent implements OnDestroy {
     }, 4000) as unknown as number;
   }
 
-  private updateCompletedTaskCount() {
-    this.completedTaskCount = this.latestHasPendingFiles ? 1 : 0;
-  }
-
-  private updateTaskVisibility() {
-    this.hasActiveOrCompletedTasks = this.completedTaskCount > 0 || this.hasPendingBookdropFiles;
-  }
-
   private initializeStatsMenu() {
     const userState = this.userService.userStateSubject.value;
     const user = userState.user;
@@ -273,12 +242,6 @@ export class AppTopBarComponent implements OnDestroy {
     return this.translocoService.translate('layout.topbar.stats');
   }
 
-  get iconClass(): string {
-    if (this.iconPulsating) return 'pi-wave-pulse';
-    if (this.completedTaskCount > 0 || this.hasPendingBookdropFiles) return 'pi-bell';
-    return 'pi-wave-pulse';
-  }
-
   get iconColor(): string {
     if (this.showPulse) {
       switch (this.latestNotificationSeverity) {
@@ -292,19 +255,10 @@ export class AppTopBarComponent implements OnDestroy {
           return 'orange';
       }
     }
-    if (this.completedTaskCount > 0 || this.hasPendingBookdropFiles)
-      return 'limegreen';
     return 'inherit';
   }
 
   get iconPulsating(): boolean {
     return this.showPulse;
-  }
-
-  get shouldShowNotificationBadge(): boolean {
-    return (
-      (this.completedTaskCount > 0 || this.hasPendingBookdropFiles) &&
-      !this.showPulse
-    );
   }
 }

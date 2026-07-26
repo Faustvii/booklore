@@ -374,31 +374,6 @@
     "cancelButton": "キャンセル",
     "addButton": "物理本を追加"
   },
-  "fileUploader": {
-    "title": "追加ファイルをアップロード",
-    "unknownTitle": "不明なタイトル",
-    "selectFileType": "ファイルタイプを選択",
-    "typeAlternativeFormat": "代替フォーマット",
-    "typeSupplementary": "補足ファイル",
-    "statusUploading": "アップロード中",
-    "statusUploaded": "アップロード済み",
-    "statusUploadFailed": "アップロード失敗",
-    "statusTooLarge": "サイズ超過",
-    "statusReady": "準備完了",
-    "statusFailed": "失敗",
-    "dragDropText": "ここにファイルをドラッグ＆ドロップしてアップロードします。",
-    "supportedFormats": "",
-    "maxFileSize": "最大ファイルサイズ: {{ size }}/ファイル",
-    "uploadForBook": "<strong>{{ title }}</strong>の追加ファイルをアップロードします。",
-    "thisBook": "この本",
-    "toast": {
-      "fileTooLargeSummary": "ファイルが大きすぎます",
-      "fileTooLargeDetail": "{{ fileName }}が最大ファイルサイズ{{ maxSize }}を超えています",
-      "fileTooLargeError": "ファイルが最大サイズ{{ maxSize }}を超えています",
-      "uploadFailedUnknown": "不明なエラーによりアップロードに失敗しました。"
-    },
-    "supplementaryAllFormats": ""
-  },
   "filter": {
     "title": "フィルター",
     "showingFirst100": "最初の100件を表示",

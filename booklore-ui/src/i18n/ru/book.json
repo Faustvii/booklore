@@ -374,31 +374,6 @@
     "cancelButton": "Отмена",
     "addButton": "Добавить физическую книгу"
   },
-  "fileUploader": {
-    "title": "Загрузить дополнительный файл",
-    "unknownTitle": "Неизвестное название",
-    "selectFileType": "Выберите тип файла",
-    "typeAlternativeFormat": "Альтернативный формат",
-    "typeSupplementary": "Дополнительный файл",
-    "statusUploading": "Загрузка",
-    "statusUploaded": "Загружено",
-    "statusUploadFailed": "Ошибка загрузки",
-    "statusTooLarge": "Слишком большой",
-    "statusReady": "Готов",
-    "statusFailed": "Ошибка",
-    "dragDropText": "Перетащите файл сюда для загрузки.",
-    "supportedFormats": "",
-    "maxFileSize": "Максимальный размер файла: {{ size }}",
-    "uploadForBook": "Загрузить дополнительный файл для <strong>{{ title }}</strong>.",
-    "thisBook": "эту книгу",
-    "toast": {
-      "fileTooLargeSummary": "Файл слишком большой",
-      "fileTooLargeDetail": "{{ fileName }} превышает максимальный размер файла {{ maxSize }}",
-      "fileTooLargeError": "Файл превышает максимальный размер {{ maxSize }}",
-      "uploadFailedUnknown": "Загрузка не удалась из-за неизвестной ошибки."
-    },
-    "supplementaryAllFormats": ""
-  },
   "filter": {
     "title": "Фильтры",
     "showingFirst100": "Показаны первые 100 элементов",

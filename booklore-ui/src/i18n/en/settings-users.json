@@ -47,12 +47,10 @@
   },
   "perms": {
     "fullAdmin": "Full Administrator Access",
-    "uploadBooks": "Upload Books",
     "downloadBooks": "Download Books",
     "deleteBooks": "Delete Books",
     "manageLibrary": "Manage Library",
     "emailBooks": "Email Books",
-    "accessBookdrop": "Access Bookdrop",
     "viewLibraryStats": "View Library Statistics",
     "viewUserStats": "View User Reading Statistics",
     "manageMetadataConfig": "Manage Metadata Configuration",

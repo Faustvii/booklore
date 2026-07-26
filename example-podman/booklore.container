@@ -13,7 +13,6 @@ Pull=always
 Volume=booklore-data:/app/data
 # note the :z is important for selinux systems
 # Volume=YOUR MOUNTS:/books:z
-# Volume=YOUR MOUNTS:/bookdrop:z
 
 
 Environment=TZ=Etc/UTC

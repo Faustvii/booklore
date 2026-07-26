@@ -425,31 +425,6 @@
     "failedIsbnsLabel": "ISBNs fallidos",
     "doneButton": "Listo"
   },
-  "fileUploader": {
-    "title": "Subir archivo adicional",
-    "unknownTitle": "Título desconocido",
-    "selectFileType": "Seleccionar tipo de archivo",
-    "typeAlternativeFormat": "Formato alternativo",
-    "typeSupplementary": "Archivo complementario",
-    "statusUploading": "Subiendo",
-    "statusUploaded": "Subido",
-    "statusUploadFailed": "Error al subir",
-    "statusTooLarge": "Demasiado grande",
-    "statusReady": "Listo",
-    "statusFailed": "Fallido",
-    "dragDropText": "Arrastre y suelte un archivo aquí para subir.",
-    "supportedFormats": "",
-    "supplementaryAllFormats": "Todos los formatos de archivo son compatibles con archivos complementarios.",
-    "maxFileSize": "Tamaño máximo de archivo: {{ size }} por archivo",
-    "uploadForBook": "Subir un archivo adicional para <strong>{{ title }}</strong>.",
-    "thisBook": "este libro",
-    "toast": {
-      "fileTooLargeSummary": "Archivo demasiado grande",
-      "fileTooLargeDetail": "{{ fileName }} excede el tamaño máximo de {{ maxSize }}",
-      "fileTooLargeError": "El archivo excede el tamaño máximo de {{ maxSize }}",
-      "uploadFailedUnknown": "La subida falló por un error desconocido."
-    }
-  },
   "filter": {
     "title": "Filtros",
     "showingFirst100": "Mostrando los primeros 100 elementos",

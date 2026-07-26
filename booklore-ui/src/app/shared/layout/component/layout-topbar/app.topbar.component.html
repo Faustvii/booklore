@@ -31,24 +31,10 @@
     <ul class="topbar-items topbar-desktop-items">
       <div class="topbar-action-group">
         @if (userService.userState$ | async; as userState) {
-          @if (userState.user?.permissions?.canAccessBookdrop || userState.user?.permissions?.admin) {
-            <li>
-              <a class="topbar-item" (click)="navigateToBookdrop()" [pTooltip]="t('bookdrop')" tooltipPosition="bottom">
-                <i class="pi pi-inbox topbar-icon"></i>
-              </a>
-            </li>
-          }
           @if (userState.user?.permissions?.canManageLibrary || userState.user?.permissions?.admin) {
             <li>
               <a class="topbar-item" (click)="openLibraryCreatorDialog()" [pTooltip]="t('createNewLibrary')" tooltipPosition="bottom">
                 <i class="pi pi-plus-circle topbar-icon"></i>
-              </a>
-            </li>
-          }
-          @if (userState.user?.permissions?.canUpload || userState.user?.permissions?.admin) {
-            <li>
-              <a class="topbar-item" (click)="openFileUploadDialog()" [pTooltip]="t('uploadBook')" tooltipPosition="bottom">
-                <i class="pi pi-upload topbar-icon"></i>
               </a>
             </li>
           }
@@ -100,17 +86,13 @@
           >
             <i
               class="pi"
-              [ngClass]="iconClass"
+              [ngClass]="'pi-wave-pulse'"
               [ngStyle]="{ color: iconColor }"
               style="font-size: 1.25rem"
               [class.pulsating]="iconPulsating"
               [attr.aria-label]="t('notificationAriaLabel')"
             ></i>
           </button>
-
-          @if (shouldShowNotificationBadge) {
-            <span class="notification-badge">{{ completedTaskCount }}</span>
-          }
 
           <p-popover #notificationPopover>
             <app-unified-notification-popover-component></app-unified-notification-popover-component>
@@ -182,17 +164,6 @@
       <p-popover #mobileMenu>
         <ul class="mobile-menu-list">
           @if (userService.userState$ | async; as userState) {
-            @if (userState.user?.permissions?.canAccessBookdrop || userState.user?.permissions?.admin) {
-              <li>
-                <button
-                  class="mobile-menu-item"
-                  (click)="navigateToBookdrop(); mobileMenu.hide()"
-                >
-                  <i class="pi pi-inbox topbar-icon"></i>
-                  {{ t('bookdrop') }}
-                </button>
-              </li>
-            }
             @if (userState.user?.permissions?.canManageLibrary || userState.user?.permissions?.admin) {
               <li>
                 <button
@@ -201,17 +172,6 @@
                 >
                   <i class="pi pi-plus-circle topbar-icon"></i>
                   {{ t('createLibrary') }}
-                </button>
-              </li>
-            }
-            @if (userState.user?.permissions?.canUpload || userState.user?.permissions?.admin) {
-              <li>
-                <button
-                  class="mobile-menu-item"
-                  (click)="openFileUploadDialog(); mobileMenu.hide()"
-                >
-                  <i class="pi pi-upload topbar-icon"></i>
-                  {{ t('uploadBook') }}
                 </button>
               </li>
             }

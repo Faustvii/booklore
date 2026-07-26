@@ -382,31 +382,6 @@
     "addButton": "Додати паперову книгу",
     "fetchMetadataTooltip": "Отримати метадані за ISBN"
   },
-  "fileUploader": {
-    "title": "Завантажити додатковий файл",
-    "unknownTitle": "Невідома назва",
-    "selectFileType": "Виберіть тип файлу",
-    "typeAlternativeFormat": "Альтернативний формат",
-    "typeSupplementary": "Додатковий файл",
-    "statusUploading": "Завантаження",
-    "statusUploaded": "Завантажено",
-    "statusUploadFailed": "Не вдалося завантажити",
-    "statusTooLarge": "Завеликий",
-    "statusReady": "Готово",
-    "statusFailed": "Не вдалося",
-    "dragDropText": "Перетягніть файл сюди, щоб завантажити.",
-    "supportedFormats": "Підтримувані формати: <strong>.pdf</strong>, <strong>.epub</strong>, <strong>.cbz</strong>, <strong>.cbr</strong>, <strong>.cb7</strong>, <strong>.fb2</strong>, <strong>.mobi</strong>, <strong>.azw3</strong>, <strong>.m4b</strong>, <strong>.mp3</strong>",
-    "supplementaryAllFormats": "Для додаткових файлів підтримуються всі формати.",
-    "maxFileSize": "Максимальний розмір файлу: {{ size }} на файл",
-    "uploadForBook": "Завантажити додатковий файл для <strong>{{ title }}</strong>.",
-    "thisBook": "цієї книги",
-    "toast": {
-      "fileTooLargeSummary": "Файл завеликий",
-      "fileTooLargeDetail": "{{ fileName }} перевищує максимальний розмір файлу {{ maxSize }}",
-      "fileTooLargeError": "Файл перевищує максимальний розмір {{ maxSize }}",
-      "uploadFailedUnknown": "Завантаження не вдалося через невідому помилку."
-    }
-  },
   "filter": {
     "title": "Фільтри",
     "showingFirst100": "Показано перші 100 елементів",

@@ -374,31 +374,6 @@
     "cancelButton": "Anuluj",
     "addButton": "Dodaj książkę fizyczną"
   },
-  "fileUploader": {
-    "title": "Prześlij dodatkowy plik",
-    "unknownTitle": "Nieznany tytuł",
-    "selectFileType": "Wybierz typ pliku",
-    "typeAlternativeFormat": "Alternatywny format",
-    "typeSupplementary": "Plik dodatkowy",
-    "statusUploading": "Przesyłanie",
-    "statusUploaded": "Przesłano",
-    "statusUploadFailed": "Przesyłanie nie powiodło się",
-    "statusTooLarge": "Za duży",
-    "statusReady": "Gotowy",
-    "statusFailed": "Niepowodzenie",
-    "dragDropText": "Przeciągnij i upuść plik tutaj, aby go przesłać.",
-    "supportedFormats": "",
-    "maxFileSize": "Maksymalny rozmiar pliku: {{ size }} na plik",
-    "uploadForBook": "Prześlij dodatkowy plik dla <strong>{{ title }}</strong>.",
-    "thisBook": "tej książki",
-    "toast": {
-      "fileTooLargeSummary": "Plik za duży",
-      "fileTooLargeDetail": "{{ fileName }} przekracza maksymalny rozmiar pliku {{ maxSize }}",
-      "fileTooLargeError": "Plik przekracza maksymalny rozmiar {{ maxSize }}",
-      "uploadFailedUnknown": "Przesyłanie nie powiodło się z powodu nieznanego błędu."
-    },
-    "supplementaryAllFormats": ""
-  },
   "filter": {
     "title": "Filtry",
     "showingFirst100": "Wyświetlanie pierwszych 100 elementów",

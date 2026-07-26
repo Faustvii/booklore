@@ -375,31 +375,6 @@
     "cancelButton": "取消",
     "addButton": "添加实体书"
   },
-  "fileUploader": {
-    "title": "上传附加文件",
-    "unknownTitle": "未知标题",
-    "selectFileType": "选择文件类型",
-    "typeAlternativeFormat": "替代格式",
-    "typeSupplementary": "补充文件",
-    "statusUploading": "上传中",
-    "statusUploaded": "已上传",
-    "statusUploadFailed": "上传失败",
-    "statusTooLarge": "文件过大",
-    "statusReady": "就绪",
-    "statusFailed": "失败",
-    "dragDropText": "将文件拖放到此处进行上传。",
-    "supportedFormats": "",
-    "maxFileSize": "最大文件大小：每个文件 {{ size }}",
-    "uploadForBook": "为 <strong>{{ title }}</strong> 上传附加文件。",
-    "thisBook": "此图书",
-    "toast": {
-      "fileTooLargeSummary": "文件过大",
-      "fileTooLargeDetail": "{{ fileName }} 超过了最大文件大小 {{ maxSize }}",
-      "fileTooLargeError": "文件超过最大大小 {{ maxSize }}",
-      "uploadFailedUnknown": "由于未知错误，上传失败。"
-    },
-    "supplementaryAllFormats": ""
-  },
   "filter": {
     "title": "筛选条件",
     "showingFirst100": "显示前 100 项",

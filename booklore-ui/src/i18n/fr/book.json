@@ -377,31 +377,6 @@
     "cancelButton": "Annuler",
     "addButton": "Ajouter le livre physique"
   },
-  "fileUploader": {
-    "title": "Téléverser un fichier supplémentaire",
-    "unknownTitle": "Titre inconnu",
-    "selectFileType": "Sélectionner le type de fichier",
-    "typeAlternativeFormat": "Format alternatif",
-    "typeSupplementary": "Fichier supplémentaire",
-    "statusUploading": "Téléversement",
-    "statusUploaded": "Téléversé",
-    "statusUploadFailed": "Échec du téléversement",
-    "statusTooLarge": "Trop volumineux",
-    "statusReady": "Prêt",
-    "statusFailed": "Échec",
-    "dragDropText": "Glissez-déposez un fichier ici pour le téléverser.",
-    "supportedFormats": "",
-    "maxFileSize": "Taille maximale : {{ size }} par fichier",
-    "uploadForBook": "Téléverser un fichier supplémentaire pour <strong>{{ title }}</strong>.",
-    "thisBook": "ce livre",
-    "toast": {
-      "fileTooLargeSummary": "Fichier trop volumineux",
-      "fileTooLargeDetail": "{{ fileName }} dépasse la taille maximale de {{ maxSize }}",
-      "fileTooLargeError": "Le fichier dépasse la taille maximale de {{ maxSize }}",
-      "uploadFailedUnknown": "Échec du téléversement en raison d'une erreur inconnue."
-    },
-    "supplementaryAllFormats": ""
-  },
   "filter": {
     "title": "Filtres",
     "showingFirst100": "Affichage des 100 premiers éléments",

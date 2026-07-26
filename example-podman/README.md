@@ -5,7 +5,7 @@ This directory contains an example of how to use a rootless Podman pod defined t
 1. Copy the files in this directory to a suitable location on your system.
   - For many systems Quadlet monitors `~/.config/containers/systemd`
     - `mkdir -p ~/.config/containers/systemd && cp ./*lore* ~/.config/containers/systemd/`
-2. Edit the `booklore.container` to set the correct mounts for `bookdrop` and your library
+2. Edit the `booklore.container` to set the correct mount for your library
 3. Create the Podman Secrets for the database
    ```bash
    echo -n "YOUR PASSWORD" | podman secret create booklore_db_pass -

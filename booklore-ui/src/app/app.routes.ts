@@ -11,7 +11,6 @@ import {EmptyComponent} from './shared/components/empty/empty.component';
 import {OidcCallbackComponent} from './core/security/oidc-callback/oidc-callback.component';
 import {MainDashboardComponent} from './features/dashboard/components/main-dashboard/main-dashboard.component';
 import {LoginGuard} from './shared/components/setup/login.guard';
-import {BookdropGuard} from './core/security/guards/bookdrop.guard';
 import {LibraryStatsGuard} from './core/security/guards/library-stats.guard';
 import {UserStatsGuard} from './core/security/guards/user-stats.guard';
 import {EditMetadataGuard} from './core/security/guards/edit-metdata.guard';
@@ -45,7 +44,6 @@ export const routes: Routes = [
       {path: 'author/:authorId', loadComponent: () => import('./features/author-browser/components/author-detail/author-detail.component').then(m => m.AuthorDetailComponent), canActivate: [AuthGuard]},
       {path: 'magic-shelf/:magicShelfId/books', component: BookBrowserComponent, canActivate: [AuthGuard]},
       {path: 'book/:bookId', loadComponent: () => import('./features/metadata/component/book-metadata-center/book-metadata-center.component').then(m => m.BookMetadataCenterComponent), canActivate: [AuthGuard]},
-      {path: 'bookdrop', loadComponent: () => import('./features/bookdrop/component/bookdrop-file-review/bookdrop-file-review.component').then(m => m.BookdropFileReviewComponent), canActivate: [BookdropGuard]},
       {path: 'metadata-manager', loadComponent: () => import('./features/metadata/component/metadata-manager/metadata-manager.component').then(m => m.MetadataManagerComponent), canActivate: [EditMetadataGuard]},
       {path: 'library-stats', loadComponent: () => import('./features/stats/component/library-stats/library-stats.component').then(m => m.LibraryStatsComponent), canActivate: [LibraryStatsGuard]},
       {path: 'reading-stats', loadComponent: () => import('./features/stats/component/user-stats/user-stats.component').then(m => m.UserStatsComponent), canActivate: [UserStatsGuard]},

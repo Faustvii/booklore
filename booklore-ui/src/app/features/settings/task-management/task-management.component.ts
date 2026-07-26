@@ -473,7 +473,6 @@ private runTaskWithOptions(type: string, options: LibraryRescanOptions | null): 
       [TaskType.UPDATE_BOOK_RECOMMENDATIONS]: 'pi-sparkles',
       [TaskType.CLEANUP_DELETED_BOOKS]: 'pi-trash',
       [TaskType.SYNC_LIBRARY_FILES]: 'pi-sync',
-      [TaskType.BOOKDROP_PERIODIC_SCANNING]: 'pi-inbox'
     };
     return icons[taskType] || 'pi-cog';
   }

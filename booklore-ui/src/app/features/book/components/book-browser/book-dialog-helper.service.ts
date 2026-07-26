@@ -9,7 +9,6 @@ import {ShelfCreatorComponent} from '../shelf-creator/shelf-creator.component';
 import {BookSenderComponent} from '../book-sender/book-sender.component';
 import {BookMetadataCenterComponent} from '../../../metadata/component/book-metadata-center/book-metadata-center.component';
 import {Book} from '../../model/book.model';
-import {AdditionalFileUploaderComponent} from '../additional-file-uploader/additional-file-uploader.component';
 import {BookFileAttacherComponent} from '../book-file-attacher/book-file-attacher.component';
 import {AddPhysicalBookDialogComponent} from '../add-physical-book-dialog/add-physical-book-dialog.component';
 import {BulkIsbnImportDialogComponent} from '../bulk-isbn-import-dialog/bulk-isbn-import-dialog.component';
@@ -119,16 +118,6 @@ export class BookDialogHelperService {
       data: {
         bookId: bookId,
         coverType: coverType,
-      },
-    });
-  }
-
-  openAdditionalFileUploaderDialog(book: Book): DynamicDialogRef | null {
-    return this.openDialog(AdditionalFileUploaderComponent, {
-      showHeader: false,
-      styleClass: `${DialogSize.MD} ${DialogStyle.MINIMAL}`,
-      data: {
-        book: book,
       },
     });
   }
