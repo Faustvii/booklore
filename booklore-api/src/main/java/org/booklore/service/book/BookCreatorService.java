@@ -9,6 +9,7 @@ import org.booklore.repository.*;
 import org.booklore.service.file.FileFingerprint;
 import org.booklore.util.FileUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -109,6 +110,7 @@ public class BookCreatorService {
 
         BookMetadataEntity metadata = BookMetadataEntity.builder()
                 .book(bookEntity)
+                .title(FilenameUtils.getBaseName(libraryFile.getFileName()))
                 .build();
         bookEntity.setMetadata(metadata);
 
