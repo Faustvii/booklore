@@ -1,6 +1,5 @@
 import {Shelf} from './shelf.model';
 import {CbxBackgroundColor, CbxFitMode, CbxPageSpread, CbxPageViewMode, CbxScrollMode, NewPdfReaderSetting} from '../../settings/user-management/user.service';
-import {BookReview} from '../components/book-reviews/book-review-service';
 import {ZoomType} from 'ngx-extended-pdf-viewer';
 
 export type BookType = "PDF" | "EPUB" | "CBX" | "FB2" | "MOBI" | "AZW3" | "AUDIOBOOK";
@@ -204,7 +203,6 @@ export interface BookMetadata {
   providerBookId?: string;
   externalUrl?: string;
   thumbnailUrl?: string | null;
-  reviews?: BookReview[];
   titleLocked?: boolean;
   subtitleLocked?: boolean;
   publisherLocked?: boolean;
@@ -243,7 +241,6 @@ export interface BookMetadata {
   tagsLocked?: boolean;
   coverLocked?: boolean;
   audiobookCoverLocked?: boolean;
-  reviewsLocked?: boolean;
   ageRating?: number | null;
   contentRating?: string | null;
   ageRatingLocked?: boolean;

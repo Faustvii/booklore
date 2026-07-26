@@ -63,19 +63,6 @@
     "hardcoverPlaceholder": "Enter Hardcover API token",
     "comicvinePlaceholder": "Enter Comic Vine API token"
   },
-  "publicReviews": {
-    "sectionTitle": "Public Reviews",
-    "sectionDesc": "Configure automatic downloading of user reviews from external platforms. Reviews can be fetched from Amazon, Goodreads, and Hardcover for offline access.",
-    "downloadLabel": "Download Public Reviews",
-    "autoDownloadLabel": "Auto Download on Book Open",
-    "autoDownloadDesc": "Automatically fetch reviews when you open a book's details page. When disabled, reviews will only be downloaded manually or during metadata refresh.",
-    "reviewSources": "Review Sources",
-    "reviewSourcesDesc": "Configure which platforms to download reviews from and set limits for each source.",
-    "maxLabel": "Max:",
-    "maxTooltip": "Number of reviews to download (1-10)",
-    "noProviders": "No review sources available. Please ensure metadata providers are configured in the Provider Settings section above.",
-    "loadError": "Failed to load settings."
-  },
   "matchWeights": {
     "sectionTitle": "Metadata Match Weights",
     "sectionDesc": "Configure how important each metadata field is when computing match scores. Higher weights make fields more influential in determining the overall match quality.",
