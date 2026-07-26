@@ -276,6 +276,7 @@ public class LibraryService {
         Set<Long> bookIds = library.getBookEntities().stream().map(BookEntity::getId).collect(Collectors.toSet());
         fileService.deleteBookCovers(bookIds);
         String libraryName = library.getName();
+        libraryRepository.deleteUserLibraryMappingsByLibraryId(id);
         libraryRepository.deleteById(id);
         auditService.log(AuditAction.LIBRARY_DELETED, "Library", id, "Deleted library: " + libraryName);
         log.info("Library deleted successfully: {}", id);
