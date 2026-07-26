@@ -1,0 +1,6 @@
+extensions:
+  - addsTo:
+      pack: codeql/java-all
+      extensible: neutralModel
+    data:
+      - ["org.booklore.util", "RemoteUrlSanitizer", "sanitizeHttpUrl", "(String)", "summary", "manual"]

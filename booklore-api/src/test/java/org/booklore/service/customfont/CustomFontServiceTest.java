@@ -8,6 +8,7 @@ import org.booklore.model.entity.CustomFontEntity;
 import org.booklore.model.enums.FontFormat;
 import org.booklore.repository.CustomFontRepository;
 import org.booklore.repository.UserRepository;
+import org.booklore.util.PathSanitizer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,6 +40,8 @@ class CustomFontServiceTest {
     UserRepository userRepository;
     @Mock
     CustomFontMapper customFontMapper;
+    @Mock
+    PathSanitizer pathSanitizer;
 
     AppProperties appProperties;
     CustomFontService service;
@@ -48,7 +51,12 @@ class CustomFontServiceTest {
         MockitoAnnotations.openMocks(this);
         appProperties = new AppProperties();
         appProperties.setPathConfig(tempDir.toString());
-        service = new CustomFontService(customFontRepository, userRepository, customFontMapper, appProperties);
+        when(pathSanitizer.resolveRelativePath(any(Path.class), anyString())).thenAnswer(invocation -> {
+            Path base = invocation.getArgument(0, Path.class);
+            String child = invocation.getArgument(1, String.class);
+            return base.resolve(child).normalize();
+        });
+        service = new CustomFontService(customFontRepository, userRepository, customFontMapper, appProperties, pathSanitizer);
     }
 
     @Test

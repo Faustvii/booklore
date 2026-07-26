@@ -11,7 +11,7 @@ Thanks for your interest in contributing to Booklore! Whether you're fixing bugs
 - **Frontend:** Angular 20, TypeScript, PrimeNG 19
 - **Backend:** Java 25, Spring Boot 3.5
 - **Authentication:** Local JWT + optional OIDC (e.g., Authentik)
-- **Database:** MariaDB
+- **Database:** PostgreSQL
 - **Deployment:** Docker-compatible, reverse proxy-ready
 
 ## Table of Contents
@@ -109,7 +109,7 @@ This starts:
 |------------|-----------------------|
 | Frontend   | http://localhost:4200 |
 | Backend    | http://localhost:8080 |
-| MariaDB    | localhost:3366        |
+| Postgres   | localhost:5432        |
 | Debug port | localhost:5005        |
 
 All ports are configurable via environment variables (`FRONTEND_PORT`, `BACKEND_PORT`, `DB_PORT`, `REMOTE_DEBUG_PORT`) in the compose file.
@@ -129,21 +129,20 @@ For full control over each component or IDE integration (debugging, hot-reload, 
 |---------------|---------|----------------------------------------------|
 | Java          | 25+     | [Adoptium](https://adoptium.net/)            |
 | Node.js + npm | 20+     | [nodejs.org](https://nodejs.org/)            |
-| MariaDB       | 10.6+   | [mariadb.org](https://mariadb.org/download/) |
+| PostgreSQL    | 17+     | [postgresql.org](https://www.postgresql.org/download/) |
 | Git           | latest  | [git-scm.com](https://git-scm.com/)         |
 
 #### 1. Database
 
-Start MariaDB and create the database:
+Start PostgreSQL and create the database/user:
 
 ```sql
-CREATE DATABASE IF NOT EXISTS booklore;
-CREATE USER 'booklore_user'@'localhost' IDENTIFIED BY 'your_password';
-GRANT ALL PRIVILEGES ON booklore.* TO 'booklore_user'@'localhost';
-FLUSH PRIVILEGES;
+CREATE DATABASE booklore;
+CREATE USER booklore_user WITH PASSWORD 'your_password';
+GRANT ALL PRIVILEGES ON DATABASE booklore TO booklore_user;
 ```
 
-> **Tip:** You can also spin up MariaDB via Docker: `docker compose -f local/docker-compose-maria.yml up -d`
+> **Tip:** You can also spin up PostgreSQL via Docker: `docker run --name booklore-postgres -e POSTGRES_DB=booklore -e POSTGRES_USER=booklore_user -e POSTGRES_PASSWORD=your_password -p 5432:5432 -d postgres:17`
 
 #### 2. Backend
 
@@ -156,8 +155,7 @@ app:
 
 spring:
   datasource:
-    driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://localhost:3306/booklore?createDatabaseIfNotExist=true
+    url: jdbc:postgresql://localhost:5432/booklore
     username: booklore_user
     password: your_password
 ```

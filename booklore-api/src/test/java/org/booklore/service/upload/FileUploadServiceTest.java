@@ -22,6 +22,7 @@ import org.booklore.model.enums.BookFileExtension;
 import org.booklore.service.metadata.extractor.MetadataExtractorFactory;
 import org.booklore.service.audit.AuditService;
 import org.booklore.service.monitoring.MonitoringRegistrationService;
+import org.booklore.util.PathSanitizer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -79,6 +80,8 @@ class FileUploadServiceTest {
     MonitoringRegistrationService monitoringRegistrationService;
     @Mock
     AuditService auditService;
+    @Mock
+    PathSanitizer pathSanitizer;
 
     AppProperties appProperties;
     FileUploadService service;
@@ -93,10 +96,11 @@ class FileUploadServiceTest {
         settings.setMaxFileUploadSizeInMb(10);
         settings.setUploadPattern("{currentFilename}");
         when(appSettingService.getAppSettings()).thenReturn(settings);
+        when(pathSanitizer.sanitizeFilenameComponent(anyString())).thenAnswer(invocation -> invocation.getArgument(0, String.class));
 
         service = new FileUploadService(
                 libraryRepository, bookRepository, bookAdditionalFileRepository,
-                appSettingService, appProperties, metadataExtractorFactory, additionalFileMapper, fileMovingHelper, monitoringRegistrationService, auditService
+            appSettingService, appProperties, metadataExtractorFactory, additionalFileMapper, fileMovingHelper, monitoringRegistrationService, auditService, pathSanitizer
         );
     }
 

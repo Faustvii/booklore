@@ -9,11 +9,9 @@ import org.booklore.model.enums.LibraryOrganizationMode;
 import org.booklore.repository.BookRepository;
 import org.booklore.repository.LibraryRepository;
 import org.booklore.service.library.LibraryProcessingService;
-import org.booklore.util.FileUtils;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.io.TempDir;
 import org.mockito.Mock;
-import org.mockito.MockedStatic;
 import org.mockito.MockitoAnnotations;
 
 import java.io.IOException;
@@ -24,14 +22,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 class LibraryFileEventProcessorTest {
+
+    private static final long TEST_DEBOUNCE_MS = 20L;
+    private static final long TEST_FOLDER_CREATE_DEBOUNCE_MS = 60L;
+    private static final long TEST_PENDING_DELETE_GRACE_MS = 80L;
+    private static final long TEST_STABILITY_CHECK_MS = 40L;
+    private static final long TEST_STABILITY_MAX_WAIT_MS = 2000L;
+    private static final long AWAIT_TIMEOUT_MS = 2000L;
 
     @Mock private LibraryRepository libraryRepository;
     @Mock private BookRepository bookRepository;
@@ -55,7 +59,12 @@ class LibraryFileEventProcessorTest {
         mocks = MockitoAnnotations.openMocks(this);
         processor = new LibraryFileEventProcessor(
                 libraryRepository, bookRepository, bookFileTransactionalHandler,
-                bookFilePersistenceService, libraryProcessingService, pendingDeletionPool);
+                bookFilePersistenceService, libraryProcessingService, pendingDeletionPool,
+                TEST_DEBOUNCE_MS,
+                TEST_FOLDER_CREATE_DEBOUNCE_MS,
+                TEST_PENDING_DELETE_GRACE_MS,
+                TEST_STABILITY_CHECK_MS,
+                TEST_STABILITY_MAX_WAIT_MS);
 
         libraryPath = new LibraryPathEntity();
         libraryPath.setId(1L);
@@ -82,6 +91,17 @@ class LibraryFileEventProcessorTest {
     void tearDown() throws Exception {
         processor.shutdown();
         mocks.close();
+    }
+
+    private void awaitNoPending(Path path) throws InterruptedException, TimeoutException {
+        long deadline = System.currentTimeMillis() + AWAIT_TIMEOUT_MS;
+        while (System.currentTimeMillis() < deadline) {
+            if (!processor.hasPendingEventsForPaths(Set.of(path))) {
+                return;
+            }
+            Thread.sleep(10);
+        }
+        throw new TimeoutException("Timed out waiting for pending events for path: " + path);
     }
 
     @Nested
@@ -114,8 +134,7 @@ class LibraryFileEventProcessorTest {
             // Immediately follow with CREATE (simulates quick rename)
             processor.processEvent(StandardWatchEventKinds.ENTRY_CREATE, 1L, file, false);
 
-            // The DELETE should have been cancelled. Wait a bit for debounce to settle.
-            Thread.sleep(1000);
+            awaitNoPending(file);
 
             // The DELETE event should not have been processed
             verify(bookFilePersistenceService, never()).findBookFileByLibraryPathSubPathAndFileName(anyLong(), anyString(), anyString());
@@ -158,8 +177,7 @@ class LibraryFileEventProcessorTest {
             // Queue a modify event for a non-book file
             processor.processEvent(StandardWatchEventKinds.ENTRY_MODIFY, 1L, textFile, false);
 
-            // Wait for processing
-            Thread.sleep(200);
+            awaitNoPending(textFile);
 
             verify(bookFileTransactionalHandler, never()).handleNewBookFile(anyLong(), any());
         }
@@ -179,10 +197,9 @@ class LibraryFileEventProcessorTest {
 
             processor.processEvent(StandardWatchEventKinds.ENTRY_CREATE, 1L, folder, true);
 
-            // Folder debounce is 5s, then queue processing
-            Thread.sleep(8000);
+            awaitNoPending(folder);
 
-            verify(bookFileTransactionalHandler, times(2)).handleNewBookFile(eq(1L), any());
+            verify(bookFileTransactionalHandler, timeout(1000).times(2)).handleNewBookFile(eq(1L), any());
         }
 
         @Test
@@ -196,7 +213,7 @@ class LibraryFileEventProcessorTest {
 
             processor.processEvent(StandardWatchEventKinds.ENTRY_CREATE, 1L, folder, true);
 
-            Thread.sleep(8000);
+            awaitNoPending(folder);
 
             verify(bookFileTransactionalHandler, never()).handleNewBookFile(anyLong(), any());
         }
@@ -216,10 +233,10 @@ class LibraryFileEventProcessorTest {
 
             processor.processEvent(StandardWatchEventKinds.ENTRY_CREATE, 1L, folder, true);
 
-            Thread.sleep(8000);
+            awaitNoPending(folder);
 
             // Only good.epub should be processed, not hidden.epub
-            verify(bookFileTransactionalHandler, times(1)).handleNewBookFile(eq(1L), any());
+            verify(bookFileTransactionalHandler, timeout(1000).times(1)).handleNewBookFile(eq(1L), any());
         }
 
         @Test
@@ -231,7 +248,7 @@ class LibraryFileEventProcessorTest {
 
             processor.processEvent(StandardWatchEventKinds.ENTRY_CREATE, 1L, folder, true);
 
-            Thread.sleep(8000);
+            awaitNoPending(folder);
 
             verify(libraryProcessingService, never()).processLibraryFiles(any(), any());
             verify(bookFileTransactionalHandler, never()).handleNewBookFile(anyLong(), any());
@@ -245,7 +262,7 @@ class LibraryFileEventProcessorTest {
 
                 processor.processEvent(StandardWatchEventKinds.ENTRY_CREATE, 1L, outsideFolder, true);
 
-                Thread.sleep(8000);
+                awaitNoPending(outsideFolder);
 
                 // handleEvent should skip because path is outside library
                 verify(bookFileTransactionalHandler, never()).handleNewBookFile(anyLong(), any());
@@ -286,9 +303,9 @@ class LibraryFileEventProcessorTest {
 
             processor.processEvent(StandardWatchEventKinds.ENTRY_DELETE, 1L, folder, true);
 
-            Thread.sleep(2000);
+            awaitNoPending(folder);
 
-            verify(pendingDeletionPool).addFolderDeletion(any(), eq(1L), eq(List.of(book)), any());
+            verify(pendingDeletionPool, timeout(1000)).addFolderDeletion(any(), eq(1L), eq(List.of(book)), any());
         }
 
         @Test
@@ -300,7 +317,7 @@ class LibraryFileEventProcessorTest {
 
             processor.processEvent(StandardWatchEventKinds.ENTRY_DELETE, 1L, folder, true);
 
-            Thread.sleep(2000);
+            awaitNoPending(folder);
 
             verify(pendingDeletionPool, never()).addFolderDeletion(any(), anyLong(), any(), any());
         }
@@ -325,9 +342,9 @@ class LibraryFileEventProcessorTest {
 
             processor.processEvent(StandardWatchEventKinds.ENTRY_DELETE, 1L, file, false);
 
-            Thread.sleep(2000);
+            awaitNoPending(file);
 
-            verify(pendingDeletionPool).addFileDeletion(any(), eq(1L), eq(bookFile), eq(book), any());
+            verify(pendingDeletionPool, timeout(1000)).addFileDeletion(any(), eq(1L), eq(bookFile), eq(book), any());
         }
 
         @Test
@@ -339,7 +356,7 @@ class LibraryFileEventProcessorTest {
 
             processor.processEvent(StandardWatchEventKinds.ENTRY_DELETE, 1L, file, false);
 
-            Thread.sleep(2000);
+            awaitNoPending(file);
 
             verify(pendingDeletionPool, never()).addFileDeletion(any(), anyLong(), any(), any(), any());
         }
@@ -355,8 +372,7 @@ class LibraryFileEventProcessorTest {
 
             processor.processEvent(StandardWatchEventKinds.ENTRY_CREATE, 1L, file, false);
 
-            // Wait for stability check + processing
-            Thread.sleep(4000);
+            awaitNoPending(file);
 
             verify(bookFileTransactionalHandler, never()).handleNewBookFile(anyLong(), any());
         }
@@ -368,7 +384,7 @@ class LibraryFileEventProcessorTest {
 
             processor.processEvent(StandardWatchEventKinds.ENTRY_CREATE, 1L, file, false);
 
-            Thread.sleep(4000);
+            awaitNoPending(file);
 
             verify(bookFileTransactionalHandler, never()).handleNewBookFile(anyLong(), any());
         }
@@ -380,11 +396,9 @@ class LibraryFileEventProcessorTest {
 
             processor.processEvent(StandardWatchEventKinds.ENTRY_CREATE, 1L, file, false);
 
-            // Stability check needs file to be stable for STABILITY_CHECK_INTERVAL_MS (3s)
-            // then event goes to queue and is processed by virtual thread
-            Thread.sleep(7000);
+            awaitNoPending(file);
 
-            verify(bookFileTransactionalHandler).handleNewBookFile(eq(1L), any());
+            verify(bookFileTransactionalHandler, timeout(1000)).handleNewBookFile(eq(1L), any());
         }
     }
 
