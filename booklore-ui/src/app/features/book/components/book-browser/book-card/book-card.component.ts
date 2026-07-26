@@ -9,7 +9,6 @@ import {BookFileService} from '../../../service/book-file.service';
 import {BookMetadataManageService} from '../../../service/book-metadata-manage.service';
 import {CheckboxChangeEvent, CheckboxModule} from 'primeng/checkbox';
 import {FormsModule} from '@angular/forms';
-import {MetadataRefreshType} from '../../../../metadata/model/request/metadata-refresh-type.enum';
 import {UrlHelperService} from '../../../../../shared/service/url-helper.service';
 import {NgClass} from '@angular/common';
 import {User, UserService} from '../../../../settings/user-management/user.service';
@@ -24,7 +23,6 @@ import {readStatusLabels} from '../book-filter/book-filter.config';
 import {ResetProgressTypes} from '../../../../../shared/constants/reset-progress-type';
 import {ReadStatusHelper} from '../../../helpers/read-status.helper';
 import {BookDialogHelperService} from '../book-dialog-helper.service';
-import {TaskHelperService} from '../../../../settings/task-management/task-helper.service';
 import {BookNavigationService} from '../../../service/book-navigation.service';
 import {BookCardOverlayPreferenceService} from '../book-card-overlay-preference.service';
 import {AppSettingsService} from '../../../../../shared/service/app-settings.service';
@@ -66,7 +64,6 @@ export class BookCardComponent implements OnInit, OnChanges, OnDestroy {
   private bookService = inject(BookService);
   private bookFileService = inject(BookFileService);
   private bookMetadataManageService = inject(BookMetadataManageService);
-  private taskHelperService = inject(TaskHelperService);
   private userService = inject(UserService);
   private emailService = inject(EmailService);
   private messageService = inject(MessageService);
@@ -511,23 +508,6 @@ export class BookCardComponent implements OnInit, OnChanges, OnDestroy {
                   queryParams: {tab: 'match'}
                 })
               }, 150);
-            },
-          },
-          {
-            label: this.t.translate('book.card.menu.autoFetch'),
-            icon: 'pi pi-bolt',
-            command: () => {
-              this.taskHelperService.refreshMetadataTask({
-                refreshType: MetadataRefreshType.BOOKS,
-                bookIds: [this.book.id],
-              }).subscribe();
-            }
-          },
-          {
-            label: this.t.translate('book.card.menu.customFetch'),
-            icon: 'pi pi-sync',
-            command: () => {
-              this.bookDialogHelperService.openMetadataRefreshDialog(new Set([this.book!.id]))
             },
           },
           {

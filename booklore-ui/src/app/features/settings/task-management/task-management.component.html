@@ -164,7 +164,7 @@
                 </div>
               }
 
-              @if (!isTaskRunning(taskInfo.taskType) && taskInfo.taskType === TaskType.REFRESH_LIBRARY_METADATA) {
+              @if (!isTaskRunning(taskInfo.taskType) && taskInfo.taskType === TaskType.LIBRARY_RESCAN) {
                 <div class="task-options">
                   <label class="option-label">{{ t('metadataReplace.label') }}</label>
                   <p-select

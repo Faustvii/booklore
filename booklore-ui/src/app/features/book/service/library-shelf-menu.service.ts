@@ -5,9 +5,7 @@ import {LibraryService} from './library.service';
 import {ShelfService} from './shelf.service';
 import {Library} from '../model/library.model';
 import {Shelf} from '../model/shelf.model';
-import {MetadataRefreshType} from '../../metadata/model/request/metadata-refresh-type.enum';
 import {MagicShelf, MagicShelfService} from '../../magic-shelf/service/magic-shelf.service';
-import {TaskHelperService} from '../../settings/task-management/task-helper.service';
 import {UserService} from "../../settings/user-management/user.service";
 import {LoadingService} from '../../../core/services/loading.service';
 import {finalize} from 'rxjs';
@@ -24,7 +22,6 @@ export class LibraryShelfMenuService {
   private messageService = inject(MessageService);
   private libraryService = inject(LibraryService);
   private shelfService = inject(ShelfService);
-  private taskHelperService = inject(TaskHelperService);
   private router = inject(Router);
   private dialogLauncherService = inject(DialogLauncherService);
   private magicShelfService = inject(MagicShelfService);
@@ -99,23 +96,6 @@ export class LibraryShelfMenuService {
                   });
                 }
               });
-            }
-          },
-          {
-            label: this.t.translate('book.shelfMenuService.library.customFetchMetadata'),
-            icon: 'pi pi-sync',
-            command: () => {
-              this.dialogLauncherService.openLibraryMetadataFetchDialog((entity?.id as number));
-            }
-          },
-          {
-            label: this.t.translate('book.shelfMenuService.library.autoFetchMetadata'),
-            icon: 'pi pi-bolt',
-            command: () => {
-              this.taskHelperService.refreshMetadataTask({
-                refreshType: MetadataRefreshType.LIBRARY,
-                libraryId: entity?.id ?? undefined
-              }).subscribe();
             }
           },
           {

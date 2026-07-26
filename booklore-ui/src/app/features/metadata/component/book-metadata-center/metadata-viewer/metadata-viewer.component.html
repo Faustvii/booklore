@@ -672,19 +672,6 @@
                     <p-button [label]="(getDisplayFormat(book.primaryFile) ?? 'File') + ' · ' + formatFileSize(book.primaryFile)" icon="pi pi-download" severity="success" outlined (onClick)="download(book)" class="mobile-icon-only"></p-button>
                   }
                 }
-                @if (userState.user!.permissions.canEditMetadata || userState.user!.permissions.admin) {
-                  <p-button
-                    [label]="isAutoFetching ? t('fetchingBtn') : t('fetchMetadataBtn')"
-                    [icon]="isAutoFetching ? 'pi pi-spin pi-spinner' : 'pi pi-bolt'"
-                    [outlined]="true"
-                    severity="warn"
-                    (onClick)="quickRefresh(book!.id)"
-                    [disabled]="isAutoFetching"
-                    [pTooltip]="t('fetchMetadataTooltip')"
-                    tooltipPosition="top"
-                    class="mobile-icon-only">
-                  </p-button>
-                }
                 @if (otherItems$ | async; as otherItems) {
                   @if (otherItems.length > 0) {
                     <p-button icon="pi pi-ellipsis-v" severity="info" outlined (click)="entitymenu.toggle($event)"></p-button>

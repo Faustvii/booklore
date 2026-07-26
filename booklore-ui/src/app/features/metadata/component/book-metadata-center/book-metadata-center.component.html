@@ -31,12 +31,6 @@
           {{ t('tabEdit') }}
         </p-tab>
       }
-      @if (admin || canEditMetadata) {
-        <p-tab value="match">
-          <i [class]="'pi pi-search'"></i>
-          {{ t('tabSearch') }}
-        </p-tab>
-      }
       @if ((admin || canEditMetadata) && !isPhysical && isLocalStorage) {
         <p-tab value="sidecar">
           <i [class]="'pi pi-file'"></i>
@@ -56,11 +50,6 @@
           <app-metadata-editor
             [book$]="book$">
           </app-metadata-editor>
-        </p-tabpanel>
-      }
-      @if (admin || canEditMetadata) {
-        <p-tabpanel value="match">
-          <app-metadata-searcher [book$]="book$" [isActiveTab]="tab === 'match'"></app-metadata-searcher>
         </p-tabpanel>
       }
       @if ((admin || canEditMetadata) && !isPhysical && isLocalStorage) {

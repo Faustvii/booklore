@@ -43,8 +43,6 @@ import {BadgeModule} from 'primeng/badge';
 import {BookMenuService} from '../../service/book-menu.service';
 import {MagicShelf} from '../../../magic-shelf/service/magic-shelf.service';
 import {SidebarFilterTogglePrefService} from './filters/sidebar-filter-toggle-pref.service';
-import {MetadataRefreshType} from '../../../metadata/model/request/metadata-refresh-type.enum';
-import {TaskHelperService} from '../../../settings/task-management/task-helper.service';
 import {FilterLabelHelper} from './filter-label.helper';
 import {LoadingService} from '../../../../core/services/loading.service';
 import {LocalStorageService} from '../../../../shared/service/local-storage.service';
@@ -100,7 +98,6 @@ export class BookBrowserComponent implements OnInit, AfterViewInit, OnDestroy {
   protected sidebarFilterTogglePrefService = inject(SidebarFilterTogglePrefService);
   protected seriesCollapseFilter = inject(SeriesCollapseFilter);
   protected confirmationService = inject(ConfirmationService);
-  protected taskHelperService = inject(TaskHelperService);
   protected bookCardOverlayPreferenceService = inject(BookCardOverlayPreferenceService);
   protected bookSelectionService = inject(BookSelectionService);
   protected appSettingsService = inject(AppSettingsService);
@@ -396,8 +393,6 @@ export class BookBrowserComponent implements OnInit, AfterViewInit, OnDestroy {
     this.userService.userState$.pipe(filter(u => !!u?.user && u.loaded))
       .subscribe(userState => {
         this.metadataMenuItems = this.bookMenuService.getMetadataMenuItems(
-          () => this.autoFetchMetadata(),
-          () => this.fetchMetadata(),
           () => this.bulkEditMetadata(),
           () => this.multiBookEditMetadata(),
           () => this.regenerateCoversForSelected(),
@@ -828,18 +823,6 @@ export class BookBrowserComponent implements OnInit, AfterViewInit, OnDestroy {
         this.bookSelectionService.deselectAll();
       });
     }
-  }
-
-  autoFetchMetadata(): void {
-    if (!this.selectedBooks || this.selectedBooks.size === 0) return;
-    this.taskHelperService.refreshMetadataTask({
-      refreshType: MetadataRefreshType.BOOKS,
-      bookIds: Array.from(this.selectedBooks),
-    }).subscribe();
-  }
-
-  fetchMetadata(): void {
-    this.dialogHelperService.openMetadataRefreshDialog(this.selectedBooks);
   }
 
   bulkEditMetadata(): void {

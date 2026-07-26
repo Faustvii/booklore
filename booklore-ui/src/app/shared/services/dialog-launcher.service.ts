@@ -13,9 +13,6 @@ import {CreateEmailProviderDialogComponent} from '../../features/settings/email-
 import {DirectoryPickerComponent} from '../components/directory-picker/directory-picker.component';
 import {BookdropFinalizeResultDialogComponent} from '../../features/bookdrop/component/bookdrop-finalize-result-dialog/bookdrop-finalize-result-dialog.component';
 import {BookdropFinalizeResult} from '../../features/bookdrop/service/bookdrop.service';
-import {MetadataReviewDialogComponent} from '../../features/metadata/component/metadata-review-dialog/metadata-review-dialog-component';
-import {MetadataRefreshType} from '../../features/metadata/model/request/metadata-refresh-type.enum';
-import {MetadataFetchOptionsComponent} from '../../features/metadata/component/metadata-options-dialog/metadata-fetch-options/metadata-fetch-options.component';
 import {ShelfEditDialogComponent} from '../../features/book/components/shelf-edit-dialog/shelf-edit-dialog.component';
 import {IconPickerComponent} from '../components/icon-picker/icon-picker-component';
 
@@ -102,17 +99,6 @@ export class DialogLauncherService {
     });
   }
 
-  openLibraryMetadataFetchDialog(libraryId: number): DynamicDialogRef | null {
-    return this.openDialog(MetadataFetchOptionsComponent, {
-      showHeader: false,
-      styleClass: `${DialogSize.SM} ${DialogStyle.MINIMAL}`,
-      data: {
-        libraryId: libraryId,
-        metadataRefreshType: MetadataRefreshType.LIBRARY,
-      },
-    });
-  }
-
   openShelfEditDialog(shelfId: number): DynamicDialogRef | null {
     return this.openDialog(ShelfEditDialogComponent, {
       showHeader: false,
@@ -189,16 +175,6 @@ export class DialogLauncherService {
       styleClass: `${DialogSize.MD} ${DialogStyle.MINIMAL}`,
       data: {
         result: result,
-      },
-    });
-  }
-
-  openMetadataReviewDialog(taskId: string): DynamicDialogRef | null {
-    return this.openDialog(MetadataReviewDialogComponent, {
-      showHeader: false,
-      styleClass: `${DialogSize.FULL} ${DialogStyle.MINIMAL}`,
-      data: {
-        taskId,
       },
     });
   }

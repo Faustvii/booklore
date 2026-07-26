@@ -14,9 +14,6 @@
               <p-tab [value]="SettingsTab.MetadataSettings">
                 <i class="pi pi-sliders-h"></i> {{ t('metadata1') }}
               </p-tab>
-              <p-tab [value]="SettingsTab.LibraryMetadataSettings">
-                <i class="pi pi-database"></i> {{ t('metadata2') }}
-              </p-tab>
             }
             @if (userState.user.permissions.admin || userState.user.permissions.canManageGlobalPreferences) {
               <p-tab [value]="SettingsTab.ApplicationSettings">
@@ -73,11 +70,6 @@
               <p-tabpanel [value]="SettingsTab.MetadataSettings">
                 <ng-template #content>
                   <app-metadata-settings-component></app-metadata-settings-component>
-                </ng-template>
-              </p-tabpanel>
-              <p-tabpanel [value]="SettingsTab.LibraryMetadataSettings">
-                <ng-template #content>
-                  <app-library-metadata-settings-component></app-library-metadata-settings-component>
                 </ng-template>
               </p-tabpanel>
             }

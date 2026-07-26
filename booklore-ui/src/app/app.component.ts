@@ -9,8 +9,6 @@ import {RouterOutlet} from '@angular/router';
 import {TranslocoDirective, TranslocoPipe} from '@jsverse/transloco';
 import {AuthInitializationService} from './core/security/auth-initialization-service';
 import {AppConfigService} from './shared/service/app-config.service';
-import {MetadataBatchProgressNotification} from './shared/model/metadata-batch-progress.model';
-import {MetadataProgressService} from './shared/service/metadata-progress.service';
 import {BookdropFileNotification, BookdropFileService} from './features/bookdrop/service/bookdrop-file.service';
 import {Subscription} from 'rxjs';
 import {TaskProgressPayload, TaskService} from './features/settings/task-management/task.service';
@@ -39,7 +37,6 @@ export class AppComponent implements OnInit, OnDestroy {
   private bookService = inject(BookService);
   private rxStompService = inject(RxStompService);
   private notificationEventService = inject(NotificationEventService);
-  private metadataProgressService = inject(MetadataProgressService);
   private bookdropFileService = inject(BookdropFileService);
   private taskService = inject(TaskService);
   private libraryService = inject(LibraryService);
@@ -126,11 +123,6 @@ export class AppComponent implements OnInit, OnDestroy {
     this.subscriptions.push(
       this.rxStompService.watch('/user/queue/book-metadata-batch-update').subscribe(msg =>
         this.bookService.handleMultipleBookUpdates(JSON.parse(msg.body))
-      )
-    );
-    this.subscriptions.push(
-      this.rxStompService.watch('/user/queue/book-metadata-batch-progress').subscribe(msg =>
-        this.metadataProgressService.handleIncomingProgress(JSON.parse(msg.body) as MetadataBatchProgressNotification)
       )
     );
     this.subscriptions.push(

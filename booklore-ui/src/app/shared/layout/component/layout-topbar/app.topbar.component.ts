@@ -16,10 +16,8 @@ import {ThemeConfiguratorComponent} from '../theme-configurator/theme-configurat
 import {AuthService} from '../../../service/auth.service';
 import {UserService} from '../../../../features/settings/user-management/user.service';
 import {Popover} from 'primeng/popover';
-import {MetadataProgressService} from '../../../service/metadata-progress.service';
 import {takeUntil} from 'rxjs/operators';
 import {Subject} from 'rxjs';
-import {MetadataBatchProgressNotification} from '../../../model/metadata-batch-progress.model';
 import {BookdropFileService} from '../../../../features/bookdrop/service/bookdrop-file.service';
 import {DialogLauncherService} from '../../../services/dialog-launcher.service';
 import {UnifiedNotificationBoxComponent} from '../../../components/unified-notification-popover/unified-notification-popover-component';
@@ -65,18 +63,15 @@ export class AppTopBarComponent implements OnDestroy {
   @ViewChild('statsMenu') statsMenu: Menu | undefined;
 
   isMenuVisible = true;
-  progressHighlight = false;
   completedTaskCount = 0;
   hasActiveOrCompletedTasks = false;
   showPulse = false;
-  hasAnyTasks = false;
   hasPendingBookdropFiles = false;
   supportAnimationEnabled = localStorage.getItem(SUPPORT_ANIMATION_KEY) !== 'false';
 
   private eventTimer: number | undefined;
   private destroy$ = new Subject<void>();
 
-  private latestTasks: Record<string, MetadataBatchProgressNotification> = {};
   private latestHasPendingFiles = false;
   private latestNotificationSeverity?: Severity;
 
@@ -91,7 +86,6 @@ export class AppTopBarComponent implements OnDestroy {
     private router: Router,
     private authService: AuthService,
     protected userService: UserService,
-    private metadataProgressService: MetadataProgressService,
     private bookdropFileService: BookdropFileService,
     private dialogLauncher: DialogLauncherService,
     translocoService: TranslocoService
@@ -106,17 +100,7 @@ export class AppTopBarComponent implements OnDestroy {
     this.onStorageChange = this.onStorageChange.bind(this);
     window.addEventListener('storage', this.onStorageChange);
 
-    this.subscribeToMetadataProgress();
     this.subscribeToNotifications();
-
-    this.metadataProgressService.activeTasks$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((tasks) => {
-        this.latestTasks = tasks;
-        this.hasAnyTasks = Object.keys(tasks).length > 0;
-        this.updateCompletedTaskCount();
-        this.updateTaskVisibility(tasks);
-      });
 
     this.bookdropFileService.hasPendingFiles$
       .pipe(takeUntil(this.destroy$))
@@ -124,7 +108,7 @@ export class AppTopBarComponent implements OnDestroy {
         this.latestHasPendingFiles = hasPending;
         this.hasPendingBookdropFiles = hasPending;
         this.updateCompletedTaskCount();
-        this.updateTaskVisibilityWithBookdrop();
+        this.updateTaskVisibility();
       });
 
     this.userService.userState$
@@ -223,14 +207,6 @@ export class AppTopBarComponent implements OnDestroy {
     }
   }
 
-  private subscribeToMetadataProgress() {
-    this.metadataProgressService.progressUpdates$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((progress) => {
-        this.progressHighlight = progress.status === 'IN_PROGRESS';
-      });
-  }
-
   private subscribeToNotifications() {
     this.notificationService.latestNotification$
       .pipe(takeUntil(this.destroy$))
@@ -249,19 +225,11 @@ export class AppTopBarComponent implements OnDestroy {
   }
 
   private updateCompletedTaskCount() {
-    const completedMetadataTasks = Object.values(this.latestTasks).length;
-    const bookdropFileTaskCount = this.latestHasPendingFiles ? 1 : 0;
-    this.completedTaskCount = completedMetadataTasks + bookdropFileTaskCount;
+    this.completedTaskCount = this.latestHasPendingFiles ? 1 : 0;
   }
 
-  private updateTaskVisibility(tasks: Record<string, MetadataBatchProgressNotification>) {
-    this.hasActiveOrCompletedTasks =
-      this.progressHighlight || this.completedTaskCount > 0 || Object.keys(tasks).length > 0;
-    this.updateTaskVisibilityWithBookdrop();
-  }
-
-  private updateTaskVisibilityWithBookdrop() {
-    this.hasActiveOrCompletedTasks = this.hasActiveOrCompletedTasks || this.hasPendingBookdropFiles;
+  private updateTaskVisibility() {
+    this.hasActiveOrCompletedTasks = this.completedTaskCount > 0 || this.hasPendingBookdropFiles;
   }
 
   private initializeStatsMenu() {
@@ -306,14 +274,12 @@ export class AppTopBarComponent implements OnDestroy {
   }
 
   get iconClass(): string {
-    if (this.progressHighlight) return 'pi-spinner spin';
     if (this.iconPulsating) return 'pi-wave-pulse';
     if (this.completedTaskCount > 0 || this.hasPendingBookdropFiles) return 'pi-bell';
     return 'pi-wave-pulse';
   }
 
   get iconColor(): string {
-    if (this.progressHighlight) return 'gold';
     if (this.showPulse) {
       switch (this.latestNotificationSeverity) {
         case Severity.ERROR:
@@ -332,13 +298,12 @@ export class AppTopBarComponent implements OnDestroy {
   }
 
   get iconPulsating(): boolean {
-    return !this.progressHighlight && (this.showPulse);
+    return this.showPulse;
   }
 
   get shouldShowNotificationBadge(): boolean {
     return (
       (this.completedTaskCount > 0 || this.hasPendingBookdropFiles) &&
-      !this.progressHighlight &&
       !this.showPulse
     );
   }

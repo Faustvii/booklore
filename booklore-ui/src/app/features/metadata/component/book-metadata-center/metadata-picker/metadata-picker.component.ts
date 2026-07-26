@@ -18,9 +18,7 @@ import {AutoComplete, AutoCompleteSelectEvent} from 'primeng/autocomplete';
 import {Image} from 'primeng/image';
 import {Checkbox} from 'primeng/checkbox';
 import {LazyLoadImageModule} from 'ng-lazyload-image';
-import {AppSettingsService} from '../../../../../shared/service/app-settings.service';
-import {MetadataProviderSpecificFields} from '../../../../../shared/model/app-settings.model';
-import {ALL_COMIC_METADATA_FIELDS, ALL_METADATA_FIELDS, AUDIOBOOK_METADATA_FIELDS, COMIC_ARRAY_METADATA_FIELDS, COMIC_FORM_TO_MODEL_LOCK, COMIC_TEXT_METADATA_FIELDS, COMIC_TEXTAREA_METADATA_FIELDS, getArrayFields, getBookDetailsFields, getBottomFields, getProviderFields, getSeriesFields, getTextareaFields, getTopFields, MetadataFieldConfig, MetadataFormBuilder, MetadataUtilsService} from '../../../../../shared/metadata';
+import {ALL_COMIC_METADATA_FIELDS, ALL_METADATA_FIELDS, AUDIOBOOK_METADATA_FIELDS, COMIC_ARRAY_METADATA_FIELDS, COMIC_FORM_TO_MODEL_LOCK, COMIC_TEXT_METADATA_FIELDS, COMIC_TEXTAREA_METADATA_FIELDS, getArrayFields, getBookDetailsFields, getBottomFields, getSeriesFields, getTextareaFields, getTopFields, MetadataFieldConfig, MetadataFormBuilder, MetadataUtilsService} from '../../../../../shared/metadata';
 import {TranslocoDirective, TranslocoService} from '@jsverse/transloco';
 
 @Component({
@@ -53,7 +51,6 @@ export class MetadataPickerComponent implements OnInit {
   metadataDescription: MetadataFieldConfig[] = [];
   metadataSeriesFields: MetadataFieldConfig[] = [];
   metadataBookDetailsFields: MetadataFieldConfig[] = [];
-  metadataProviderFields: MetadataFieldConfig[] = [];
   metadataFieldsBottom: MetadataFieldConfig[] = [];
   audiobookMetadataFields: MetadataFieldConfig[] = [];
   comicTextFields: MetadataFieldConfig[] = [];
@@ -86,12 +83,9 @@ export class MetadataPickerComponent implements OnInit {
   private bookMetadataManageService = inject(BookMetadataManageService);
   protected urlHelper = inject(UrlHelperService);
   private destroyRef = inject(DestroyRef);
-  private appSettingsService = inject(AppSettingsService);
   private formBuilder = inject(MetadataFormBuilder);
   private metadataUtils = inject(MetadataUtilsService);
   private readonly t = inject(TranslocoService);
-
-  private enabledProviderFields: MetadataProviderSpecificFields | null = null;
 
   constructor() {
     this.metadataForm = this.formBuilder.buildForm(true);
@@ -104,7 +98,6 @@ export class MetadataPickerComponent implements OnInit {
     this.metadataDescription = getTextareaFields();
     this.metadataSeriesFields = getSeriesFields();
     this.metadataBookDetailsFields = getBookDetailsFields();
-    this.updateProviderFields();
     this.updateBottomFields();
     this.audiobookMetadataFields = AUDIOBOOK_METADATA_FIELDS;
     this.comicTextFields = COMIC_TEXT_METADATA_FIELDS;
@@ -112,12 +105,8 @@ export class MetadataPickerComponent implements OnInit {
     this.comicTextareaFields = COMIC_TEXTAREA_METADATA_FIELDS;
   }
 
-  private updateProviderFields(): void {
-    this.metadataProviderFields = getProviderFields(this.enabledProviderFields);
-  }
-
   private updateBottomFields(): void {
-    this.metadataFieldsBottom = getBottomFields(this.enabledProviderFields);
+    this.metadataFieldsBottom = getBottomFields();
   }
 
   getFiltered(controlName: string): string[] {
@@ -131,19 +120,6 @@ export class MetadataPickerComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.appSettingsService.appSettings$
-      .pipe(
-        filter(settings => !!settings?.metadataProviderSpecificFields),
-        takeUntilDestroyed(this.destroyRef)
-      )
-      .subscribe(settings => {
-        if (settings?.metadataProviderSpecificFields) {
-          this.enabledProviderFields = settings.metadataProviderSpecificFields;
-          this.updateProviderFields();
-          this.updateBottomFields();
-        }
-      });
-
     this.bookService.bookState$
       .pipe(
         filter(bookState => bookState.loaded),

@@ -13,7 +13,6 @@ import {BookMetadataHostService} from '../../../../shared/service/book-metadata-
 import {TranslocoDirective} from '@jsverse/transloco';
 import {MetadataViewerComponent} from './metadata-viewer/metadata-viewer.component';
 import {MetadataEditorComponent} from './metadata-editor/metadata-editor.component';
-import {MetadataSearcherComponent} from './metadata-searcher/metadata-searcher.component';
 import {SidecarViewerComponent} from './sidecar-viewer/sidecar-viewer.component';
 
 @Component({
@@ -28,7 +27,6 @@ import {SidecarViewerComponent} from './sidecar-viewer/sidecar-viewer.component'
     TabPanel,
     MetadataViewerComponent,
     MetadataEditorComponent,
-    MetadataSearcherComponent,
     SidecarViewerComponent,
     Button,
     TranslocoDirective
@@ -54,7 +52,7 @@ export class BookMetadataCenterComponent implements OnInit, OnDestroy {
 
   private appSettings$ = this.appSettingsService.appSettings$;
   private currentBookId$ = new BehaviorSubject<number | null>(null);
-  private validTabs = ['view', 'edit', 'match', 'sidecar'];
+  private validTabs = ['view', 'edit', 'sidecar'];
 
   get tab(): string {
     return this._tab;
