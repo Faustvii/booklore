@@ -250,6 +250,7 @@ jobs:
         if: steps.draft_guard.outputs.should_upsert == 'true'
         env:
           GITHUB_TOKEN: ${{ github.token }}
+          RELEASE_NOTES_TEXT: ${{ steps.semVersie.outputs.release-notes }}
         run: |
           set -euo pipefail
 
@@ -264,9 +265,7 @@ jobs:
             notes_arg=(--notes-file "${notes_path}")
           else
             temp_notes_file="$(mktemp)"
-            cat > "${temp_notes_file}" <<'EOF'
-            ${{ steps.semVersie.outputs.release-notes }}
-            EOF
+            printf '%s\n' "${RELEASE_NOTES_TEXT}" > "${temp_notes_file}"
             notes_arg=(--notes-file "${temp_notes_file}")
           fi
 
