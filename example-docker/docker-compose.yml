@@ -5,9 +5,8 @@ services:
     # Or the GHCR image:
     # image: ghcr.io/booklore-app/booklore:latest
     container_name: booklore
+    user: "${APP_USER_ID:-1000}:${APP_GROUP_ID:-1000}"  # Optional: run as a specific host uid:gid
     environment:
-      - USER_ID=1000  # Modify this if the volume's ownership is not root
-      - GROUP_ID=1000 # Modify this if the volume's ownership is not root
       - TZ=Etc/UTC
       - DATABASE_URL=jdbc:postgresql://postgres:5432/booklore   # Only modify this if you're familiar with JDBC and your database setup
       - DATABASE_USERNAME=booklore                             # Must match POSTGRES_USER defined in the postgres container

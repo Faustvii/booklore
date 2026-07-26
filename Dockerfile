@@ -57,8 +57,11 @@ LABEL org.opencontainers.image.title="BookLore" \
 ENV JAVA_TOOL_OPTIONS="-XX:+UseG1GC -XX:+UseCompactObjectHeaders -XX:+UseStringDeduplication -XX:MaxRAMPercentage=75.0 -XX:+ExitOnOutOfMemoryError"
 
 ARG TARGETARCH
-RUN apk update && apk add --no-cache su-exec libstdc++ libgcc && \
-    mkdir -p /bookdrop
+RUN apk update && apk add --no-cache libstdc++ libgcc && \
+    addgroup -S booklore -g 1000 && \
+    adduser -S -D -u 1000 -G booklore booklore && \
+    mkdir -p /app/data /bookdrop && \
+    chown -R 1000:1000 /app /bookdrop
 
 COPY docker/unrar/unrar-${TARGETARCH} /usr/local/bin/unrar
 RUN chmod 755 /usr/local/bin/unrar
@@ -66,6 +69,8 @@ RUN chmod 755 /usr/local/bin/unrar
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 COPY --from=springboot-build /springboot-app/build/libs/booklore-api-0.0.1-SNAPSHOT.jar /app/app.jar
+
+USER 1000:1000
 
 ARG BOOKLORE_PORT=6060
 EXPOSE ${BOOKLORE_PORT}
