@@ -397,16 +397,6 @@
                     tooltipPosition="top">
                   </p-button>
                 }
-                @if (userState.user!.permissions.canMoveOrganizeFiles && (appSettingsService.appSettings$ | async)?.diskType === 'LOCAL') {
-                  <p-button
-                    outlined="true"
-                    icon="pi pi-arrows-h"
-                    severity="info"
-                    (click)="moveFiles()"
-                    [pTooltip]="t('tooltip.organizeFiles')"
-                    tooltipPosition="top">
-                  </p-button>
-                }
                 @if (hasMoreActionsItems) {
                   <div class="more-actions-wrapper">
                     <p-button

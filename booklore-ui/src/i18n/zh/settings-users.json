@@ -63,7 +63,6 @@
     "bulkCustomFetch": "批量自定义获取元数据",
     "accessBulkEditor": "访问批量元数据编辑器",
     "bulkRegenerateCover": "批量重新生成封面",
-    "moveOrganize": "移动/整理文件",
     "bulkLockUnlock": "批量锁定/解锁元数据",
     "koreaderSync": "KOReader 同步",
     "koboSync": "Kobo 同步",

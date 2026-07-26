@@ -1,7 +1,7 @@
 import {AfterViewChecked, Component, DestroyRef, ElementRef, inject, Input, OnChanges, OnInit, SimpleChanges, ViewChild} from '@angular/core';
 import {Button} from 'primeng/button';
 import {AsyncPipe, DecimalPipe, NgClass} from '@angular/common';
-import {combineLatest, Observable} from 'rxjs';
+import {Observable} from 'rxjs';
 import {BookService} from '../../../../book/service/book.service';
 import {BookFileService} from '../../../../book/service/book-file.service';
 import {Rating, RatingRateEvent} from 'primeng/rating';
@@ -218,11 +218,9 @@ export class MetadataViewerComponent implements OnInit, OnChanges, AfterViewChec
     this.otherItems$ = this.book$.pipe(
       filter((book): book is Book => book !== null),
       switchMap(book =>
-        combineLatest([
-          this.userService.userState$.pipe(take(1)),
-          this.appSettingsService.appSettings$.pipe(take(1))
-        ]).pipe(
-          map(([userState, appSettings]) => {
+        this.userService.userState$.pipe(
+          take(1),
+          map(userState => {
             const items: MenuItem[] = [];
 
             items.push({
@@ -247,16 +245,6 @@ export class MetadataViewerComponent implements OnInit, OnChanges, AfterViewChec
             // Add allowed submenus based on user permissions
 
             const hasFiles = this.hasAnyFiles(book);
-
-            if (hasFiles && (userState?.user?.permissions.canManageLibrary || userState?.user?.permissions.admin) && appSettings?.diskType === 'LOCAL') {
-              items.push({
-                label: this.t.translate('metadata.viewer.menuOrganizeFiles'),
-                icon: 'pi pi-arrows-h',
-                command: () => {
-                  this.openFileMoverDialog(book.id);
-                },
-              });
-            }
 
             if (hasFiles && (userState?.user?.permissions.canEmailBook || userState?.user?.permissions.admin)) {
               items.push({
@@ -1226,10 +1214,6 @@ export class MetadataViewerComponent implements OnInit, OnChanges, AfterViewChec
   cancelDateFinishedEdit(): void {
     this.isEditingDateFinished = false;
     this.editDateFinished = null;
-  }
-
-  openFileMoverDialog(bookId: number): void {
-    this.bookDialogHelperService.openFileMoverDialog(new Set([bookId]));
   }
 
   protected readonly ResetProgressTypes = ResetProgressTypes;

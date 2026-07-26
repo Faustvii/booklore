@@ -63,7 +63,6 @@
     "bulkCustomFetch": "メタデータ一括カスタム取得",
     "accessBulkEditor": "一括メタデータエディタにアクセス",
     "bulkRegenerateCover": "カバー一括再生成",
-    "moveOrganize": "ファイルの移動/整理",
     "bulkLockUnlock": "メタデータ一括ロック/解除",
     "koreaderSync": "KOReader同期",
     "koboSync": "Kobo同期",

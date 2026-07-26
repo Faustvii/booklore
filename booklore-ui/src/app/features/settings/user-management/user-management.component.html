@@ -337,10 +337,6 @@
                             <label [for]="'bulkregeneratecover-'+user.id">{{ t('perms.bulkRegenerateCover') }}</label>
                           </div>
                           <div class="permission-item">
-                            <p-checkbox [binary]="true" [(ngModel)]="user.permissions.canMoveOrganizeFiles" [disabled]="isPermissionDisabled(user)" inputId="moveorganizefiles-{{user.id}}"></p-checkbox>
-                            <label [for]="'moveorganizefiles-'+user.id">{{ t('perms.moveOrganize') }}</label>
-                          </div>
-                          <div class="permission-item">
                             <p-checkbox [binary]="true" [(ngModel)]="user.permissions.canBulkLockUnlockMetadata" [disabled]="isPermissionDisabled(user)" inputId="bulklockunlock-{{user.id}}"></p-checkbox>
                             <label [for]="'bulklockunlock-'+user.id">{{ t('perms.bulkLockUnlock') }}</label>
                           </div>

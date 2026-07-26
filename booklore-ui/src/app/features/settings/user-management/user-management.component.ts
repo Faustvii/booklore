@@ -278,7 +278,6 @@ export class UserManagementComponent implements OnInit, OnDestroy {
     if (permissions.canBulkCustomFetchMetadata) count++;
     if (permissions.canBulkEditMetadata) count++;
     if (permissions.canBulkRegenerateCover) count++;
-    if (permissions.canMoveOrganizeFiles) count++;
     if (permissions.canBulkLockUnlockMetadata) count++;
     return count;
   }
@@ -334,7 +333,6 @@ export class UserManagementComponent implements OnInit, OnDestroy {
       user.permissions.canBulkCustomFetchMetadata = true;
       user.permissions.canBulkEditMetadata = true;
       user.permissions.canBulkRegenerateCover = true;
-      user.permissions.canMoveOrganizeFiles = true;
       user.permissions.canBulkLockUnlockMetadata = true;
       user.permissions.canBulkResetBookloreReadProgress = true;
       user.permissions.canBulkResetKoReaderReadProgress = true;

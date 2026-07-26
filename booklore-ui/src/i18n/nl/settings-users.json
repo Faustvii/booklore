@@ -63,7 +63,6 @@
     "bulkCustomFetch": "Bulk aangepast metadata ophalen",
     "accessBulkEditor": "Toegang tot bulk metadata-editor",
     "bulkRegenerateCover": "Bulk omslagen opnieuw genereren",
-    "moveOrganize": "Bestanden verplaatsen/organiseren",
     "bulkLockUnlock": "Bulk metadata vergrendelen/ontgrendelen",
     "koreaderSync": "KOReader-synchronisatie",
     "koboSync": "Kobo-synchronisatie",

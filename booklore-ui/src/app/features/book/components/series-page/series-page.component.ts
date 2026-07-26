@@ -20,7 +20,6 @@ import {BookMenuService} from "../../service/book-menu.service";
 import {LoadingService} from "../../../../core/services/loading.service";
 import {BookDialogHelperService} from "../book-browser/book-dialog-helper.service";
 import {TieredMenu} from "primeng/tieredmenu";
-import {AppSettingsService} from "../../../../shared/service/app-settings.service";
 import {TranslocoDirective, TranslocoService} from '@jsverse/transloco';
 import {Tooltip} from "primeng/tooltip";
 import {Divider} from "primeng/divider";
@@ -117,7 +116,6 @@ export class SeriesPageComponent implements OnDestroy, AfterViewChecked {
   private dialogHelperService = inject(BookDialogHelperService);
   private messageService = inject(MessageService);
   protected bookCardOverlayPreferenceService = inject(BookCardOverlayPreferenceService);
-  protected appSettingsService = inject(AppSettingsService);
   private readonly t = inject(TranslocoService);
   protected urlHelper = inject(UrlHelperService);
 
@@ -771,10 +769,6 @@ export class SeriesPageComponent implements OnDestroy, AfterViewChecked {
         });
       }
     });
-  }
-
-  moveFiles() {
-    this.dialogHelperService.openFileMoverDialog(this.selectedBooks);
   }
 
   user() {
