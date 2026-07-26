@@ -63,7 +63,6 @@
     "bulkCustomFetch": "Récupération personnalisée en masse des métadonnées",
     "accessBulkEditor": "Accéder à l'éditeur de métadonnées en masse",
     "bulkRegenerateCover": "Régénération en masse des couvertures",
-    "moveOrganize": "Déplacer/Organiser les fichiers",
     "bulkLockUnlock": "Verrouillage/Déverrouillage en masse des métadonnées",
     "koreaderSync": "Synchronisation KOReader",
     "koboSync": "Synchronisation Kobo",

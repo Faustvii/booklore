@@ -25,7 +25,6 @@ import {ReadStatusHelper} from '../../../helpers/read-status.helper';
 import {BookDialogHelperService} from '../book-dialog-helper.service';
 import {BookNavigationService} from '../../../service/book-navigation.service';
 import {BookCardOverlayPreferenceService} from '../book-card-overlay-preference.service';
-import {AppSettingsService} from '../../../../../shared/service/app-settings.service';
 import {TranslocoPipe, TranslocoService} from '@jsverse/transloco';
 
 @Component({
@@ -73,7 +72,6 @@ export class BookCardComponent implements OnInit, OnChanges, OnDestroy {
   private bookDialogHelperService = inject(BookDialogHelperService);
   private bookNavigationService = inject(BookNavigationService);
   private cdr = inject(ChangeDetectorRef);
-  private appSettingsService = inject(AppSettingsService);
   private readonly t = inject(TranslocoService);
 
   protected _progressPercentage: number | null = null;
@@ -98,7 +96,6 @@ export class BookCardComponent implements OnInit, OnChanges, OnDestroy {
   private destroy$ = new Subject<void>();
   protected readStatusHelper = inject(ReadStatusHelper);
   private user: User | null = null;
-  private diskType: string = 'LOCAL';
   private menuInitialized = false;
 
   showBookTypePill = true;
@@ -116,16 +113,6 @@ export class BookCardComponent implements OnInit, OnChanges, OnDestroy {
       .subscribe(userState => {
         this.user = userState.user;
         this.metadataCenterViewMode = userState.user?.userSettings?.metadataCenterViewMode ?? 'route';
-      });
-
-    this.appSettingsService.appSettings$
-      .pipe(
-        filter(settings => !!settings),
-        take(1),
-        takeUntil(this.destroy$)
-      )
-      .subscribe(settings => {
-        this.diskType = settings?.diskType ?? 'LOCAL';
       });
 
     if (this.overlayPreferenceService) {
@@ -556,16 +543,6 @@ export class BookCardComponent implements OnInit, OnChanges, OnDestroy {
   private moreMenuItems(): MenuItem[] {
     const items: MenuItem[] = [];
     const moreActions: MenuItem[] = [];
-
-    if (this.user?.permissions.canMoveOrganizeFiles && this.diskType === 'LOCAL') {
-      moreActions.push({
-        label: this.t.translate('book.card.menu.organizeFile'),
-        icon: 'pi pi-arrows-h',
-        command: () => {
-          this.bookDialogHelperService.openFileMoverDialog(new Set([this.book.id]));
-        }
-      });
-    }
 
     moreActions.push(
       {

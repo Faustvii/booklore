@@ -63,7 +63,6 @@
     "bulkCustomFetch": "Zbiorcze niestandardowe pobieranie metadanych",
     "accessBulkEditor": "Dostęp do edytora zbiorczego metadanych",
     "bulkRegenerateCover": "Zbiorcze generowanie okładek",
-    "moveOrganize": "Przenoszenie/Organizowanie plików",
     "bulkLockUnlock": "Zbiorcze blokowanie/odblokowywanie metadanych",
     "koreaderSync": "Synchronizacja KOReader",
     "koboSync": "Synchronizacja Kobo",

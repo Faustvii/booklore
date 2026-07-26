@@ -71,7 +71,6 @@ export class CreateUserDialogComponent implements OnInit {
       permissionBulkCustomFetchMetadata: [false],
       permissionBulkEditMetadata: [false],
       permissionBulkRegenerateCover: [false],
-      permissionMoveOrganizeFiles: [false],
       permissionBulkLockUnlockMetadata: [false],
       permissionBulkResetBookloreReadProgress: [false],
       permissionBulkResetKoReaderReadProgress: [false],

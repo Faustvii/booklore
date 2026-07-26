@@ -53,7 +53,6 @@ import {BookBrowserQueryParamsService, VIEW_MODES} from './book-browser-query-pa
 import {BookBrowserEntityService, EntityInfo} from './book-browser-entity.service';
 import {BookFilterOrchestrationService} from './book-filter-orchestration.service';
 import {BookBrowserScrollService} from './book-browser-scroll.service';
-import {AppSettingsService} from '../../../../shared/service/app-settings.service';
 import {MultiSortPopoverComponent} from './sorting/multi-sort-popover/multi-sort-popover.component';
 import {SortService} from '../../service/sort.service';
 import {TranslocoDirective, TranslocoService} from '@jsverse/transloco';
@@ -100,7 +99,6 @@ export class BookBrowserComponent implements OnInit, AfterViewInit, OnDestroy {
   protected confirmationService = inject(ConfirmationService);
   protected bookCardOverlayPreferenceService = inject(BookCardOverlayPreferenceService);
   protected bookSelectionService = inject(BookSelectionService);
-  protected appSettingsService = inject(AppSettingsService);
 
   private cdr = inject(ChangeDetectorRef);
   private activatedRoute = inject(ActivatedRoute);
@@ -921,10 +919,6 @@ export class BookBrowserComponent implements OnInit, AfterViewInit, OnDestroy {
         });
       }
     });
-  }
-
-  moveFiles(): void {
-    this.dialogHelperService.openFileMoverDialog(this.selectedBooks);
   }
 
   attachFilesToBook(): void {

@@ -4,7 +4,6 @@ import {DialogLauncherService, DialogSize, DialogStyle} from '../../../../shared
 import {ShelfAssignerComponent} from '../shelf-assigner/shelf-assigner.component';
 import {LockUnlockMetadataDialogComponent} from './lock-unlock-metadata-dialog/lock-unlock-metadata-dialog.component';
 import {MultiBookMetadataEditorComponent} from '../../../metadata/component/multi-book-metadata-editor/multi-book-metadata-editor-component';
-import {FileMoverComponent} from '../../../../shared/components/file-mover/file-mover-component';
 import {ShelfCreatorComponent} from '../shelf-creator/shelf-creator.component';
 import {BookSenderComponent} from '../book-sender/book-sender.component';
 import {BookMetadataCenterComponent} from '../../../metadata/component/book-metadata-center/book-metadata-center.component';
@@ -84,17 +83,6 @@ export class BookDialogHelperService {
     return this.openDialog(MultiBookMetadataEditorComponent, {
       showHeader: false,
       styleClass: `${DialogSize.FULL} ${DialogStyle.MINIMAL}`,
-      data: {
-        bookIds: Array.from(bookIds),
-      },
-    });
-  }
-
-  openFileMoverDialog(bookIds: Set<number>): DynamicDialogRef | null {
-    return this.openDialog(FileMoverComponent, {
-      showHeader: false,
-      styleClass: `${DialogSize.FULL} ${DialogStyle.MINIMAL}`,
-      maximizable: true,
       data: {
         bookIds: Array.from(bookIds),
       },
