@@ -125,7 +125,6 @@ public class BookQueryService {
             m.setCategoriesLocked(null);
             m.setMoodsLocked(null);
             m.setTagsLocked(null);
-            m.setReviewsLocked(null);
             m.setNarratorLocked(null);
             m.setAbridgedLocked(null);
             m.setAgeRatingLocked(null);
@@ -152,7 +151,6 @@ public class BookQueryService {
             if (m.getAudiobookMetadata() != null) {
                 m.getAudiobookMetadata().setChapters(null);
             }
-            m.setBookReviews(null);
 
             // Strip unused ratings
             m.setDoubanRating(null);
@@ -236,7 +234,7 @@ public class BookQueryService {
                 m.getAudibleIdLocked(), m.getAudibleRatingLocked(), m.getAudibleReviewCountLocked(),
                 m.getExternalUrlLocked(), m.getCoverLocked(), m.getAudiobookCoverLocked(),
                 m.getAuthorsLocked(), m.getCategoriesLocked(), m.getMoodsLocked(),
-                m.getTagsLocked(), m.getReviewsLocked(), m.getNarratorLocked(),
+                m.getTagsLocked(), m.getNarratorLocked(),
                 m.getAbridgedLocked(), m.getAgeRatingLocked(), m.getContentRatingLocked()
         };
 

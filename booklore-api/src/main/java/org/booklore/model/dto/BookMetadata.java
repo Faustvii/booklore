@@ -65,7 +65,6 @@ public class BookMetadata {
     private Set<String> moods;
     private Set<String> tags;
     private String thumbnailUrl;
-    private List<BookReview> bookReviews;
     private Double rating;
 
     private Boolean allMetadataLocked;
@@ -88,7 +87,6 @@ public class BookMetadata {
     private Boolean categoriesLocked;
     private Boolean moodsLocked;
     private Boolean tagsLocked;
-    private Boolean reviewsLocked;
     private Boolean narratorLocked;
     private Boolean abridgedLocked;
 

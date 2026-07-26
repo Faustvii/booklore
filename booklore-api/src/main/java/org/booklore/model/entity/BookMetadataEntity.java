@@ -10,7 +10,6 @@ import org.hibernate.annotations.FetchMode;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -286,10 +285,6 @@ public class BookMetadataEntity {
     @Column(name = "abridged")
     private Boolean abridged;
 
-    @Column(name = "reviews_locked")
-    @Builder.Default
-    private Boolean reviewsLocked = Boolean.FALSE;
-
     @Column(name = "narrator_locked")
     @Builder.Default
     private Boolean narratorLocked = Boolean.FALSE;
@@ -401,11 +396,6 @@ public class BookMetadataEntity {
     @Fetch(FetchMode.SUBSELECT)
     private Set<TagEntity> tags;
 
-    @OneToMany(mappedBy = "bookMetadata", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @Fetch(FetchMode.SUBSELECT)
-    @Builder.Default
-    private Set<BookReviewEntity> reviews = new HashSet<>();
-
     public void applyLockToAllFields(boolean lock) {
         this.titleLocked = lock;
         this.subtitleLocked = lock;
@@ -444,7 +434,6 @@ public class BookMetadataEntity {
         this.audibleIdLocked = lock;
         this.audibleRatingLocked = lock;
         this.audibleReviewCountLocked = lock;
-        this.reviewsLocked = lock;
         this.narratorLocked = lock;
         this.abridgedLocked = lock;
         this.ageRatingLocked = lock;
@@ -492,7 +481,6 @@ public class BookMetadataEntity {
                 && Boolean.TRUE.equals(this.audibleIdLocked)
                 && Boolean.TRUE.equals(this.audibleRatingLocked)
                 && Boolean.TRUE.equals(this.audibleReviewCountLocked)
-                && Boolean.TRUE.equals(this.reviewsLocked)
                 && Boolean.TRUE.equals(this.narratorLocked)
                 && Boolean.TRUE.equals(this.abridgedLocked)
                 && Boolean.TRUE.equals(this.ageRatingLocked)

@@ -59,7 +59,6 @@ public class BookMetadataUpdater {
     private final MetadataMatchService metadataMatchService;
     private final AppSettingService appSettingService;
     private final MetadataWriterFactory metadataWriterFactory;
-    private final BookReviewUpdateService bookReviewUpdateService;
     private final FileMoveService fileMoveService;
     private final SidecarMetadataWriter sidecarMetadataWriter;
 
@@ -110,7 +109,6 @@ public class BookMetadataUpdater {
         updateCategoriesIfNeeded(newMetadata, metadata, clearFlags, mergeCategories, replaceMode);
         updateMoodsIfNeeded(newMetadata, metadata, clearFlags, mergeMoods, replaceMode);
         updateTagsIfNeeded(newMetadata, metadata, clearFlags, mergeTags, replaceMode);
-        bookReviewUpdateService.updateBookReviews(newMetadata, metadata, clearFlags, mergeCategories);
         updateThumbnailIfNeeded(bookId, bookEntity, newMetadata, metadata, updateThumbnail, bookType);
         updateAudiobookMetadataIfNeeded(bookEntity, newMetadata, metadata, clearFlags, replaceMode);
         updateComicMetadataIfNeeded(newMetadata, metadata, replaceMode);
@@ -715,7 +713,6 @@ public class BookMetadataUpdater {
                 Pair.of(m.getCategoriesLocked(), e::setCategoriesLocked),
                 Pair.of(m.getMoodsLocked(), e::setMoodsLocked),
                 Pair.of(m.getTagsLocked(), e::setTagsLocked),
-                Pair.of(m.getReviewsLocked(), e::setReviewsLocked),
                 Pair.of(m.getNarratorLocked(), e::setNarratorLocked),
                 Pair.of(m.getAbridgedLocked(), e::setAbridgedLocked),
                 Pair.of(m.getAgeRatingLocked(), e::setAgeRatingLocked),

@@ -504,7 +504,6 @@ public class MetadataChangeDetector {
         }
         if (differsLock(newMeta.getCoverLocked(), existingMeta.getCoverLocked())) return true;
         if (differsLock(newMeta.getAudiobookCoverLocked(), existingMeta.getAudiobookCoverLocked())) return true;
-        if (differsLock(newMeta.getReviewsLocked(), existingMeta.getReviewsLocked())) return true;
         return hasComicLockChanges(newMeta, existingMeta);
     }
 
