@@ -13,7 +13,6 @@ import {FormsModule} from '@angular/forms';
 import {Tooltip} from 'primeng/tooltip';
 import {BookService} from '../../service/book.service';
 import {BookMetadataManageService} from '../../service/book-metadata-manage.service';
-import {AppSettingsService} from '../../../../shared/service/app-settings.service';
 
 @Component({
   selector: 'app-book-reviews',
@@ -33,7 +32,6 @@ export class BookReviewsComponent implements OnInit, OnChanges {
   private confirmationService = inject(ConfirmationService);
   private messageService = inject(MessageService);
   private userService = inject(UserService);
-  private appSettingsService = inject(AppSettingsService);
   private destroyRef = inject(DestroyRef);
   private readonly t = inject(TranslocoService);
 
@@ -48,7 +46,6 @@ export class BookReviewsComponent implements OnInit, OnChanges {
   ngOnInit(): void {
     this.checkUserPermissions();
     this.subscribeToBookState();
-    this.subscribeToAppSettings();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -312,14 +309,6 @@ export class BookReviewsComponent implements OnInit, OnChanges {
 
   isSpoilerRevealed(reviewId: number): boolean {
     return this.revealedSpoilers.has(reviewId);
-  }
-
-  private subscribeToAppSettings(): void {
-    this.appSettingsService.appSettings$
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(settings => {
-        this.reviewDownloadEnabled = settings?.metadataPublicReviewsSettings?.downloadEnabled ?? true;
-      });
   }
 
   getProviderSeverity(provider: string): 'success' | 'warn' {

@@ -25,8 +25,6 @@ export class BookMenuService {
   private readonly t = inject(TranslocoService);
 
   getMetadataMenuItems(
-    autoFetchMetadata: () => void,
-    fetchMetadata: () => void,
     bulkEditMetadata: () => void,
     multiBookEditMetadata: () => void,
     regenerateCovers: () => void,
@@ -35,22 +33,6 @@ export class BookMenuService {
 
     const permissions = user?.permissions;
     const items: MenuItem[] = [];
-
-    if (permissions?.canBulkAutoFetchMetadata) {
-      items.push({
-        label: this.t.translate('book.menuService.menu.autoFetchMetadata'),
-        icon: 'pi pi-bolt',
-        command: autoFetchMetadata
-      });
-    }
-
-    if (permissions?.canBulkCustomFetchMetadata) {
-      items.push({
-        label: this.t.translate('book.menuService.menu.customFetchMetadata'),
-        icon: 'pi pi-sync',
-        command: fetchMetadata
-      });
-    }
 
     if (permissions?.canBulkEditMetadata) {
       items.push({

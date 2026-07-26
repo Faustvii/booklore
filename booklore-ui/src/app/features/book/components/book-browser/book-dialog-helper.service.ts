@@ -3,22 +3,19 @@ import {DynamicDialogRef} from 'primeng/dynamicdialog';
 import {DialogLauncherService, DialogSize, DialogStyle} from '../../../../shared/services/dialog-launcher.service';
 import {ShelfAssignerComponent} from '../shelf-assigner/shelf-assigner.component';
 import {LockUnlockMetadataDialogComponent} from './lock-unlock-metadata-dialog/lock-unlock-metadata-dialog.component';
-import {MetadataRefreshType} from '../../../metadata/model/request/metadata-refresh-type.enum';
-import {BulkMetadataUpdateComponent} from '../../../metadata/component/bulk-metadata-update/bulk-metadata-update-component';
 import {MultiBookMetadataEditorComponent} from '../../../metadata/component/multi-book-metadata-editor/multi-book-metadata-editor-component';
-import {MultiBookMetadataFetchComponent} from '../../../metadata/component/multi-book-metadata-fetch/multi-book-metadata-fetch-component';
 import {FileMoverComponent} from '../../../../shared/components/file-mover/file-mover-component';
 import {ShelfCreatorComponent} from '../shelf-creator/shelf-creator.component';
 import {BookSenderComponent} from '../book-sender/book-sender.component';
-import {MetadataFetchOptionsComponent} from '../../../metadata/component/metadata-options-dialog/metadata-fetch-options/metadata-fetch-options.component';
 import {BookMetadataCenterComponent} from '../../../metadata/component/book-metadata-center/book-metadata-center.component';
-import {CoverSearchComponent} from '../../../metadata/component/cover-search/cover-search.component';
 import {Book} from '../../model/book.model';
 import {AdditionalFileUploaderComponent} from '../additional-file-uploader/additional-file-uploader.component';
 import {BookFileAttacherComponent} from '../book-file-attacher/book-file-attacher.component';
 import {AddPhysicalBookDialogComponent} from '../add-physical-book-dialog/add-physical-book-dialog.component';
 import {BulkIsbnImportDialogComponent} from '../bulk-isbn-import-dialog/bulk-isbn-import-dialog.component';
 import {DuplicateMergerComponent} from '../duplicate-merger/duplicate-merger.component';
+import {BulkMetadataUpdateComponent} from '../../../metadata/component/bulk-metadata-update/bulk-metadata-update-component';
+import {CoverSearchComponent} from '../../../metadata/component/cover-search/cover-search.component';
 
 @Injectable({providedIn: 'root'})
 export class BookDialogHelperService {
@@ -70,17 +67,6 @@ export class BookDialogHelperService {
       styleClass: `${DialogSize.LG} ${DialogStyle.MINIMAL}`,
       data: {
         bookIds: Array.from(bookIds),
-      },
-    });
-  }
-
-  openMetadataRefreshDialog(bookIds: Set<number>): DynamicDialogRef | null {
-    return this.openDialog(MultiBookMetadataFetchComponent, {
-      showHeader: false,
-      styleClass: `${DialogSize.FULL} ${DialogStyle.MINIMAL}`,
-      data: {
-        bookIds: Array.from(bookIds),
-        metadataRefreshType: MetadataRefreshType.BOOKS,
       },
     });
   }

@@ -16,7 +16,6 @@ import {EmailService} from '../../../../settings/email-v2/email.service';
 import {Tooltip} from 'primeng/tooltip';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {ProgressBar} from 'primeng/progressbar';
-import {MetadataRefreshType} from '../../../model/request/metadata-refresh-type.enum';
 import {Router} from '@angular/router';
 import {filter, map, switchMap, take, tap} from 'rxjs/operators';
 import {Menu} from 'primeng/menu';
@@ -28,7 +27,6 @@ import {Image} from 'primeng/image';
 import {BookDialogHelperService} from '../../../../book/components/book-browser/book-dialog-helper.service';
 import {LibraryService} from '../../../../book/service/library.service';
 import {TagColor, TagComponent} from '../../../../../shared/components/tag/tag.component';
-import {TaskHelperService} from '../../../../settings/task-management/task-helper.service';
 import {AGE_RATING_OPTIONS, CONTENT_RATING_LABELS, fileSizeRanges, matchScoreRanges, pageCountRanges} from '../../../../book/components/book-browser/book-filter/book-filter.config';
 import {BookNavigationService} from '../../../../book/service/book-navigation.service';
 import {BookMetadataHostService} from '../../../../../shared/service/book-metadata-host.service';
@@ -60,7 +58,6 @@ export class MetadataViewerComponent implements OnInit, OnChanges, AfterViewChec
   private messageService = inject(MessageService);
   private bookService = inject(BookService);
   private bookFileService = inject(BookFileService);
-  private taskHelperService = inject(TaskHelperService);
   private authorService = inject(AuthorService);
   protected urlHelper = inject(UrlHelperService);
   protected userService = inject(UserService);
@@ -81,7 +78,6 @@ export class MetadataViewerComponent implements OnInit, OnChanges, AfterViewChec
   isOverflowing = false;
   isComicSectionExpanded = true;
   showFilePath = false;
-  isAutoFetching = false;
   private metadataCenterViewMode: 'route' | 'dialog' = 'route';
   selectedReadStatus: ReadStatus = ReadStatus.UNREAD;
   isEditingDateFinished = false;
@@ -445,18 +441,8 @@ export class MetadataViewerComponent implements OnInit, OnChanges, AfterViewChec
         filter((book): book is Book => book != null && book.metadata != null)
       )
       .subscribe(book => {
-        this.isAutoFetching = false;
         this.loadBooksInSeriesAndFilterRecommended(book.metadata!.bookId);
         this.selectedReadStatus = book.readStatus ?? ReadStatus.UNREAD;
-      });
-
-    this.appSettings$
-      .pipe(
-        filter(settings => settings != null),
-        take(1)
-      )
-      .subscribe(settings => {
-        this.amazonDomain = settings?.metadataProviderSettings?.amazon?.domain ?? 'com';
       });
   }
 
@@ -647,19 +633,6 @@ export class MetadataViewerComponent implements OnInit, OnChanges, AfterViewChec
         });
       }
     });
-  }
-
-  quickRefresh(bookId: number) {
-    this.isAutoFetching = true;
-
-    this.taskHelperService.refreshMetadataTask({
-      refreshType: MetadataRefreshType.BOOKS,
-      bookIds: [bookId],
-    }).subscribe();
-
-    setTimeout(() => {
-      this.isAutoFetching = false;
-    }, 15000);
   }
 
   quickSend(book: Book) {

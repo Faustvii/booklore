@@ -994,16 +994,6 @@
                 tooltipPosition="top">
               </p-button>
             }
-            <p-button
-              [label]="isAutoFetching ? t('fetchingBtn') : t('autoFetchBtn')"
-              [icon]="isAutoFetching ? 'pi pi-spin pi-spinner' : 'pi pi-bolt'"
-              [outlined]="true"
-              severity="info"
-              (onClick)="autoFetch(book.id)"
-              [disabled]="isAutoFetching"
-              [pTooltip]="t('autoFetchTooltip')"
-              tooltipPosition="top">
-            </p-button>
             <p-divider layout="vertical"/>
             <p-button [label]="t('unlockAllBtn')" icon="pi pi-lock-open" [outlined]="true" severity="success" (onClick)="unlockAll()" [pTooltip]="t('unlockAllTooltip')" tooltipPosition="top"></p-button>
             <p-button [label]="t('lockAllBtn')" icon="pi pi-lock" [outlined]="true" severity="warn" (onClick)="lockAll()" [pTooltip]="t('lockAllTooltip')" tooltipPosition="top"></p-button>
@@ -1063,16 +1053,6 @@
                   tooltipPosition="top">
                 </p-button>
               }
-              <p-button
-                icon="pi pi-bolt"
-                [outlined]="true"
-                severity="info"
-                (onClick)="autoFetch(book.id)"
-                [disabled]="isAutoFetching"
-                [pTooltip]="t('autoFetchBtn')"
-                tooltipPosition="top">
-              </p-button>
-
               <p-button
                 icon="pi pi-lock-open"
                 [outlined]="true"

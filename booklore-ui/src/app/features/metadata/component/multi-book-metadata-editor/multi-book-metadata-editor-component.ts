@@ -7,14 +7,12 @@ import {BehaviorSubject, combineLatest, Observable, Subject} from 'rxjs';
 import {UserService} from '../../../settings/user-management/user.service';
 import {distinctUntilChanged, filter, map, shareReplay, switchMap, takeUntil} from 'rxjs/operators';
 import {MetadataEditorComponent} from '../book-metadata-center/metadata-editor/metadata-editor.component';
-import {MetadataSearcherComponent} from '../book-metadata-center/metadata-searcher/metadata-searcher.component';
 import {Button} from 'primeng/button';
 
 @Component({
   selector: 'app-multi-book-metadata-editor-component',
   imports: [
     MetadataEditorComponent,
-    MetadataSearcherComponent,
     Tab,
     TabList,
     TabPanel,

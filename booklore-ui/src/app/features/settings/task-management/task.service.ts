@@ -2,28 +2,23 @@ import {inject, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {API_CONFIG} from '../../../core/config/api-config';
-import {MetadataRefreshRequest} from '../../metadata/model/request/metadata-refresh-request.model';
 
 export enum TaskType {
-  CLEAR_PDF_CACHE = 'CLEAR_PDF_CACHE',
-  REFRESH_LIBRARY_METADATA = 'REFRESH_LIBRARY_METADATA',
+  LIBRARY_RESCAN = 'LIBRARY_RESCAN',
   UPDATE_BOOK_RECOMMENDATIONS = 'UPDATE_BOOK_RECOMMENDATIONS',
   CLEANUP_DELETED_BOOKS = 'CLEANUP_DELETED_BOOKS',
   SYNC_LIBRARY_FILES = 'SYNC_LIBRARY_FILES',
   BOOKDROP_PERIODIC_SCANNING = 'BOOKDROP_PERIODIC_SCANNING',
-  CLEANUP_TEMP_METADATA = 'CLEANUP_TEMP_METADATA',
-  REFRESH_METADATA_MANUAL = 'REFRESH_METADATA_MANUAL'
+  CLEAR_PDF_CACHE = 'CLEAR_PDF_CACHE'
 }
 
 export const TASK_TYPE_CONFIG: Record<TaskType, { parallel: boolean; async: boolean; displayOrder: number }> = {
-  [TaskType.REFRESH_LIBRARY_METADATA]: {parallel: false, async: true, displayOrder: 1},
+  [TaskType.LIBRARY_RESCAN]: {parallel: false, async: true, displayOrder: 1},
   [TaskType.SYNC_LIBRARY_FILES]: {parallel: false, async: false, displayOrder: 2},
   [TaskType.BOOKDROP_PERIODIC_SCANNING]: {parallel: false, async: false, displayOrder: 3},
   [TaskType.UPDATE_BOOK_RECOMMENDATIONS]: {parallel: false, async: true, displayOrder: 4},
   [TaskType.CLEANUP_DELETED_BOOKS]: {parallel: false, async: false, displayOrder: 5},
-  [TaskType.CLEANUP_TEMP_METADATA]: {parallel: false, async: false, displayOrder: 6},
-  [TaskType.REFRESH_METADATA_MANUAL]: {parallel: false, async: false, displayOrder: 7},
-  [TaskType.CLEAR_PDF_CACHE]: {parallel: false, async: false, displayOrder: 8},
+  [TaskType.CLEAR_PDF_CACHE]: {parallel: false, async: false, displayOrder: 6},
 };
 
 export enum MetadataReplaceMode {
@@ -38,7 +33,7 @@ export interface LibraryRescanOptions {
 export interface TaskCreateRequest {
   taskType: TaskType;
   triggeredByCron?: boolean;
-  options?: LibraryRescanOptions | MetadataRefreshRequest | null;
+  options?: LibraryRescanOptions | null;
 }
 
 export interface TaskCreateResponse {
@@ -109,7 +104,7 @@ export interface TaskProgressPayload {
   taskId: string;
   taskType: string;
   message: string;
-  progress: number; // 0-100 percentage
+  progress: number;
   taskStatus: TaskStatus;
 }
 

@@ -17,23 +17,41 @@ import {ProgressSpinner} from "primeng/progressspinner";
 import {Tooltip} from "primeng/tooltip";
 import {filter, finalize, switchMap, take, tap} from "rxjs/operators";
 import {takeUntilDestroyed} from "@angular/core/rxjs-interop";
-import {MetadataRefreshType} from "../../../model/request/metadata-refresh-type.enum";
 import {AutoComplete, AutoCompleteSelectEvent} from "primeng/autocomplete";
 import {DatePicker} from "primeng/datepicker";
 import {Textarea} from "primeng/textarea";
 import {Image} from "primeng/image";
 import {LazyLoadImageModule} from "ng-lazyload-image";
 import {Select} from "primeng/select";
-import {TaskHelperService} from '../../../../settings/task-management/task-helper.service';
 import {BookDialogHelperService} from "../../../../book/components/book-browser/book-dialog-helper.service";
 import {BookNavigationService} from '../../../../book/service/book-navigation.service';
 import {BookMetadataHostService} from '../../../../../shared/service/book-metadata-host.service';
 import {Router} from '@angular/router';
 import {UserService} from '../../../../settings/user-management/user.service';
-import {AppSettingsService} from '../../../../../shared/service/app-settings.service';
-import {MetadataProviderSpecificFields} from '../../../../../shared/model/app-settings.model';
 import {TranslocoDirective, TranslocoService} from '@jsverse/transloco';
 import {CdkDragDrop, CdkDropList, CdkDrag, moveItemInArray} from '@angular/cdk/drag-drop';
+
+interface ProviderIdFieldsVisibility {
+  asin: boolean;
+  amazonRating: boolean;
+  amazonReviewCount: boolean;
+  googleId: boolean;
+  goodreadsId: boolean;
+  goodreadsRating: boolean;
+  goodreadsReviewCount: boolean;
+  hardcoverId: boolean;
+  hardcoverBookId: boolean;
+  hardcoverRating: boolean;
+  hardcoverReviewCount: boolean;
+  comicvineId: boolean;
+  lubimyczytacId: boolean;
+  lubimyczytacRating: boolean;
+  ranobedbId: boolean;
+  ranobedbRating: boolean;
+  audibleId: boolean;
+  audibleRating: boolean;
+  audibleReviewCount: boolean;
+}
 
 @Component({
   selector: "app-metadata-editor",
@@ -74,7 +92,6 @@ export class MetadataEditorComponent implements OnInit {
   private messageService = inject(MessageService);
   private bookService = inject(BookService);
   private bookMetadataManageService = inject(BookMetadataManageService);
-  private taskHelperService = inject(TaskHelperService);
   protected urlHelper = inject(UrlHelperService);
   private bookDialogHelperService = inject(BookDialogHelperService);
   private bookNavigationService = inject(BookNavigationService);
@@ -82,7 +99,6 @@ export class MetadataEditorComponent implements OnInit {
   private router = inject(Router);
   private userService = inject(UserService);
   private destroyRef = inject(DestroyRef);
-  private appSettingsService = inject(AppSettingsService);
   private readonly t = inject(TranslocoService);
 
   metadataForm: FormGroup;
@@ -93,8 +109,6 @@ export class MetadataEditorComponent implements OnInit {
   isGeneratingCover = false;
   isGeneratingAudiobookCover = false;
 
-  refreshingBookIds = new Set<number>();
-  isAutoFetching = false;
   isFetchingFromFile = false;
   autoSaveEnabled = false;
 
@@ -128,7 +142,7 @@ export class MetadataEditorComponent implements OnInit {
   comicTextareaFields = COMIC_TEXTAREA_METADATA_FIELDS;
   audiobookMetadataFields = AUDIOBOOK_METADATA_FIELDS;
 
-  providerSpecificFields: MetadataProviderSpecificFields = {
+  providerSpecificFields: ProviderIdFieldsVisibility = {
     asin: true,
     amazonRating: true,
     amazonReviewCount: true,
@@ -360,10 +374,6 @@ export class MetadataEditorComponent implements OnInit {
       const metadata = book?.metadata;
       if (!metadata) return;
       this.currentBookId = metadata.bookId;
-      if (this.refreshingBookIds.has(book.id)) {
-        this.refreshingBookIds.delete(book.id);
-        this.isAutoFetching = false;
-      }
       this.originalMetadata = structuredClone(metadata);
       this.populateFormFromMetadata(metadata);
     });
@@ -380,16 +390,6 @@ export class MetadataEditorComponent implements OnInit {
         this.autoSaveEnabled = userState.user?.userSettings.autoSaveMetadata ?? false;
       });
 
-    this.appSettingsService.appSettings$
-      .pipe(
-        filter(settings => !!settings),
-        takeUntilDestroyed(this.destroyRef)
-      )
-      .subscribe(settings => {
-        if (settings?.metadataProviderSpecificFields) {
-          this.providerSpecificFields = settings.metadataProviderSpecificFields;
-        }
-      });
   }
 
   private prepareAutoComplete(): void {
@@ -1054,32 +1054,6 @@ export class MetadataEditorComponent implements OnInit {
     });
   }
 
-  autoFetch(bookId: number) {
-    this.refreshingBookIds.add(bookId);
-    this.isAutoFetching = true;
-
-    this.taskHelperService.refreshMetadataTask({
-      refreshType: MetadataRefreshType.BOOKS,
-      bookIds: [bookId],
-    }).subscribe({
-      next: () => {
-        this.isAutoFetching = false;
-      },
-      error: () => {
-        this.isAutoFetching = false;
-      },
-      complete: () => {
-        this.isAutoFetching = false;
-        this.refreshingBookIds.delete(bookId);
-      }
-    });
-
-    setTimeout(() => {
-      this.isAutoFetching = false;
-      this.refreshingBookIds.delete(bookId);
-    }, 15000);
-  }
-
   fetchFromFile(bookId: number) {
     this.isFetchingFromFile = true;
     this.bookMetadataManageService.getFileMetadata(bookId).pipe(
@@ -1183,7 +1157,7 @@ export class MetadataEditorComponent implements OnInit {
     return position ? this.t.translate('metadata.editor.navigationPosition', {current: position.current, total: position.total}) : '';
   }
 
-  isFieldVisible(field: keyof MetadataProviderSpecificFields): boolean {
+  isFieldVisible(field: keyof ProviderIdFieldsVisibility): boolean {
     return this.providerSpecificFields[field] ?? false;
   }
 
