@@ -1,7 +1,7 @@
 # Task 03 — Remove File Ingestion (Upload, Bookdrop, Additional Files)
 
 **Priority:** P3  
-**Status:** To Do  
+**Status:** Done  
 **Scope:** Backend + Frontend
 
 ---
@@ -45,10 +45,10 @@
 
 ## Acceptance Criteria
 
-- [ ] No file upload UI exists anywhere in the frontend
-- [ ] No bookdrop UI or API endpoints exist
-- [ ] App starts without errors
-- [ ] Library scan still indexes multi-format books correctly
-- [ ] Download of alternate formats still works
-- [ ] New Flyway migration drops bookdrop table cleanly
-- [ ] All existing tests pass; remove or update tests that covered removed code
+- [x] No file upload UI exists anywhere in the frontend
+- [x] No bookdrop UI or API endpoints exist
+- [x] App starts without errors
+- [x] Library scan still indexes multi-format books correctly
+- [x] Download of alternate formats still works
+- [x] New Flyway migration drops bookdrop table cleanly
+- [x] All existing tests pass; remove or update tests that covered removed code
