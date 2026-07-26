@@ -397,13 +397,9 @@
   },
   "sidecar": {
     "title": "Prateći metapodaci",
-    "description": "Pregledajte i upravljajte pratećim datotekama metapodataka (.metadata.json) povezanim s ovom knjigom. Prateće datoteke pružaju prijenosne metapodatke koji putuju s datotekom knjige.",
-    "exportBtn": "Izvezi u prateću datoteku",
-    "exportTooltip": "Izvezi trenutne metapodatke knjige u prateću (.metadata.json) datoteku",
-    "importBtn": "Uvezi iz prateće datoteke",
-    "importTooltip": "Uvezi metapodatke iz prateće datoteke u BookLore",
+    "description": "Pregledajte prateće datoteke metapodataka (.metadata.json) povezane s ovom knjigom. Prateće datoteke pružaju prijenosne metapodatke koji putuju s datotekom knjige.",
     "noSidecarTitle": "Prateća datoteka nije pronađena",
-    "noSidecarDescription": "Ne postoji prateća datoteka metapodataka za ovu knjigu. Koristite gumb Izvezi za kreiranje.",
+    "noSidecarDescription": "Ne postoji prateća datoteka metapodataka za ovu knjigu.",
     "generatedLabel": "Generirano:",
     "versionLabel": "Verzija:",
     "byLabel": "Od:",
@@ -414,17 +410,7 @@
     "syncStatusConflict": "Konflikt",
     "syncStatusMissing": "Nedostaje",
     "syncStatusNA": "N/D",
-    "syncStatusUnknown": "Nepoznato",
-    "toast": {
-      "exportSuccessSummary": "Izvoz uspješan",
-      "exportSuccessDetail": "Prateća datoteka metapodataka je kreirana.",
-      "exportFailedSummary": "Izvoz nije uspio",
-      "exportFailedDetail": "Kreiranje prateće datoteke metapodataka nije uspjelo.",
-      "importSuccessSummary": "Uvoz uspješan",
-      "importSuccessDetail": "Metapodaci su uvezeni iz prateće datoteke.",
-      "importFailedSummary": "Uvoz nije uspio",
-      "importFailedDetail": "Uvoz metapodataka iz prateće datoteke nije uspio."
-    }
+    "syncStatusUnknown": "Nepoznato"
   },
   "coverSearch": {
     "searchAudiobookCover": "Pretraži naslovnicu audioknjige",

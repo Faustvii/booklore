@@ -1,7 +1,7 @@
 import {Component, inject, OnInit} from '@angular/core';
 import {ToggleSwitch} from 'primeng/toggleswitch';
 import {FormsModule} from '@angular/forms';
-import {AppSettingKey, AppSettings, MetadataPersistenceSettings, SaveToOriginalFileSettings, SidecarSettings} from '../../../../shared/model/app-settings.model';
+import {AppSettingKey, AppSettings, MetadataPersistenceSettings, SaveToOriginalFileSettings} from '../../../../shared/model/app-settings.model';
 import {AppSettingsService} from '../../../../shared/service/app-settings.service';
 import {SettingsHelperService} from '../../../../shared/service/settings-helper.service';
 import {filter, take} from 'rxjs/operators';
@@ -41,13 +41,7 @@ export class MetadataPersistenceSettingsComponent implements OnInit {
       }
     },
     convertCbrCb7ToCbz: false,
-    moveFilesToLibraryPattern: false,
-    sidecarSettings: {
-      enabled: false,
-      writeOnUpdate: false,
-      writeOnScan: false,
-      includeCoverFile: false
-    }
+    moveFilesToLibraryPattern: false
   };
 
   isNetworkStorage = false;
@@ -63,7 +57,7 @@ export class MetadataPersistenceSettingsComponent implements OnInit {
   }
 
   onPersistenceToggle(key: keyof MetadataPersistenceSettings): void {
-    if (key !== 'saveToOriginalFile' && key !== 'sidecarSettings') {
+    if (key !== 'saveToOriginalFile') {
       (this.metadataPersistence as any)[key] = !this.metadataPersistence[key];
       this.settingsHelper.saveSetting(AppSettingKey.METADATA_PERSISTENCE_SETTINGS, this.metadataPersistence);
     }
@@ -77,13 +71,6 @@ export class MetadataPersistenceSettingsComponent implements OnInit {
 
   onFilesizeChange(format: keyof SaveToOriginalFileSettings): void {
     this.settingsHelper.saveSetting(AppSettingKey.METADATA_PERSISTENCE_SETTINGS, this.metadataPersistence);
-  }
-
-  onSidecarToggle(key: keyof SidecarSettings): void {
-    if (this.metadataPersistence.sidecarSettings) {
-      (this.metadataPersistence.sidecarSettings as any)[key] = !this.metadataPersistence.sidecarSettings[key];
-      this.settingsHelper.saveSetting(AppSettingKey.METADATA_PERSISTENCE_SETTINGS, this.metadataPersistence);
-    }
   }
 
   private loadSettings(): void {
@@ -123,12 +110,6 @@ export class MetadataPersistenceSettingsComponent implements OnInit {
             enabled: persistenceSettings.saveToOriginalFile?.audiobook?.enabled ?? false,
             maxFileSizeInMb: persistenceSettings.saveToOriginalFile?.audiobook?.maxFileSizeInMb ?? 1000
           }
-        },
-        sidecarSettings: {
-          enabled: persistenceSettings.sidecarSettings?.enabled ?? false,
-          writeOnUpdate: persistenceSettings.sidecarSettings?.writeOnUpdate ?? false,
-          writeOnScan: persistenceSettings.sidecarSettings?.writeOnScan ?? false,
-          includeCoverFile: persistenceSettings.sidecarSettings?.includeCoverFile ?? false
         }
       };
     }

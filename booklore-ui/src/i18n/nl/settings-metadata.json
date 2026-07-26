@@ -27,16 +27,6 @@
     "maxFileSizeTooltip": "",
     "autoMove": "",
     "autoMoveDesc": "",
-    "sidecarTitle": "",
-    "sidecarDesc": "",
-    "enableSidecar": "",
-    "enableSidecarDesc": "",
-    "writeOnUpdate": "",
-    "writeOnUpdateDesc": "",
-    "writeOnScan": "",
-    "writeOnScanDesc": "",
-    "includeCover": "",
-    "includeCoverDesc": "",
     "loadError": ""
   },
   "providers": {

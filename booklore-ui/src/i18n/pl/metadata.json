@@ -374,13 +374,9 @@
   },
   "sidecar": {
     "title": "Metadane Sidecar",
-    "description": "Przeglądaj i zarządzaj plikami metadanych sidecar (.metadata.json) powiązanymi z tą książką. Pliki sidecar zapewniają przenośne metadane, które towarzyszą plikowi książki.",
-    "exportBtn": "Eksportuj do Sidecar",
-    "exportTooltip": "Eksportuj aktualne metadane książki do pliku sidecar (.metadata.json)",
-    "importBtn": "Importuj z Sidecar",
-    "importTooltip": "Importuj metadane z pliku sidecar do BookLore",
+    "description": "Przeglądaj pliki metadanych sidecar (.metadata.json) powiązane z tą książką. Pliki sidecar zapewniają przenośne metadane, które towarzyszą plikowi książki.",
     "noSidecarTitle": "Nie znaleziono pliku Sidecar",
-    "noSidecarDescription": "Dla tej książki nie istnieje plik metadanych sidecar. Użyj przycisku Eksportuj, aby go utworzyć.",
+    "noSidecarDescription": "Dla tej książki nie istnieje plik metadanych sidecar.",
     "generatedLabel": "Wygenerowano:",
     "versionLabel": "Wersja:",
     "byLabel": "Przez:",
@@ -391,17 +387,7 @@
     "syncStatusConflict": "Konflikt",
     "syncStatusMissing": "Brak",
     "syncStatusNA": "N/D",
-    "syncStatusUnknown": "Nieznany",
-    "toast": {
-      "exportSuccessSummary": "Eksport udany",
-      "exportSuccessDetail": "Plik metadanych sidecar został utworzony.",
-      "exportFailedSummary": "Eksport nie powiódł się",
-      "exportFailedDetail": "Nie udało się utworzyć pliku metadanych sidecar.",
-      "importSuccessSummary": "Import udany",
-      "importSuccessDetail": "Metadane zostały zaimportowane z pliku sidecar.",
-      "importFailedSummary": "Import nie powiódł się",
-      "importFailedDetail": "Nie udało się zaimportować metadanych z pliku sidecar."
-    }
+    "syncStatusUnknown": "Nieznany"
   },
   "coverSearch": {
     "searchAudiobookCover": "Szukaj okładki audiobooka",

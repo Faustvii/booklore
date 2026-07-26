@@ -400,13 +400,9 @@
   },
   "sidecar": {
     "title": "Метадані sidecar",
-    "description": "Перегляд і керування sidecar-файлами метаданих (.metadata.json), пов'язаними з цією книгою. Sidecar-файли забезпечують переносні метадані, що подорожують разом із файлом книги.",
-    "exportBtn": "Експорт у sidecar",
-    "exportTooltip": "Експортувати поточні метадані книги в sidecar-файл (.metadata.json)",
-    "importBtn": "Імпорт із sidecar",
-    "importTooltip": "Імпортувати метадані з sidecar-файлу в BookLore",
+    "description": "Перегляд sidecar-файлів метаданих (.metadata.json), пов'язаних із цією книгою. Sidecar-файли забезпечують переносні метадані, що подорожують разом із файлом книги.",
     "noSidecarTitle": "Sidecar-файл не знайдено",
-    "noSidecarDescription": "Для цієї книги немає sidecar-файлу метаданих. Використайте кнопку Експорт, щоб створити його.",
+    "noSidecarDescription": "Для цієї книги немає sidecar-файлу метаданих.",
     "generatedLabel": "Створено:",
     "versionLabel": "Версія:",
     "byLabel": "Ким:",
@@ -417,17 +413,7 @@
     "syncStatusConflict": "Конфлікт",
     "syncStatusMissing": "Відсутній",
     "syncStatusNA": "Н/Д",
-    "syncStatusUnknown": "Невідомо",
-    "toast": {
-      "exportSuccessSummary": "Експорт успішний",
-      "exportSuccessDetail": "Sidecar-файл метаданих створено.",
-      "exportFailedSummary": "Експорт не вдався",
-      "exportFailedDetail": "Не вдалося створити sidecar-файл метаданих.",
-      "importSuccessSummary": "Імпорт успішний",
-      "importSuccessDetail": "Метадані імпортовано з sidecar-файлу.",
-      "importFailedSummary": "Імпорт не вдався",
-      "importFailedDetail": "Не вдалося імпортувати метадані з sidecar-файлу."
-    }
+    "syncStatusUnknown": "Невідомо"
   },
   "coverSearch": {
     "searchAudiobookCover": "Пошук обкладинки аудіокниги",
