@@ -257,12 +257,17 @@ jobs:
           title="Release ${tag}"
 
           notes_path="${{ steps.semVersie.outputs.release-notes-file }}"
-          notes_text="${{ steps.semVersie.outputs.release-notes }}"
+          temp_notes_file=""
+          trap 'if [ -n "${temp_notes_file}" ]; then rm -f "${temp_notes_file}"; fi' EXIT
 
           if [ -n "${notes_path}" ] && [ -f "${notes_path}" ]; then
             notes_arg=(--notes-file "${notes_path}")
           else
-            notes_arg=(--notes "${notes_text}")
+            temp_notes_file="$(mktemp)"
+            cat > "${temp_notes_file}" <<'EOF'
+            ${{ steps.semVersie.outputs.release-notes }}
+            EOF
+            notes_arg=(--notes-file "${temp_notes_file}")
           fi
 
           existing_draft_tag="$(gh release list --limit 20 --json isDraft,tagName --jq '.[] | select(.isDraft) | .tagName' | head -n 1)"
