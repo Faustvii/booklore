@@ -17,7 +17,6 @@ public class AppSettings {
     private boolean komgaGroupUnknown;
     private String uploadPattern;
     private Integer pdfCacheSizeInMb;
-    private Integer maxFileUploadSizeInMb;
     private boolean remoteAuthEnabled;
     private boolean oidcEnabled;
     private boolean telemetryEnabled;

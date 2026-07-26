@@ -30,11 +30,6 @@ public class SecurityUtil {
         return user != null && user.getId().equals(userId);
     }
 
-    public boolean canUpload() {
-        var user = getCurrentUser();
-        return user != null && user.getPermissions().isCanUpload();
-    }
-
     public boolean canDownload() {
         var user = getCurrentUser();
         return user != null && user.getPermissions().isCanDownload();
@@ -113,11 +108,6 @@ public class SecurityUtil {
                     .orElse(false);
         }
         return false;
-    }
-
-    public boolean canAccessBookdrop() {
-        var user = getCurrentUser();
-        return user != null && user.getPermissions().isCanAccessBookdrop();
     }
 
     public boolean canAccessUserStats() {

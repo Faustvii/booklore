@@ -130,7 +130,6 @@ public class OidcGroupMappingService {
     private void applyPermissions(UserPermissionsEntity perms, Set<String> permissions, boolean isAdmin, boolean additive) {
         if (!additive) {
             perms.setPermissionAdmin(isAdmin);
-            perms.setPermissionUpload(permissions.contains("permissionUpload"));
             perms.setPermissionDownload(permissions.contains("permissionDownload"));
             perms.setPermissionEditMetadata(permissions.contains("permissionEditMetadata"));
             perms.setPermissionManageLibrary(permissions.contains("permissionManageLibrary"));
@@ -140,7 +139,6 @@ public class OidcGroupMappingService {
             perms.setPermissionSyncKoreader(permissions.contains("permissionSyncKoreader"));
             perms.setPermissionSyncKobo(permissions.contains("permissionSyncKobo"));
             perms.setPermissionManageMetadataConfig(permissions.contains("permissionManageMetadataConfig"));
-            perms.setPermissionAccessBookdrop(permissions.contains("permissionAccessBookdrop"));
             perms.setPermissionAccessLibraryStats(permissions.contains("permissionAccessLibraryStats"));
             perms.setPermissionAccessUserStats(permissions.contains("permissionAccessUserStats"));
             perms.setPermissionAccessTaskManager(permissions.contains("permissionAccessTaskManager"));
@@ -158,7 +156,6 @@ public class OidcGroupMappingService {
             perms.setPermissionBulkResetBookReadStatus(permissions.contains("permissionBulkResetBookReadStatus"));
         } else {
             if (isAdmin) perms.setPermissionAdmin(true);
-            if (permissions.contains("permissionUpload")) perms.setPermissionUpload(true);
             if (permissions.contains("permissionDownload")) perms.setPermissionDownload(true);
             if (permissions.contains("permissionEditMetadata")) perms.setPermissionEditMetadata(true);
             if (permissions.contains("permissionManageLibrary")) perms.setPermissionManageLibrary(true);
@@ -168,7 +165,6 @@ public class OidcGroupMappingService {
             if (permissions.contains("permissionSyncKoreader")) perms.setPermissionSyncKoreader(true);
             if (permissions.contains("permissionSyncKobo")) perms.setPermissionSyncKobo(true);
             if (permissions.contains("permissionManageMetadataConfig")) perms.setPermissionManageMetadataConfig(true);
-            if (permissions.contains("permissionAccessBookdrop")) perms.setPermissionAccessBookdrop(true);
             if (permissions.contains("permissionAccessLibraryStats")) perms.setPermissionAccessLibraryStats(true);
             if (permissions.contains("permissionAccessUserStats")) perms.setPermissionAccessUserStats(true);
             if (permissions.contains("permissionAccessTaskManager")) perms.setPermissionAccessTaskManager(true);

@@ -71,14 +71,14 @@ class OidcGroupMappingServiceTest {
 
     @Test
     void create_savesEntityWithNullIdAndAudits() {
-        var dto = new OidcGroupMapping(99L, "admins", true, List.of("permissionUpload"), List.of(1L), "Admin group");
+        var dto = new OidcGroupMapping(99L, "admins", true, List.of("permissionManageLibrary"), List.of(1L), "Admin group");
         var entity = new OidcGroupMappingEntity();
         entity.setId(99L);
         entity.setOidcGroupClaim("admins");
         var savedEntity = new OidcGroupMappingEntity();
         savedEntity.setId(1L);
         savedEntity.setOidcGroupClaim("admins");
-        var savedDto = new OidcGroupMapping(1L, "admins", true, List.of("permissionUpload"), List.of(1L), "Admin group");
+        var savedDto = new OidcGroupMapping(1L, "admins", true, List.of("permissionManageLibrary"), List.of(1L), "Admin group");
 
         when(mapper.toEntity(dto)).thenReturn(entity);
         when(repository.save(entity)).thenReturn(savedEntity);
@@ -97,14 +97,14 @@ class OidcGroupMappingServiceTest {
         var existing = new OidcGroupMappingEntity();
         existing.setId(1L);
         existing.setOidcGroupClaim("old-group");
-        var dto = new OidcGroupMapping(1L, "new-group", true, List.of("permissionUpload"), List.of(2L), "Updated");
+        var dto = new OidcGroupMapping(1L, "new-group", true, List.of("permissionManageLibrary"), List.of(2L), "Updated");
         var savedEntity = new OidcGroupMappingEntity();
         savedEntity.setId(1L);
         savedEntity.setOidcGroupClaim("new-group");
-        var savedDto = new OidcGroupMapping(1L, "new-group", true, List.of("permissionUpload"), List.of(2L), "Updated");
+        var savedDto = new OidcGroupMapping(1L, "new-group", true, List.of("permissionManageLibrary"), List.of(2L), "Updated");
 
         when(repository.findById(1L)).thenReturn(Optional.of(existing));
-        when(mapper.stringListToJson(dto.permissions())).thenReturn("[\"permissionUpload\"]");
+        when(mapper.stringListToJson(dto.permissions())).thenReturn("[\"permissionManageLibrary\"]");
         when(mapper.longListToJson(dto.libraryIds())).thenReturn("[2]");
         when(repository.save(existing)).thenReturn(savedEntity);
         when(mapper.toDto(savedEntity)).thenReturn(savedDto);
@@ -210,11 +210,11 @@ class OidcGroupMappingServiceTest {
     @Test
     void syncUserGroups_onLogin_replacesPermissions() {
         var perms = new UserPermissionsEntity();
-        perms.setPermissionUpload(true);
+        perms.setPermissionManageLibrary(true);
         perms.setPermissionDownload(true);
         var user = createMockedUser(perms);
 
-        var mapping = createMapping(false, "[\"permissionUpload\",\"permissionEditMetadata\"]", "[1]");
+        var mapping = createMapping(false, "[\"permissionManageLibrary\",\"permissionEditMetadata\"]", "[1]");
         setupSyncMocks("ON_LOGIN", List.of("group1"), List.of(mapping));
 
         var lib1 = new LibraryEntity();
@@ -223,7 +223,7 @@ class OidcGroupMappingServiceTest {
 
         service.syncUserGroups(user, List.of("group1"));
 
-        assertThat(perms.isPermissionUpload()).isTrue();
+        assertThat(perms.isPermissionManageLibrary()).isTrue();
         assertThat(perms.isPermissionDownload()).isFalse();
         assertThat(perms.isPermissionEditMetadata()).isTrue();
         assertThat(perms.isPermissionAdmin()).isFalse();
@@ -260,7 +260,7 @@ class OidcGroupMappingServiceTest {
         perms.setPermissionDownload(true);
         var user = createMockedUser(perms);
 
-        var mapping = createMapping(false, "[\"permissionUpload\"]", "[1]");
+        var mapping = createMapping(false, "[\"permissionManageLibrary\"]", "[1]");
         setupSyncMocks("ON_LOGIN_ADDITIVE", List.of("group1"), List.of(mapping));
 
         var lib1 = new LibraryEntity();
@@ -269,7 +269,7 @@ class OidcGroupMappingServiceTest {
 
         service.syncUserGroups(user, List.of("group1"));
 
-        assertThat(perms.isPermissionUpload()).isTrue();
+        assertThat(perms.isPermissionManageLibrary()).isTrue();
         assertThat(perms.isPermissionDownload()).isTrue();
         verify(userRepository).save(user);
     }
@@ -303,14 +303,14 @@ class OidcGroupMappingServiceTest {
         var perms = new UserPermissionsEntity();
         var user = createMockedUser(perms);
 
-        var mapping1 = createMapping(false, "[\"permissionUpload\"]", "[]");
+        var mapping1 = createMapping(false, "[\"permissionManageLibrary\"]", "[]");
         var mapping2 = createMapping(true, "[\"permissionDownload\"]", "[]");
         setupSyncMocks("ON_LOGIN", List.of("group1", "group2"), List.of(mapping1, mapping2));
 
         service.syncUserGroups(user, List.of("group1", "group2"));
 
         assertThat(perms.isPermissionAdmin()).isTrue();
-        assertThat(perms.isPermissionUpload()).isTrue();
+        assertThat(perms.isPermissionManageLibrary()).isTrue();
         assertThat(perms.isPermissionDownload()).isTrue();
         verify(userRepository).save(user);
     }
@@ -332,7 +332,7 @@ class OidcGroupMappingServiceTest {
         // Need getLibraries for additive mode but this is ON_LOGIN
         lenient().when(user.getLibraries()).thenReturn(null);
 
-        var mapping = createMapping(false, "[\"permissionUpload\"]", "[1]");
+        var mapping = createMapping(false, "[\"permissionManageLibrary\"]", "[1]");
         setupSyncMocks("ON_LOGIN", List.of("group1"), List.of(mapping));
 
         var lib1 = new LibraryEntity();
@@ -343,7 +343,7 @@ class OidcGroupMappingServiceTest {
 
         assertThat(permissionsHolder.get()).isNotNull();
         assertThat(permissionsHolder.get().getUser()).isEqualTo(user);
-        assertThat(permissionsHolder.get().isPermissionUpload()).isTrue();
+        assertThat(permissionsHolder.get().isPermissionManageLibrary()).isTrue();
         verify(userRepository).save(user);
     }
 
@@ -353,7 +353,7 @@ class OidcGroupMappingServiceTest {
         var perms = new UserPermissionsEntity();
         lenient().when(user.getPermissions()).thenReturn(perms);
 
-        var mapping = createMapping(false, "[\"permissionUpload\"]", "[1]");
+        var mapping = createMapping(false, "[\"permissionManageLibrary\"]", "[1]");
         setupSyncMocks("UNKNOWN_MODE", List.of("group1"), List.of(mapping));
 
         service.syncUserGroups(user, List.of("group1"));

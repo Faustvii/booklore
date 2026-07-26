@@ -4,16 +4,13 @@ import org.booklore.config.security.annotation.CheckBookAccess;
 import org.booklore.model.dto.BookFile;
 import org.booklore.model.dto.request.DetachBookFileRequest;
 import org.booklore.model.dto.response.DetachBookFileResponse;
-import org.booklore.model.enums.BookFileType;
 import org.booklore.service.book.BookFileDetachmentService;
 import org.booklore.service.file.AdditionalFileService;
-import org.booklore.service.upload.FileUploadService;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -24,7 +21,6 @@ import java.util.List;
 public class AdditionalFileController {
 
     private final AdditionalFileService additionalFileService;
-    private final FileUploadService fileUploadService;
     private final BookFileDetachmentService bookFileDetachmentService;
 
     @GetMapping
@@ -41,19 +37,6 @@ public class AdditionalFileController {
             @RequestParam boolean isBook) {
         List<BookFile> files = additionalFileService.getAdditionalFilesByBookIdAndIsBook(bookId, isBook);
         return ResponseEntity.ok(files);
-    }
-
-    @PostMapping(consumes = "multipart/form-data")
-    @CheckBookAccess(bookIdParam = "bookId")
-    @PreAuthorize("@securityUtil.canUpload() or @securityUtil.isAdmin()")
-    public ResponseEntity<BookFile> uploadAdditionalFile(
-            @PathVariable Long bookId,
-            @RequestParam("file") MultipartFile file,
-            @RequestParam boolean isBook,
-            @RequestParam(required = false) BookFileType bookType,
-            @RequestParam(required = false) String description) {
-        BookFile additionalFile = fileUploadService.uploadAdditionalFile(bookId, file, isBook, bookType, description);
-        return ResponseEntity.ok(additionalFile);
     }
 
     @GetMapping("/{fileId}/download")

@@ -11,8 +11,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class AppUserInfo {
     private boolean isAdmin;
-    private boolean canUpload;
     private boolean canDownload;
-    private boolean canAccessBookdrop;
-    private int maxFileUploadSizeMb;
 }

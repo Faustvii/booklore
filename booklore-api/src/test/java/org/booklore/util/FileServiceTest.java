@@ -325,16 +325,6 @@ class FileServiceTest {
             }
 
             @Test
-            void getTempBookdropCoverImagePath_returnsCorrectPath() {
-                String result = fileService.getTempBookdropCoverImagePath(555L);
-
-                assertAll(
-                        () -> assertTrue(result.contains("bookdrop_temp")),
-                        () -> assertTrue(result.endsWith("555.jpg"))
-                );
-            }
-
-            @Test
             void getToolsKepubifyPath_returnsCorrectPath() {
                 String result = fileService.getToolsKepubifyPath();
 

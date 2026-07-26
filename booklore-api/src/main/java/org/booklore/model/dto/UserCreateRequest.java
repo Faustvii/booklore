@@ -24,7 +24,6 @@ public class UserCreateRequest {
     @Email
     private String email;
 
-    private boolean permissionUpload;
     private boolean permissionDownload;
     private boolean permissionEditMetadata;
     private boolean permissionManageLibrary;
@@ -35,7 +34,6 @@ public class UserCreateRequest {
     private boolean permissionSyncKobo;
     private boolean permissionAdmin;
     private boolean permissionManageMetadataConfig;
-    private boolean permissionAccessBookdrop;
     private boolean permissionAccessLibraryStats;
     private boolean permissionAccessUserStats;
     private boolean permissionAccessTaskManager;

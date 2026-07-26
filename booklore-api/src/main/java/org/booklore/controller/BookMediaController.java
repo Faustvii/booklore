@@ -3,7 +3,6 @@ package org.booklore.controller;
 import org.booklore.service.AuthorMetadataService;
 import org.booklore.config.security.annotation.CheckBookAccess;
 import org.booklore.service.book.BookService;
-import org.booklore.service.bookdrop.BookDropService;
 import org.booklore.service.reader.CbxReaderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -12,7 +11,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,7 +25,6 @@ public class BookMediaController {
 
     private final BookService bookService;
     private final CbxReaderService cbxReaderService;
-    private final BookDropService bookDropService;
     private final AuthorMetadataService authorMetadataService;
 
     @Operation(summary = "Get book thumbnail", description = "Retrieve the thumbnail image for a specific book.")
@@ -95,19 +92,5 @@ public class BookMediaController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(thumbnail);
-    }
-
-    @Operation(summary = "Get bookdrop cover", description = "Retrieve the cover image for a specific bookdrop file.")
-    @ApiResponse(responseCode = "200", description = "Bookdrop cover returned successfully")
-    @GetMapping("/bookdrop/{bookdropId}/cover")
-    public ResponseEntity<Resource> getBookdropCover(@Parameter(description = "ID of the bookdrop file") @PathVariable long bookdropId) {
-        Resource file = bookDropService.getBookdropCover(bookdropId);
-        String contentDisposition = "inline; filename=\"cover.jpg\"; filename*=UTF-8''cover.jpg";
-        return (file != null)
-                ? ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
-                .contentType(MediaType.IMAGE_JPEG)
-                .body(file)
-                : ResponseEntity.noContent().build();
     }
 }

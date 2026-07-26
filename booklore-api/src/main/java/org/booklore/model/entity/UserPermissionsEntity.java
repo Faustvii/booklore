@@ -23,10 +23,6 @@ public class UserPermissionsEntity {
     @Column(name = "permission_admin", nullable = false)
     private boolean permissionAdmin;
 
-    @Column(name = "permission_upload", nullable = false)
-    @Builder.Default
-    private boolean permissionUpload = false;
-
     @Column(name = "permission_download", nullable = false)
     @Builder.Default
     private boolean permissionDownload = false;
@@ -62,10 +58,6 @@ public class UserPermissionsEntity {
     @Column(name = "permission_manage_metadata_config", nullable = false)
     @Builder.Default
     private boolean permissionManageMetadataConfig = false;
-
-    @Column(name = "permission_access_bookdrop", nullable = false)
-    @Builder.Default
-    private boolean permissionAccessBookdrop = false;
 
     @Column(name = "permission_access_library_stats", nullable = false)
     @Builder.Default

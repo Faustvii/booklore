@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 @Setter
 public class AppProperties {
     private String pathConfig;
-    private String bookdropFolder;
     private String version;
     private RemoteAuth remoteAuth;
     private Boolean forceDisableOidc = false;

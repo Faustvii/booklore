@@ -22,7 +22,6 @@ services:
       - /booklore-api/.gradle
       - ./shared/data:/app/data
       - ./shared/books:/books
-      - ./shared/bookdrop:/bookdrop
 
   backend_db:
     image: postgres:17
