@@ -27,16 +27,6 @@
     "maxFileSizeTooltip": "仅更新此大小以内的文件。较大的文件将被忽略。",
     "autoMove": "元数据更新时自动移动文件",
     "autoMoveDesc": "元数据更新时，根据书库的命名模式自动移动和重命名文件。",
-    "sidecarTitle": "Sidecar JSON 文件",
-    "sidecarDesc": "在书籍旁创建外部 .metadata.json 文件，用于便携式元数据存储和备份。",
-    "enableSidecar": "启用 Sidecar JSON",
-    "enableSidecarDesc": "启用 Sidecar JSON 元数据文件。启用后，元数据可以写入书籍旁的 <code>BookName.metadata.json</code> 文件。",
-    "writeOnUpdate": "元数据更新时写入",
-    "writeOnUpdateDesc": "编辑书籍元数据时自动更新 Sidecar JSON 文件。",
-    "writeOnScan": "首次扫描时写入",
-    "writeOnScanDesc": "扫描期间首次将书籍添加到书库时创建 Sidecar JSON 文件。",
-    "includeCover": "包含封面图片文件",
-    "includeCoverDesc": "同时将封面图片保存为 Sidecar JSON 文件旁的 <code>BookName.cover.jpg</code>。",
     "loadError": "加载设置失败。"
   },
   "providers": {

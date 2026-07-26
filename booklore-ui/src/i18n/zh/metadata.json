@@ -374,13 +374,9 @@
   },
   "sidecar": {
     "title": "Sidecar 元数据",
-    "description": "查看和管理与此图书关联的 sidecar 元数据文件（.metadata.json）。Sidecar 文件提供随图书文件一起携带的可移植元数据。",
-    "exportBtn": "导出到 Sidecar",
-    "exportTooltip": "将当前图书元数据导出到 sidecar（.metadata.json）文件",
-    "importBtn": "从 Sidecar 导入",
-    "importTooltip": "将 sidecar 文件中的元数据导入到 BookLore",
+    "description": "查看与此图书关联的 sidecar 元数据文件（.metadata.json）。Sidecar 文件提供随图书文件一起携带的可移植元数据。",
     "noSidecarTitle": "未找到 Sidecar 文件",
-    "noSidecarDescription": "此图书不存在 sidecar 元数据文件。使用导出按钮创建一个。",
+    "noSidecarDescription": "此图书不存在 sidecar 元数据文件。",
     "generatedLabel": "生成时间：",
     "versionLabel": "版本：",
     "byLabel": "生成者：",
@@ -391,17 +387,7 @@
     "syncStatusConflict": "冲突",
     "syncStatusMissing": "缺失",
     "syncStatusNA": "不适用",
-    "syncStatusUnknown": "未知",
-    "toast": {
-      "exportSuccessSummary": "导出成功",
-      "exportSuccessDetail": "Sidecar 元数据文件已创建。",
-      "exportFailedSummary": "导出失败",
-      "exportFailedDetail": "创建 sidecar 元数据文件失败。",
-      "importSuccessSummary": "导入成功",
-      "importSuccessDetail": "已从 sidecar 文件导入元数据。",
-      "importFailedSummary": "导入失败",
-      "importFailedDetail": "从 sidecar 文件导入元数据失败。"
-    }
+    "syncStatusUnknown": "未知"
   },
   "coverSearch": {
     "searchAudiobookCover": "搜索有声书封面",

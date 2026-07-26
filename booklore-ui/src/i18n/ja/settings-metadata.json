@@ -27,16 +27,6 @@
     "maxFileSizeTooltip": "このサイズまでのファイルのみ更新されます。大きなファイルは無視されます。",
     "autoMove": "メタデータ更新時にファイルを自動移動",
     "autoMoveDesc": "メタデータ更新時に、ライブラリの命名パターンに従ってファイルを自動的に移動・リネームします。",
-    "sidecarTitle": "サイドカーJSONファイル",
-    "sidecarDesc": "本と一緒に外部の.metadata.jsonファイルを作成して、ポータブルなメタデータの保存とバックアップを行います。",
-    "enableSidecar": "サイドカーJSONを有効化",
-    "enableSidecarDesc": "サイドカーJSONメタデータファイルを有効にします。有効にすると、本の横に<code>BookName.metadata.json</code>ファイルとしてメタデータを書き込めます。",
-    "writeOnUpdate": "メタデータ更新時に書き込み",
-    "writeOnUpdateDesc": "ブックメタデータが編集されるたびにサイドカーJSONファイルを自動更新します。",
-    "writeOnScan": "初回スキャン時に書き込み",
-    "writeOnScanDesc": "スキャン中に本が最初にライブラリに追加される際にサイドカーJSONファイルを作成します。",
-    "includeCover": "カバー画像ファイルを含める",
-    "includeCoverDesc": "サイドカーJSONファイルと一緒に、カバー画像を<code>BookName.cover.jpg</code>として保存します。",
     "loadError": "設定の読み込みに失敗しました。"
   },
   "providers": {

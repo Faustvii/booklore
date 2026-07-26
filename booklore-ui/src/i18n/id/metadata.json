@@ -388,10 +388,6 @@
   "sidecar": {
     "title": "",
     "description": "",
-    "exportBtn": "",
-    "exportTooltip": "",
-    "importBtn": "",
-    "importTooltip": "",
     "noSidecarTitle": "",
     "noSidecarDescription": "",
     "generatedLabel": "",
@@ -404,17 +400,7 @@
     "syncStatusConflict": "Konflik",
     "syncStatusMissing": "Hilang",
     "syncStatusNA": "N/A",
-    "syncStatusUnknown": "Tidak Diketahui",
-    "toast": {
-      "exportSuccessSummary": "",
-      "exportSuccessDetail": "",
-      "exportFailedSummary": "",
-      "exportFailedDetail": "",
-      "importSuccessSummary": "",
-      "importSuccessDetail": "",
-      "importFailedSummary": "",
-      "importFailedDetail": ""
-    }
+    "syncStatusUnknown": "Tidak Diketahui"
   },
   "coverSearch": {
     "searchAudiobookCover": "",

@@ -399,13 +399,9 @@
   },
   "sidecar": {
     "title": "Sidecar-metadata",
-    "description": "Visa och hantera sidecar-metadatafiler (.metadata.json) associerade med denna bok. Sidecar-filer tillhandahåller portabel metadata som följer med bokfilen.",
-    "exportBtn": "Exportera till sidecar",
-    "exportTooltip": "Exportera aktuell bokmetadata till en sidecar-fil (.metadata.json)",
-    "importBtn": "Importera från sidecar",
-    "importTooltip": "Importera metadata från sidecar-filen till BookLore",
+    "description": "Visa sidecar-metadatafiler (.metadata.json) associerade med denna bok. Sidecar-filer tillhandahåller portabel metadata som följer med bokfilen.",
     "noSidecarTitle": "Ingen sidecar-fil hittad",
-    "noSidecarDescription": "Ingen sidecar-metadatafil finns för denna bok. Använd knappen Exportera för att skapa en.",
+    "noSidecarDescription": "Ingen sidecar-metadatafil finns för denna bok.",
     "generatedLabel": "Genererad:",
     "versionLabel": "Version:",
     "byLabel": "Av:",
@@ -416,17 +412,7 @@
     "syncStatusConflict": "Konflikt",
     "syncStatusMissing": "Saknas",
     "syncStatusNA": "N/A",
-    "syncStatusUnknown": "Okänd",
-    "toast": {
-      "exportSuccessSummary": "Export lyckades",
-      "exportSuccessDetail": "Sidecar-metadatafil har skapats.",
-      "exportFailedSummary": "Export misslyckades",
-      "exportFailedDetail": "Kunde inte skapa sidecar-metadatafil.",
-      "importSuccessSummary": "Import lyckades",
-      "importSuccessDetail": "Metadata har importerats från sidecar-filen.",
-      "importFailedSummary": "Import misslyckades",
-      "importFailedDetail": "Kunde inte importera metadata från sidecar-filen."
-    }
+    "syncStatusUnknown": "Okänd"
   },
   "coverSearch": {
     "searchAudiobookCover": "Sök ljudboksomslag",

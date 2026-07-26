@@ -87,24 +87,4 @@ export class SidecarService {
   getSyncStatus(bookId: number): Observable<{status: SidecarSyncStatus}> {
     return this.http.get<{status: SidecarSyncStatus}>(`${this.apiUrl}/books/${bookId}/sidecar/status`);
   }
-
-  exportToSidecar(bookId: number): Observable<{message: string}> {
-    return this.http.post<{message: string}>(`${this.apiUrl}/books/${bookId}/sidecar/export`, {});
-  }
-
-  importFromSidecar(bookId: number): Observable<{message: string}> {
-    return this.http.post<{message: string}>(`${this.apiUrl}/books/${bookId}/sidecar/import`, {});
-  }
-
-  bulkExport(libraryId: number): Observable<{message: string, exported: number}> {
-    return this.http.post<{message: string, exported: number}>(
-      `${this.apiUrl}/libraries/${libraryId}/sidecar/export-all`, {}
-    );
-  }
-
-  bulkImport(libraryId: number): Observable<{message: string, imported: number}> {
-    return this.http.post<{message: string, imported: number}>(
-      `${this.apiUrl}/libraries/${libraryId}/sidecar/import-all`, {}
-    );
-  }
 }

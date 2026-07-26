@@ -375,10 +375,6 @@
   "sidecar": {
     "title": "",
     "description": "",
-    "exportBtn": "",
-    "exportTooltip": "",
-    "importBtn": "",
-    "importTooltip": "",
     "noSidecarTitle": "",
     "noSidecarDescription": "",
     "generatedLabel": "",
@@ -391,17 +387,7 @@
     "syncStatusConflict": "",
     "syncStatusMissing": "",
     "syncStatusNA": "",
-    "syncStatusUnknown": "",
-    "toast": {
-      "exportSuccessSummary": "",
-      "exportSuccessDetail": "",
-      "exportFailedSummary": "",
-      "exportFailedDetail": "",
-      "importSuccessSummary": "",
-      "importSuccessDetail": "",
-      "importFailedSummary": "",
-      "importFailedDetail": ""
-    }
+    "syncStatusUnknown": ""
   },
   "coverSearch": {
     "searchAudiobookCover": "",

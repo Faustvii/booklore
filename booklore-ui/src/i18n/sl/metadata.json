@@ -400,13 +400,9 @@
   },
   "sidecar": {
     "title": "Sidecar metapodatki",
-    "description": "Upravljaj stranske datoteke z metapodatki (.metadata.json). Te datoteke omogočajo prenosljivost metapodatkov skupaj z datoteko knjige.",
-    "exportBtn": "Izvozi v Sidecar",
-    "exportTooltip": "Izvozi trenutne metapodatke v .metadata.json datoteko",
-    "importBtn": "Uvozi iz Sidecarja",
-    "importTooltip": "Uvozi metapodatke iz sidecar datoteke v BookLore",
+    "description": "Preglej stranske datoteke z metapodatki (.metadata.json). Te datoteke omogočajo prenosljivost metapodatkov skupaj z datoteko knjige.",
     "noSidecarTitle": "Sidecar datoteka ni bila najdena",
-    "noSidecarDescription": "Za to knjigo ne obstaja sidecar datoteka. Klikni Izvozi, da jo ustvariš.",
+    "noSidecarDescription": "Za to knjigo ne obstaja sidecar datoteka.",
     "generatedLabel": "Ustvarjeno:",
     "versionLabel": "Različica:",
     "byLabel": "Avtor:",
@@ -417,17 +413,7 @@
     "syncStatusConflict": "Konflikt",
     "syncStatusMissing": "Manjka",
     "syncStatusNA": "/",
-    "syncStatusUnknown": "Neznano",
-    "toast": {
-      "exportSuccessSummary": "Izvoz uspešen",
-      "exportSuccessDetail": "Sidecar datoteka je bila ustvarjena.",
-      "exportFailedSummary": "Izvoz ni uspel",
-      "exportFailedDetail": "Napaka pri ustvarjanju sidecar datoteke.",
-      "importSuccessSummary": "Uvoz uspešen",
-      "importSuccessDetail": "Metapodatki so bili uvoženi iz datoteke.",
-      "importFailedSummary": "Uvoz ni uspel",
-      "importFailedDetail": "Napaka pri uvozu metapodatkov."
-    }
+    "syncStatusUnknown": "Neznano"
   },
   "coverSearch": {
     "searchAudiobookCover": "Išči naslovnico zvočne knjige",

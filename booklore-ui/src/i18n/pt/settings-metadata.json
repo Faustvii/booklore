@@ -27,16 +27,6 @@
     "maxFileSizeTooltip": "Apenas arquivos até este tamanho serão atualizados. Arquivos maiores são ignorados.",
     "autoMove": "Mover Arquivos Automaticamente na Atualização de Metadados",
     "autoMoveDesc": "Mover e renomear automaticamente os arquivos de acordo com o padrão de nomenclatura da biblioteca quando os metadados são atualizados.",
-    "sidecarTitle": "Arquivos JSON Sidecar",
-    "sidecarDesc": "Criar arquivos .metadata.json externos ao lado dos seus livros para armazenamento portátil de metadados e backup.",
-    "enableSidecar": "Ativar JSON Sidecar",
-    "enableSidecarDesc": "Ativar arquivos JSON de metadados sidecar. Quando ativado, os metadados podem ser gravados em arquivos <code>NomeDoLivro.metadata.json</code> ao lado dos seus livros.",
-    "writeOnUpdate": "Gravar na Atualização de Metadados",
-    "writeOnUpdateDesc": "Atualizar automaticamente o arquivo JSON sidecar sempre que os metadados do livro forem editados.",
-    "writeOnScan": "Gravar na Verificação Inicial",
-    "writeOnScanDesc": "Criar arquivos JSON sidecar quando os livros são adicionados pela primeira vez à biblioteca durante a verificação.",
-    "includeCover": "Incluir Arquivo de Imagem da Capa",
-    "includeCoverDesc": "Também salvar a imagem da capa como <code>NomeDoLivro.cover.jpg</code> ao lado do arquivo JSON sidecar.",
     "loadError": "Falha ao carregar configurações."
   },
   "providers": {

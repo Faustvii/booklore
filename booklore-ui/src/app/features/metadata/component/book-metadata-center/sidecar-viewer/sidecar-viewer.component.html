@@ -22,30 +22,6 @@
       <span>{{ t('loading') }}</span>
     </div>
   } @else {
-    <div class="sidecar-actions">
-      <p-button
-        [label]="t('exportBtn')"
-        icon="pi pi-upload"
-        [loading]="exporting"
-        (onClick)="exportToSidecar()"
-        severity="primary"
-        size="small"
-        [pTooltip]="t('exportTooltip')"
-        tooltipPosition="top"
-      />
-      <p-button
-        [label]="t('importBtn')"
-        icon="pi pi-download"
-        [loading]="importing"
-        [disabled]="syncStatus === 'MISSING'"
-        (onClick)="importFromSidecar()"
-        severity="secondary"
-        size="small"
-        [pTooltip]="t('importTooltip')"
-        tooltipPosition="top"
-      />
-    </div>
-
     @if (syncStatus === 'MISSING') {
       <div class="empty-state">
         <i class="pi pi-file"></i>

@@ -398,13 +398,9 @@
   },
   "sidecar": {
     "title": "Metadatos Sidecar",
-    "description": "Ver y gestionar archivos de metadatos sidecar (.opf) asociados con este libro. Los archivos sidecar proporcionan metadatos portátiles que viajan con el archivo del libro.",
-    "exportBtn": "Exportar a Sidecar",
-    "exportTooltip": "Exportar metadatos actuales del libro a un archivo sidecar (.opf)",
-    "importBtn": "Importar desde Sidecar",
-    "importTooltip": "Importar metadatos del archivo sidecar a BookLore",
+    "description": "Ver archivos de metadatos sidecar (.opf) asociados con este libro. Los archivos sidecar proporcionan metadatos portátiles que viajan con el archivo del libro.",
     "noSidecarTitle": "No se encontró archivo Sidecar",
-    "noSidecarDescription": "No existe un archivo de metadatos sidecar para este libro. Usa el botón Exportar para crear uno.",
+    "noSidecarDescription": "No existe un archivo de metadatos sidecar para este libro.",
     "generatedLabel": "Generado:",
     "versionLabel": "Versión:",
     "byLabel": "Por:",
@@ -415,17 +411,7 @@
     "syncStatusConflict": "Conflicto",
     "syncStatusMissing": "Faltante",
     "syncStatusNA": "N/D",
-    "syncStatusUnknown": "Desconocido",
-    "toast": {
-      "exportSuccessSummary": "Exportación exitosa",
-      "exportSuccessDetail": "El archivo de metadatos sidecar se ha creado.",
-      "exportFailedSummary": "Error en la exportación",
-      "exportFailedDetail": "Error al crear el archivo de metadatos sidecar.",
-      "importSuccessSummary": "Importación exitosa",
-      "importSuccessDetail": "Los metadatos se han importado desde el archivo sidecar.",
-      "importFailedSummary": "Error en la importación",
-      "importFailedDetail": "Error al importar metadatos desde el archivo sidecar."
-    }
+    "syncStatusUnknown": "Desconocido"
   },
   "coverSearch": {
     "searchAudiobookCover": "Buscar portada de audiolibro",

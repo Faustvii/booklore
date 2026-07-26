@@ -374,13 +374,9 @@
   },
   "sidecar": {
     "title": "サイドカーメタデータ",
-    "description": "この本に関連付けられたサイドカーメタデータファイル（.metadata.json）を表示・管理します。サイドカーファイルは本のファイルと一緒に移動可能なポータブルメタデータを提供します。",
-    "exportBtn": "サイドカーにエクスポート",
-    "exportTooltip": "現在のブックメタデータをサイドカー（.metadata.json）ファイルにエクスポート",
-    "importBtn": "サイドカーからインポート",
-    "importTooltip": "サイドカーファイルからBookLoreにメタデータをインポート",
+    "description": "この本に関連付けられたサイドカーメタデータファイル（.metadata.json）を表示します。サイドカーファイルは本のファイルと一緒に移動可能なポータブルメタデータを提供します。",
     "noSidecarTitle": "サイドカーファイルが見つかりません",
-    "noSidecarDescription": "この本のサイドカーメタデータファイルは存在しません。エクスポートボタンを使用して作成してください。",
+    "noSidecarDescription": "この本のサイドカーメタデータファイルは存在しません。",
     "generatedLabel": "生成日：",
     "versionLabel": "バージョン：",
     "byLabel": "作成者：",
@@ -391,17 +387,7 @@
     "syncStatusConflict": "競合",
     "syncStatusMissing": "欠落",
     "syncStatusNA": "N/A",
-    "syncStatusUnknown": "不明",
-    "toast": {
-      "exportSuccessSummary": "エクスポート成功",
-      "exportSuccessDetail": "サイドカーメタデータファイルが作成されました。",
-      "exportFailedSummary": "エクスポートに失敗しました",
-      "exportFailedDetail": "サイドカーメタデータファイルの作成に失敗しました。",
-      "importSuccessSummary": "インポート成功",
-      "importSuccessDetail": "サイドカーファイルからメタデータがインポートされました。",
-      "importFailedSummary": "インポートに失敗しました",
-      "importFailedDetail": "サイドカーファイルからのメタデータインポートに失敗しました。"
-    }
+    "syncStatusUnknown": "不明"
   },
   "coverSearch": {
     "searchAudiobookCover": "オーディオブックカバーを検索",
