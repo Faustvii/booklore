@@ -54,6 +54,29 @@ class AppSettingServiceTest {
         return entity;
     }
 
+    private AppSettingEntity storedSetting(AppSettingKey key, String json) {
+        AppSettingEntity entity = new AppSettingEntity();
+        entity.setName(key.toString());
+        entity.setVal(json);
+        return entity;
+    }
+
+    @Test
+    void getAppSettings_populatesOidcAutoProvisionDetails() {
+        String stored = "{\"enableAutoProvisioning\":true,\"allowLocalAccountLinking\":true,"
+                + "\"defaultPermissions\":[\"permissionRead\"],\"defaultLibraryIds\":[1]}";
+        when(appSettingsRepository.findAll()).thenReturn(
+                java.util.List.of(storedSetting(AppSettingKey.OIDC_AUTO_PROVISION_DETAILS, stored)));
+
+        AppSettings settings = service.getAppSettings();
+
+        assertThat(settings.getOidcAutoProvisionDetails()).isNotNull();
+        assertThat(settings.getOidcAutoProvisionDetails().isEnableAutoProvisioning()).isTrue();
+        assertThat(settings.getOidcAutoProvisionDetails().isAllowLocalAccountLinking()).isTrue();
+        assertThat(settings.getOidcAutoProvisionDetails().getDefaultPermissions()).containsExactly("permissionRead");
+        assertThat(settings.getOidcAutoProvisionDetails().getDefaultLibraryIds()).containsExactly(1L);
+    }
+
     @Test
     void getAppSettings_keepsRealClientSecret_forInternalUseByOidcAuthService() {
         // AppSettingService.getAppSettings() is the internal singleton OidcAuthService/

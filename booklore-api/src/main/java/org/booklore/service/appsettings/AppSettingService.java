@@ -220,6 +220,8 @@ public class AppSettingService {
         OidcProviderDetails oidcProviderDetails = settingPersistenceHelper.getJsonSetting(settingsMap, AppSettingKey.OIDC_PROVIDER_DETAILS, OidcProviderDetails.class, null, false);
         builder.oidcProviderDetails(oidcProviderDetails);
 
+        builder.oidcAutoProvisionDetails(settingPersistenceHelper.getJsonSetting(settingsMap, AppSettingKey.OIDC_AUTO_PROVISION_DETAILS, OidcAutoProvisionDetails.class, null, false));
+
         builder.oidcGroupSyncMode(settingPersistenceHelper.getOrCreateSetting(
                 AppSettingKey.OIDC_GROUP_SYNC_MODE, "DISABLED"));
 
