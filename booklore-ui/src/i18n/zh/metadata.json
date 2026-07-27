@@ -396,7 +396,6 @@
   "manager": {
     "title": "元数据管理器",
     "description": "在书库中整理、合并、拆分、重命名和标准化作者、类型、情绪和标签。",
-    "writeToFileWarning": "重要提示：如果在设置中启用了「写入文件」，操作将修改所有相关文件。对于拥有数千本图书的书库，请在使用此功能前禁用「写入文件」以防止性能问题和潜在的数据损坏。",
     "clearSelection": "清除选择",
     "deleteSelected": "删除所选",
     "mergeSplitSelected": "合并/拆分所选",
@@ -414,7 +413,6 @@
     "multiValuePlaceholder": "例如：小说, 悬疑, 惊悚",
     "singleMergeHowItWorks": "<strong>工作原理：</strong><br/>• 输入您希望所有选中项合并到的标准化值<br/>• 所有包含任何选中 {{ type }} 的图书将更新为使用此单一值<br/><br/><strong>示例：</strong>合并「En」、「English」、「en-US」时<br/>• 输入「English」→ 所有图书的 {{ singular }} 将合并为「English」<br/><br/><strong>注意：</strong>每本书只能有一个 {{ singular }}，因此只能输入一个目标值。",
     "multiMergeHowItWorks": "<strong>工作原理：</strong><br/>• 输入单个值将所有选中的 {{ type }} 合并为一个<br/>• 输入多个以逗号分隔的值将拆分为多个 {{ type }}<br/><br/><strong>示例：</strong>合并/拆分「科幻」、「SciFi」、「Science Fiction」时<br/>• 合并：输入「科幻小说」→ 所有图书获得一个标准化标签<br/>• 拆分：输入「科幻小说, 科幻」→ 所有图书同时获得正式名称和常用缩写",
-    "processingNote": "如果在设置中启用了「写入文件」，此过程可能需要更长时间。",
     "processing": "处理中...",
     "renameSplitDialogTitle": "重命名/拆分 {{ type }}",
     "renameSplitDescription": "您正在重命名/拆分：",
@@ -423,7 +421,6 @@
     "multiRenamePlaceholder": "例如：悬疑, 侦探",
     "singleRenameHowItWorks": "<strong>工作原理：</strong><br/>• 输入新值以重命名此 {{ singular }}<br/><br/><strong>注意：</strong>每本书只能有一个 {{ singular }}，因此不允许拆分为多个值。",
     "multiRenameHowItWorks": "<strong>工作原理：</strong><br/>• 输入单个值以重命名 {{ singular }}<br/>• 输入多个以逗号分隔的值将拆分为多个 {{ type }}<br/><br/><strong>示例：</strong>重命名/拆分「悬疑与侦探」时<br/>• 重命名：输入「悬疑」→ 重命名为「悬疑」<br/>• 拆分：输入「悬疑, 侦探」→ 拆分为两个独立的 {{ type }}",
-    "renameProcessingNote": "如果在设置中启用了「写入文件」，此过程可能需要一些时间。",
     "deleteDialogTitle": "删除 {{ type }}",
     "deleteWarning": "您即将删除 {{ count }} 个 {{ type }}：",
     "whatWillHappen": "将会发生：",

@@ -396,7 +396,6 @@
   "manager": {
     "title": "Gerenciador de Metadados",
     "description": "Organize, mescle, divida, renomeie e padronize autores, gêneros, humores e tags em toda a sua biblioteca.",
-    "writeToFileWarning": "Importante: Se 'Gravar no arquivo' estiver ativado nas configurações, as operações modificarão todos os arquivos relevantes. Para bibliotecas com milhares de livros, desative 'Gravar no arquivo' antes de usar este recurso para evitar problemas de desempenho e possível corrupção de dados.",
     "clearSelection": "Limpar Seleção",
     "deleteSelected": "Excluir Selecionados",
     "mergeSplitSelected": "Mesclar/Dividir Selecionados",
@@ -414,7 +413,6 @@
     "multiValuePlaceholder": "ex., Ficção, Mistério, Suspense",
     "singleMergeHowItWorks": "<strong>Como funciona:</strong><br/>• Insira o valor padronizado para o qual todos os itens selecionados devem ser mesclados<br/>• Todos os livros com qualquer um dos {{ type }} selecionados serão atualizados para usar este valor único<br/><br/><strong>Exemplo:</strong> Ao mesclar \"En\", \"English\", \"en-US\"<br/>• Insira \"English\" → Todos os livros terão seu {{ singular }} mesclado para \"English\"<br/><br/><strong>Nota:</strong> Cada livro pode ter apenas um {{ singular }}, então insira apenas um valor de destino.",
     "multiMergeHowItWorks": "<strong>Como funciona:</strong><br/>• Insira um único valor para mesclar todos os {{ type }} selecionados em um<br/>• Insira múltiplos valores separados por vírgulas para dividir em múltiplos {{ type }}<br/><br/><strong>Exemplo:</strong> Ao mesclar/dividir \"Sci-Fi\", \"SciFi\", \"Science Fiction\"<br/>• Mesclar: Insira \"Science Fiction\" → Todos os livros recebem uma tag padronizada<br/>• Dividir: Insira \"Science Fiction, Sci-Fi\" → Todos os livros recebem tanto o nome formal quanto a abreviação comum",
-    "processingNote": "Este processo pode demorar mais se \"Gravar no arquivo\" estiver ativado nas configurações.",
     "processing": "Processando...",
     "renameSplitDialogTitle": "Renomear/Dividir {{ type }}",
     "renameSplitDescription": "Você está renomeando/dividindo:",
@@ -423,7 +421,6 @@
     "multiRenamePlaceholder": "ex., Mistério, Detetive",
     "singleRenameHowItWorks": "<strong>Como funciona:</strong><br/>• Insira um novo valor para renomear este {{ singular }}<br/><br/><strong>Nota:</strong> Cada livro pode ter apenas um {{ singular }}, então dividir em múltiplos valores não é permitido.",
     "multiRenameHowItWorks": "<strong>Como funciona:</strong><br/>• Insira um único valor para renomear o {{ singular }}<br/>• Insira múltiplos valores separados por vírgulas para dividir em múltiplos {{ type }}<br/><br/><strong>Exemplo:</strong> Ao renomear/dividir \"Mistério & Detetive\"<br/>• Renomear: Insira \"Mistério\" → Renomeia apenas para \"Mistério\"<br/>• Dividir: Insira \"Mistério, Detetive\" → Divide em dois {{ type }} separados",
-    "renameProcessingNote": "Este processo pode levar algum tempo se \"Gravar no arquivo\" estiver ativado nas configurações.",
     "deleteDialogTitle": "Excluir {{ type }}",
     "deleteWarning": "Você está prestes a excluir {{ count }} {{ type }}:",
     "whatWillHappen": "O que vai acontecer:",

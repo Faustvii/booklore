@@ -396,7 +396,6 @@
   "manager": {
     "title": "Menedżer metadanych",
     "description": "Organizuj, scalaj, dziel, zmieniaj nazwy i standaryzuj autorów, gatunki, nastroje i tagi w swojej bibliotece.",
-    "writeToFileWarning": "Ważne: Jeśli opcja \"Zapisz do pliku\" jest włączona w ustawieniach, operacje zmodyfikują wszystkie odpowiednie pliki. W przypadku bibliotek z tysiącami książek wyłącz opcję \"Zapisz do pliku\" przed użyciem tej funkcji, aby uniknąć problemów z wydajnością i potencjalnego uszkodzenia danych.",
     "clearSelection": "Wyczyść zaznaczenie",
     "deleteSelected": "Usuń zaznaczone",
     "mergeSplitSelected": "Scal/Rozdziel zaznaczone",
@@ -414,7 +413,6 @@
     "multiValuePlaceholder": "np. Fikcja, Kryminał, Thriller",
     "singleMergeHowItWorks": "<strong>Jak to działa:</strong><br/>• Wprowadź ustandaryzowaną wartość, do której chcesz scalić wszystkie zaznaczone elementy<br/>• Wszystkie książki z dowolnym z zaznaczonych {{ type }} zostaną zaktualizowane, aby używać tej jednej wartości<br/><br/><strong>Przykład:</strong> Przy scalaniu \"En\", \"English\", \"en-US\"<br/>• Wpisz \"English\" → Wszystkie książki będą miały {{ singular }} scalony do \"English\"<br/><br/><strong>Uwaga:</strong> Każda książka może mieć tylko jedno {{ singular }}, więc wprowadź tylko jedną wartość docelową.",
     "multiMergeHowItWorks": "<strong>Jak to działa:</strong><br/>• Wpisz jedną wartość, aby scalić wszystkie zaznaczone {{ type }} w jedną<br/>• Wpisz wiele wartości oddzielonych przecinkami, aby rozdzielić na wiele {{ type }}<br/><br/><strong>Przykład:</strong> Przy scalaniu/rozdzielaniu \"Sci-Fi\", \"SciFi\", \"Science Fiction\"<br/>• Scal: Wpisz \"Science Fiction\" → Wszystkie książki otrzymają jeden ustandaryzowany tag<br/>• Rozdziel: Wpisz \"Science Fiction, Sci-Fi\" → Wszystkie książki otrzymają zarówno pełną nazwę, jak i powszechny skrót",
-    "processingNote": "Ten proces może potrwać dłużej, jeśli opcja \"Zapisz do pliku\" jest włączona w ustawieniach.",
     "processing": "Przetwarzanie...",
     "renameSplitDialogTitle": "Zmień nazwę/Rozdziel {{ type }}",
     "renameSplitDescription": "Zmieniasz nazwę/rozdzielasz:",
@@ -423,7 +421,6 @@
     "multiRenamePlaceholder": "np. Kryminał, Detektyw",
     "singleRenameHowItWorks": "<strong>Jak to działa:</strong><br/>• Wpisz nową wartość, aby zmienić nazwę tego {{ singular }}<br/><br/><strong>Uwaga:</strong> Każda książka może mieć tylko jedno {{ singular }}, więc rozdzielanie na wiele wartości nie jest dozwolone.",
     "multiRenameHowItWorks": "<strong>Jak to działa:</strong><br/>• Wpisz jedną wartość, aby zmienić nazwę {{ singular }}<br/>• Wpisz wiele wartości oddzielonych przecinkami, aby rozdzielić na wiele {{ type }}<br/><br/><strong>Przykład:</strong> Przy zmianie nazwy/rozdzielaniu \"Kryminał i Detektyw\"<br/>• Zmień nazwę: Wpisz \"Kryminał\" → Zmienia nazwę na \"Kryminał\"<br/>• Rozdziel: Wpisz \"Kryminał, Detektyw\" → Rozdziela na dwa oddzielne {{ type }}",
-    "renameProcessingNote": "Ten proces może potrwać chwilę, jeśli opcja \"Zapisz do pliku\" jest włączona w ustawieniach.",
     "deleteDialogTitle": "Usuń {{ type }}",
     "deleteWarning": "Zamierzasz usunąć {{ count }} {{ type }}:",
     "whatWillHappen": "Co się stanie:",

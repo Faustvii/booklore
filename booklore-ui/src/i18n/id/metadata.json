@@ -409,7 +409,6 @@
   "manager": {
     "title": "",
     "description": "",
-    "writeToFileWarning": "",
     "clearSelection": "",
     "deleteSelected": "",
     "mergeSplitSelected": "",
@@ -427,7 +426,6 @@
     "multiValuePlaceholder": "",
     "singleMergeHowItWorks": "",
     "multiMergeHowItWorks": "",
-    "processingNote": "",
     "processing": "Memproses...",
     "renameSplitDialogTitle": "",
     "renameSplitDescription": "",
@@ -436,7 +434,6 @@
     "multiRenamePlaceholder": "",
     "singleRenameHowItWorks": "",
     "multiRenameHowItWorks": "",
-    "renameProcessingNote": "",
     "deleteDialogTitle": "",
     "deleteWarning": "",
     "whatWillHappen": "",

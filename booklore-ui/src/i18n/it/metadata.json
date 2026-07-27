@@ -396,7 +396,6 @@
   "manager": {
     "title": "Gestore metadati",
     "description": "Organizza, unisci, dividi, rinomina e standardizza autori, generi, mood e tag nella tua libreria.",
-    "writeToFileWarning": "Importante: Se 'Scrivi su file' è abilitato nelle impostazioni, le operazioni modificheranno tutti i file pertinenti. Per librerie con migliaia di libri, disabilita 'Scrivi su file' prima di usare questa funzionalità per prevenire problemi di prestazioni e potenziale corruzione dei dati.",
     "clearSelection": "Cancella selezione",
     "deleteSelected": "Elimina selezionati",
     "mergeSplitSelected": "Unisci/Dividi selezionati",
@@ -414,7 +413,6 @@
     "multiValuePlaceholder": "es., Narrativa, Giallo, Thriller",
     "singleMergeHowItWorks": "<strong>Come funziona:</strong><br/>• Inserisci il valore standardizzato in cui vuoi unire tutti gli elementi selezionati<br/>• Tutti i libri con qualsiasi {{ type }} selezionato verranno aggiornati per usare questo singolo valore<br/><br/><strong>Esempio:</strong> Quando unisci \"En\", \"English\", \"en-US\"<br/>• Inserisci \"English\" → Tutti i libri avranno il loro {{ singular }} unito in \"English\"<br/><br/><strong>Nota:</strong> Ogni libro può avere solo un {{ singular }}, quindi inserisci un solo valore obiettivo.",
     "multiMergeHowItWorks": "<strong>Come funziona:</strong><br/>• Inserisci un singolo valore per unire tutti i {{ type }} selezionati in uno<br/>• Inserisci più valori separati da virgole per dividere in più {{ type }}<br/><br/><strong>Esempio:</strong> Quando unisci/dividi \"Sci-Fi\", \"SciFi\", \"Fantascienza\"<br/>• Unisci: Inserisci \"Fantascienza\" → Tutti i libri ottengono un tag standardizzato<br/>• Dividi: Inserisci \"Fantascienza, Sci-Fi\" → Tutti i libri ottengono sia il nome formale che l'abbreviazione comune",
-    "processingNote": "Questo processo potrebbe richiedere più tempo se \"Scrivi su file\" è abilitato nelle impostazioni.",
     "processing": "Elaborazione...",
     "renameSplitDialogTitle": "Rinomina/Dividi {{ type }}",
     "renameSplitDescription": "Stai rinominando/dividendo:",
@@ -423,7 +421,6 @@
     "multiRenamePlaceholder": "es., Giallo, Poliziesco",
     "singleRenameHowItWorks": "<strong>Come funziona:</strong><br/>• Inserisci un nuovo valore per rinominare questo {{ singular }}<br/><br/><strong>Nota:</strong> Ogni libro può avere solo un {{ singular }}, quindi la divisione in più valori non è consentita.",
     "multiRenameHowItWorks": "<strong>Come funziona:</strong><br/>• Inserisci un singolo valore per rinominare il {{ singular }}<br/>• Inserisci più valori separati da virgole per dividere in più {{ type }}<br/><br/><strong>Esempio:</strong> Quando rinomini/dividi \"Giallo e Poliziesco\"<br/>• Rinomina: Inserisci \"Giallo\" → Rinomina in solo \"Giallo\"<br/>• Dividi: Inserisci \"Giallo, Poliziesco\" → Divide in due {{ type }} separati",
-    "renameProcessingNote": "Questo processo potrebbe richiedere del tempo se \"Scrivi su file\" è abilitato nelle impostazioni.",
     "deleteDialogTitle": "Elimina {{ type }}",
     "deleteWarning": "Stai per eliminare {{ count }} {{ type }}:",
     "whatWillHappen": "Cosa succederà:",

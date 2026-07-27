@@ -145,5 +145,19 @@ File: `booklore-api/src/main/java/org/booklore/model/dto/settings/MetadataPersis
   That default-seeding subscription (and the now-unused `AppSettingsService`
   injection in each) was removed; the checkbox now just defaults to
   unchecked instead of mirroring the deleted global setting.
+- **Follow-up fix:** the first pass missed stale UI copy that still implied
+  fields get written to the file. The metadata editor showed a per-field
+  "written to physical file" icon/tooltip on ~40 fields, driven by a leftover
+  `embeddable-fields.config.ts` module (`isFieldEmbeddable`/
+  `hasMetadataWriter`, plus the component's `isEmbeddable()`/`hasWriter()`
+  wrappers — `hasWriter()` was already unused in the template). The Metadata
+  Manager page also still warned that operations "will modify all relevant
+  files" if `'Write to file'` is enabled, with matching processing-time notes
+  on the merge/rename/delete dialogs. All of it — the config module, the
+  component methods, the `embeddable-indicator` CSS, and the four i18n keys
+  (`editor.writtenToFileTooltip`, `manager.writeToFileWarning`,
+  `manager.processingNote`, `manager.renameProcessingNote`, all locales) — was
+  removed. `editor.fetchFromFileTooltip` (reading metadata embedded in a file,
+  a read-only operation that still works) was left untouched.
 - Verified with the full backend test suite (2908 tests, 0 failures) and a
   clean Angular production build.

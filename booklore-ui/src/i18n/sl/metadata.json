@@ -130,8 +130,7 @@
       "audiobookUploadFailed": "Prišlo je do napake pri nalaganju naslovnice zvočne knjige",
       "fileMetadataLoaded": "Metapodatki so naloženi iz datoteke. Preglej in shrani.",
       "fileMetadataFailed": "Izločanje metapodatkov iz datoteke ni uspelo"
-    },
-    "writtenToFileTooltip": "To polje se zapiše v fizično datoteko"
+    }
   },
   "picker": {
     "loadingMetadata": "Nalaganje celotnih metapodatkov...",
@@ -422,7 +421,6 @@
   "manager": {
     "title": "Upravitelj metapodatkov",
     "description": "Organiziraj, združi, razdeli, preimenuj in standardiziraj avtorje, žanre, vzdušja in oznake v celotni knjižnici.",
-    "writeToFileWarning": "Pomembno: Če je v nastavitvah omogočeno 'Zapiši v datoteko', bodo operacije spremenile vse datoteke. Pri velikih knjižnicah to začasno onemogoči, da preprečiš težave z zmogljivostjo.",
     "clearSelection": "Počisti izbor",
     "deleteSelected": "Izbriši izbrano",
     "mergeSplitSelected": "Združi/Razdeli izbrano",
@@ -440,7 +438,6 @@
     "multiValuePlaceholder": "npr. Fantastika, Kriminalka, Triler",
     "singleMergeHowItWorks": "<strong>Kako deluje:</strong><br/>• Vnesi standardizirano vrednost, v katero želiš združiti vse izbrane elemente<br/>• Vse knjige s katero koli od izbranih {{ type }} bodo posodobljene tako, da bodo uporabljale to eno samo vrednost<br/><br/><strong>Primer:</strong> Pri združevanju \"En\", \"English\", \"en-US\"<br/>• Vnesi \"English\" → Vse knjige bodo imele {{ singular }} združeno v \"English\"<br/><br/><strong>Opomba:</strong> Vsaka knjiga ima lahko samo en {{ singular }}, zato vnesi samo eno ciljno vrednost.",
     "multiMergeHowItWorks": "<strong>Kako deluje:</strong><br/>• Vnesi eno vrednost, da združiš vse izbrane {{ type }} v eno<br/>• Vnesi več vrednosti, ločenih z vejicami, da jih razdeliš na več {{ type }}<br/><br/><strong>Primer:</strong> Pri združevanju/razdelitvi »Sci-Fi«, »SciFi«, »Science Fiction«<br/>• Združevanje: Vnesi »Science Fiction« → Vse knjige dobijo eno standardizirano oznako<br/>• Razdelitev: Vnesi »Science Fiction, Sci-Fi« → Vse knjige dobijo tako formalno ime kot tudi skupno kratico",
-    "processingNote": "Postopek lahko traja dlje, če je vklopljeno zapisovanje v datoteke.",
     "processing": "Obdelujem...",
     "renameSplitDialogTitle": "Preimenuj/Razdeli: {{ type }}",
     "renameSplitDescription": "Preimenovanje/razdeljevanje za:",
@@ -449,7 +446,6 @@
     "multiRenamePlaceholder": "npr. Kriminalka, Detektivka",
     "singleRenameHowItWorks": "<strong>Kako deluje:</strong><br/>• Vnesi novo vrednost, da preimenuješ to {{ singular }}<br/><br/><strong>Opomba:</strong> Vsaka knjiga ima lahko samo eno {{ singular }}, zato razdelitev na več vrednosti ni dovoljena.",
     "multiRenameHowItWorks": "<strong>Kako deluje:</strong><br/>• Vnesi eno vrednost, da preimenuješ {{ singular }}<br/>• Vnesi več vrednosti, ločenih z vejicami, da jih razdeliš na več {{ type }}<br/><br/><strong>Primer:</strong> Pri preimenovanju/delitvi »Skrivnost in detektiv«<br/>• Preimenuj: Vnesi »Skrivnost« → Preimenuje v samo »Skrivnost«<br/>• Razdeli: Vnesi »Skrivnost, detektiv« → Razdeli na dva ločena {{ type }}",
-    "renameProcessingNote": "Postopek lahko traja nekaj časa, odvisno od velikosti knjižnice.",
     "deleteDialogTitle": "Izbriši {{ type }}",
     "deleteWarning": "Pripravljaš se na izbris {{ count }} elementov ({{ type }}):",
     "whatWillHappen": "Kaj se bo zgodilo:",

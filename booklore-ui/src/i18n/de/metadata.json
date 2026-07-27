@@ -130,8 +130,7 @@
       "audiobookUploadFailed": "Beim Hochladen des Hörbuch-Covers ist ein Fehler aufgetreten",
       "fileMetadataLoaded": "Metadaten aus Buchdatei geladen. Überprüfen und speichern.",
       "fileMetadataFailed": "Metadaten konnten nicht aus der Buchdatei extrahiert werden"
-    },
-    "writtenToFileTooltip": "Dieses Feld wird in die physische Datei geschrieben"
+    }
   },
   "picker": {
     "loadingMetadata": "Vollständige Metadaten werden geladen...",
@@ -417,7 +416,6 @@
   "manager": {
     "title": "Metadaten-Manager",
     "description": "Autoren, Genres, Stimmungen und Schlagwörter in Ihrer Bibliothek organisieren, zusammenführen, aufteilen, umbenennen und standardisieren.",
-    "writeToFileWarning": "Wichtig: Wenn \"In Datei schreiben\" in den Einstellungen aktiviert ist, werden alle relevanten Dateien durch die Operationen verändert. Bei Bibliotheken mit Tausenden von Büchern sollten Sie \"In Datei schreiben\" deaktivieren, bevor Sie diese Funktion verwenden, um Leistungsprobleme und mögliche Datenbeschädigungen zu vermeiden.",
     "clearSelection": "Auswahl aufheben",
     "deleteSelected": "Ausgewählte löschen",
     "mergeSplitSelected": "Zusammenführen/Aufteilen",
@@ -435,7 +433,6 @@
     "multiValuePlaceholder": "z.B. Belletristik, Krimi, Thriller",
     "singleMergeHowItWorks": "<strong>So funktioniert es:</strong><br/>• Geben Sie den standardisierten Wert ein, zu dem alle ausgewählten Einträge zusammengeführt werden sollen<br/>• Alle Bücher mit einem der ausgewählten {{ type }} werden auf diesen einzelnen Wert aktualisiert<br/><br/><strong>Beispiel:</strong> Beim Zusammenführen von \"En\", \"English\", \"en-US\"<br/>• Geben Sie \"English\" ein → Alle Bücher erhalten als {{ singular }} den Wert \"English\"<br/><br/><strong>Hinweis:</strong> Jedes Buch kann nur einen {{ singular }} haben, geben Sie daher nur einen Zielwert ein.",
     "multiMergeHowItWorks": "<strong>So funktioniert es:</strong><br/>• Geben Sie einen einzelnen Wert ein, um alle ausgewählten {{ type }} zu einem zusammenzuführen<br/>• Geben Sie mehrere durch Kommas getrennte Werte ein, um in mehrere {{ type }} aufzuteilen<br/><br/><strong>Beispiel:</strong> Beim Zusammenführen/Aufteilen von \"Sci-Fi\", \"SciFi\", \"Science Fiction\"<br/>• Zusammenführen: Geben Sie \"Science Fiction\" ein → Alle Bücher erhalten ein standardisiertes Schlagwort<br/>• Aufteilen: Geben Sie \"Science Fiction, Sci-Fi\" ein → Alle Bücher erhalten sowohl den formellen Namen als auch die gängige Abkürzung",
-    "processingNote": "Dieser Vorgang kann länger dauern, wenn \"In Datei schreiben\" in den Einstellungen aktiviert ist.",
     "processing": "Wird verarbeitet...",
     "renameSplitDialogTitle": "{{ type }} umbenennen/aufteilen",
     "renameSplitDescription": "Sie benennen um/teilen auf:",
@@ -444,7 +441,6 @@
     "multiRenamePlaceholder": "z.B. Krimi, Detektiv",
     "singleRenameHowItWorks": "<strong>So funktioniert es:</strong><br/>• Geben Sie einen neuen Wert ein, um diesen {{ singular }} umzubenennen<br/><br/><strong>Hinweis:</strong> Jedes Buch kann nur einen {{ singular }} haben, daher ist das Aufteilen in mehrere Werte nicht erlaubt.",
     "multiRenameHowItWorks": "<strong>So funktioniert es:</strong><br/>• Geben Sie einen einzelnen Wert ein, um den {{ singular }} umzubenennen<br/>• Geben Sie mehrere durch Kommas getrennte Werte ein, um in mehrere {{ type }} aufzuteilen<br/><br/><strong>Beispiel:</strong> Beim Umbenennen/Aufteilen von \"Krimi & Detektiv\"<br/>• Umbenennen: Geben Sie \"Krimi\" ein → Wird nur zu \"Krimi\" umbenannt<br/>• Aufteilen: Geben Sie \"Krimi, Detektiv\" ein → Wird in zwei separate {{ type }} aufgeteilt",
-    "renameProcessingNote": "Dieser Vorgang kann einige Zeit dauern, wenn \"In Datei schreiben\" in den Einstellungen aktiviert ist.",
     "deleteDialogTitle": "{{ type }} löschen",
     "deleteWarning": "Sie sind dabei, {{ count }} {{ type }} zu löschen:",
     "whatWillHappen": "Was passiert:",
