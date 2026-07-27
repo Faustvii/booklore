@@ -100,6 +100,8 @@ class BookMetadataUpdaterRatingTest {
         bookMetadataUpdater.setBookMetadata(context(bookEntity, newMetadata));
 
         assertThat(bookEntity.getMetadata().getRating()).isEqualTo(4.7);
+        // Not provider-based, so no review count applies.
+        assertThat(bookEntity.getMetadata().getReviewCount()).isNull();
     }
 
     @Test

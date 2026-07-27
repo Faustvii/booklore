@@ -66,6 +66,7 @@ public class BookMetadata {
     private Set<String> tags;
     private String thumbnailUrl;
     private Double rating;
+    private Integer reviewCount;
 
     private Boolean allMetadataLocked;
 

@@ -160,9 +160,10 @@ public class BookMetadataUpdater {
     private void updateUnifiedRatingIfNeeded(BookMetadata m, BookMetadataEntity e) {
         if (m.getRating() != null) {
             // Embedded/explicit rating (e.g. a PDF's booklore:rating tag, or a direct edit)
-            // always wins over the computed aggregate. There's no companion embedded review
-            // count for this, so reviewCount is left untouched.
+            // always wins over the computed aggregate; it isn't provider-based, so any
+            // "based on N reviews" review count no longer applies.
             e.setRating(m.getRating());
+            e.setReviewCount(m.getReviewCount());
             return;
         }
         RatingAggregationService.RatingAggregate aggregate = ratingAggregationService.computeAggregateRating(e);
