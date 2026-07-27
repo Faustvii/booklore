@@ -15,6 +15,8 @@ import org.booklore.model.enums.ComicCreatorRole;
 import org.booklore.model.enums.MetadataReplaceMode;
 import org.booklore.repository.*;
 import org.booklore.service.appsettings.AppSettingService;
+import org.booklore.service.author.AuthorAutoFetchService;
+import org.booklore.service.author.NewAuthorTrackingContext;
 import org.booklore.util.BookCoverUtils;
 import org.booklore.util.FileService;
 import org.booklore.util.MetadataChangeDetector;
@@ -47,6 +49,8 @@ public class BookMetadataUpdater {
     private final ComicCreatorRepository comicCreatorRepository;
     private final FileService fileService;
     private final MetadataMatchService metadataMatchService;
+    private final NewAuthorTrackingContext newAuthorTrackingContext;
+    private final AuthorAutoFetchService authorAutoFetchService;
 
     @Transactional
     public void setBookMetadata(MetadataUpdateContext context) {
@@ -87,7 +91,12 @@ public class BookMetadataUpdater {
         BookFileType bookType = primaryFile != null ? primaryFile.getBookType() : null;
 
         updateBasicFields(newMetadata, metadata, clearFlags, replaceMode);
-        updateAuthorsIfNeeded(newMetadata, metadata, clearFlags, mergeCategories, replaceMode);
+        boolean ownsAuthorTrackingSession = newAuthorTrackingContext.begin();
+        try {
+            updateAuthorsIfNeeded(newMetadata, metadata, clearFlags, mergeCategories, replaceMode);
+        } finally {
+            authorAutoFetchService.triggerIfEnabled(newAuthorTrackingContext.end(ownsAuthorTrackingSession));
+        }
         updateCategoriesIfNeeded(newMetadata, metadata, clearFlags, mergeCategories, replaceMode);
         updateMoodsIfNeeded(newMetadata, metadata, clearFlags, mergeMoods, replaceMode);
         updateTagsIfNeeded(newMetadata, metadata, clearFlags, mergeTags, replaceMode);
@@ -192,7 +201,11 @@ public class BookMetadataUpdater {
         List<AuthorEntity> newAuthors = authorNames.stream()
                 .filter(name -> name != null && !name.isBlank())
                 .map(name -> authorRepository.findByName(name)
-                        .orElseGet(() -> authorRepository.save(AuthorEntity.builder().name(name).build())))
+                        .orElseGet(() -> {
+                            AuthorEntity created = authorRepository.save(AuthorEntity.builder().name(name).build());
+                            newAuthorTrackingContext.track(created.getId());
+                            return created;
+                        }))
                 .toList();
 
         if (newAuthors.isEmpty()) return;

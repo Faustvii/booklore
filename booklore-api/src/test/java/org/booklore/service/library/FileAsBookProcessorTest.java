@@ -11,6 +11,8 @@ import org.booklore.model.enums.FileProcessStatus;
 import org.booklore.repository.BookAdditionalFileRepository;
 import org.booklore.repository.BookRepository;
 import org.booklore.repository.LibraryRepository;
+import org.booklore.service.author.AuthorAutoFetchService;
+import org.booklore.service.author.NewAuthorTrackingContext;
 import org.booklore.service.event.BookEventBroadcaster;
 import org.booklore.service.file.FileFingerprint;
 import org.booklore.service.fileprocessor.BookFileProcessor;
@@ -66,6 +68,12 @@ class FileAsBookProcessorTest {
     @Mock
     private BookFileProcessor bookFileProcessor;
 
+    @Mock
+    private NewAuthorTrackingContext newAuthorTrackingContext;
+
+    @Mock
+    private AuthorAutoFetchService authorAutoFetchService;
+
     private FileAsBookProcessor fileAsBookProcessor;
 
     private AutoCloseable mocks;
@@ -84,7 +92,9 @@ class FileAsBookProcessorTest {
                 libraryRepository,
                 fileService,
                 metadataExtractorFactory,
-                audiobookMetadataExtractor
+                audiobookMetadataExtractor,
+                newAuthorTrackingContext,
+                authorAutoFetchService
         );
         fileFingerprintMock = mockStatic(FileFingerprint.class);
         fileFingerprintMock.when(() -> FileFingerprint.generateHash(any(Path.class))).thenReturn("testhash");

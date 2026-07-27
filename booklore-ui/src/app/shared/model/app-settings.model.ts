@@ -81,6 +81,7 @@ export interface OidcTestResult {
 export interface AppSettings {
   autoBookSearch: boolean;
   similarBookRecommendation: boolean;
+  autoFetchAuthorMetadata: boolean;
   uploadPattern: string;
   opdsServerEnabled: boolean;
   komgaApiEnabled: boolean;
@@ -109,6 +110,7 @@ export enum AppSettingKey {
   OIDC_AUTO_PROVISION_DETAILS = 'OIDC_AUTO_PROVISION_DETAILS',
   AUTO_BOOK_SEARCH = 'AUTO_BOOK_SEARCH',
   SIMILAR_BOOK_RECOMMENDATION = 'SIMILAR_BOOK_RECOMMENDATION',
+  AUTO_FETCH_AUTHOR_METADATA = 'AUTO_FETCH_AUTHOR_METADATA',
   METADATA_MATCH_WEIGHTS = 'METADATA_MATCH_WEIGHTS',
   METADATA_PERSISTENCE_SETTINGS = 'METADATA_PERSISTENCE_SETTINGS',
   KOBO_SETTINGS = 'KOBO_SETTINGS',

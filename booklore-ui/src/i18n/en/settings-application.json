@@ -24,7 +24,9 @@
     "autoBookSearch": "Auto Book Search",
     "autoBookSearchDesc": "Automatically attempts metadata matching when the book information panel is opened.",
     "similarBook": "Similar Book Recommendation",
-    "similarBookDesc": "Enables or disables similar book recommendations based on your library."
+    "similarBookDesc": "Enables or disables similar book recommendations based on your library.",
+    "autoFetchAuthorMetadata": "Auto-Fetch Author Metadata",
+    "autoFetchAuthorMetadataDesc": "Automatically fetches bio, ASIN, and photo for newly discovered authors after a library scan or metadata refresh. Manual quick-match in the author browser always remains available."
   },
   "settingsSaved": "Settings Saved",
   "settingsSavedDetail": "The settings were successfully saved!",

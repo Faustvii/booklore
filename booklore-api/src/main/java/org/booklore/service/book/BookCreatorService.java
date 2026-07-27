@@ -6,6 +6,7 @@ import org.booklore.model.entity.*;
 import org.booklore.model.enums.BookFileType;
 import org.booklore.model.enums.ComicCreatorRole;
 import org.booklore.repository.*;
+import org.booklore.service.author.NewAuthorTrackingContext;
 import org.booklore.service.file.FileFingerprint;
 import org.booklore.util.FileUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +32,7 @@ public class BookCreatorService {
     private final ComicTeamRepository comicTeamRepository;
     private final ComicLocationRepository comicLocationRepository;
     private final ComicCreatorRepository comicCreatorRepository;
+    private final NewAuthorTrackingContext newAuthorTrackingContext;
 
     // Temporary storage for comic metadata DTOs during processing
     private final Map<Long, ComicMetadata> pendingComicMetadata = new ConcurrentHashMap<>();
@@ -45,7 +47,8 @@ public class BookCreatorService {
                               ComicCharacterRepository comicCharacterRepository,
                               ComicTeamRepository comicTeamRepository,
                               ComicLocationRepository comicLocationRepository,
-                              ComicCreatorRepository comicCreatorRepository) {
+                              ComicCreatorRepository comicCreatorRepository,
+                              NewAuthorTrackingContext newAuthorTrackingContext) {
         this.authorRepository = authorRepository;
         this.categoryRepository = categoryRepository;
         this.moodRepository = moodRepository;
@@ -57,6 +60,7 @@ public class BookCreatorService {
         this.comicTeamRepository = comicTeamRepository;
         this.comicLocationRepository = comicLocationRepository;
         this.comicCreatorRepository = comicCreatorRepository;
+        this.newAuthorTrackingContext = newAuthorTrackingContext;
     }
 
     public BookEntity createShellBook(LibraryFile libraryFile, BookFileType bookFileType) {
@@ -147,7 +151,11 @@ public class BookCreatorService {
         authors.stream()
                 .map(authorName -> truncate(authorName, 255))
                 .map(authorName -> authorRepository.findByName(authorName)
-                        .orElseGet(() -> authorRepository.save(AuthorEntity.builder().name(authorName).build())))
+                        .orElseGet(() -> {
+                            AuthorEntity created = authorRepository.save(AuthorEntity.builder().name(authorName).build());
+                            newAuthorTrackingContext.track(created.getId());
+                            return created;
+                        }))
                 .forEach(authorEntity -> bookEntity.getMetadata().getAuthors().add(authorEntity));
         bookEntity.getMetadata().updateSearchText(); // Manually trigger search text update since collection modification doesn't trigger @PreUpdate
     }

@@ -11,6 +11,8 @@ import org.booklore.model.websocket.Topic;
 import org.booklore.repository.LibraryRepository;
 import org.booklore.repository.BookRepository;
 import org.booklore.service.NotificationService;
+import org.booklore.service.author.AuthorAutoFetchService;
+import org.booklore.service.author.NewAuthorTrackingContext;
 import org.booklore.service.fileprocessor.AudiobookProcessor;
 import org.booklore.service.metadata.BookMetadataUpdater;
 import org.booklore.service.metadata.extractor.MetadataExtractorFactory;
@@ -37,8 +39,10 @@ public class LibraryRescanHelper {
     private final TaskCancellationManager cancellationManager;
     private final BookRepository bookRepository;
     private final AudiobookProcessor audiobookProcessor;
+    private final NewAuthorTrackingContext newAuthorTrackingContext;
+    private final AuthorAutoFetchService authorAutoFetchService;
 
-    public LibraryRescanHelper(LibraryRepository libraryRepository, MetadataExtractorFactory metadataExtractorFactory, @Lazy BookMetadataUpdater bookMetadataUpdater, NotificationService notificationService, TaskCancellationManager cancellationManager, BookRepository bookRepository, AudiobookProcessor audiobookProcessor) {
+    public LibraryRescanHelper(LibraryRepository libraryRepository, MetadataExtractorFactory metadataExtractorFactory, @Lazy BookMetadataUpdater bookMetadataUpdater, NotificationService notificationService, TaskCancellationManager cancellationManager, BookRepository bookRepository, AudiobookProcessor audiobookProcessor, NewAuthorTrackingContext newAuthorTrackingContext, AuthorAutoFetchService authorAutoFetchService) {
         this.libraryRepository = libraryRepository;
         this.metadataExtractorFactory = metadataExtractorFactory;
         this.bookMetadataUpdater = bookMetadataUpdater;
@@ -46,6 +50,8 @@ public class LibraryRescanHelper {
         this.cancellationManager = cancellationManager;
         this.bookRepository = bookRepository;
         this.audiobookProcessor = audiobookProcessor;
+        this.newAuthorTrackingContext = newAuthorTrackingContext;
+        this.authorAutoFetchService = authorAutoFetchService;
     }
 
     @Transactional
@@ -62,6 +68,21 @@ public class LibraryRescanHelper {
 
         sendTaskProgressNotification(taskId, 0, String.format("Starting rescan for library: %s", library.getName()), TaskStatus.IN_PROGRESS);
 
+        boolean ownsAuthorTrackingSession = newAuthorTrackingContext.begin();
+        try {
+            processedBooks = rescanBooks(context, taskId, library, bookEntities, totalBooks, processedBooks);
+        } finally {
+            authorAutoFetchService.triggerIfEnabled(newAuthorTrackingContext.end(ownsAuthorTrackingSession));
+        }
+
+        if (taskId == null || !cancellationManager.isTaskCancelled(taskId)) {
+            sendTaskProgressNotification(taskId, 100,
+                    String.format("Rescan completed for library: %s (%d books processed)", library.getName(), processedBooks),
+                    TaskStatus.COMPLETED);
+        }
+    }
+
+    private int rescanBooks(RescanLibraryContext context, String taskId, LibraryEntity library, List<BookEntity> bookEntities, int totalBooks, int processedBooks) {
         for (BookEntity bookEntity : bookEntities) {
             if (bookEntity == null || (bookEntity.getDeleted() != null && bookEntity.getDeleted())) {
                 continue;
@@ -120,11 +141,7 @@ public class LibraryRescanHelper {
             }
         }
 
-        if (taskId == null || !cancellationManager.isTaskCancelled(taskId)) {
-            sendTaskProgressNotification(taskId, 100,
-                    String.format("Rescan completed for library: %s (%d books processed)", library.getName(), processedBooks),
-                    TaskStatus.COMPLETED);
-        }
+        return processedBooks;
     }
 
     private void sendTaskProgressNotification(String taskId, int progress, String message, TaskStatus taskStatus) {

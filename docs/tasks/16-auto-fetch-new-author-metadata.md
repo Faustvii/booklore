@@ -1,7 +1,7 @@
 # Task 16 — Auto-Fetch Metadata for Newly Detected Authors
 
 **Priority:** P2
-**Status:** Not Started
+**Status:** Done
 **Scope:** Backend + Frontend
 
 ---
@@ -90,18 +90,18 @@ exists end-to-end (`AuthorMetadataService.quickMatchAuthor` /
 
 ## Acceptance Criteria
 
-- [ ] Authors newly created during a library scan (new file ingestion)
+- [x] Authors newly created during a library scan (new file ingestion)
       automatically get a metadata/photo fetch attempt via Audnexus after
       the scan completes, when the new setting is enabled.
-- [ ] Authors newly created via metadata refresh
+- [x] Authors newly created via metadata refresh
       (`BookMetadataUpdater`) or manual/physical book add
       (`PhysicalBookService`) are also covered, not just full scans.
-- [ ] New setting exists, defaults to ON, and disabling it stops
+- [x] New setting exists, defaults to ON, and disabling it stops
       automatic fetch (manual quick-match/auto-match still works
       regardless of the setting).
-- [ ] Authors that already existed (matched by name) are never
+- [x] Authors that already existed (matched by name) are never
       re-fetched by this automation — only genuinely new author rows.
-- [ ] Existing manual match, quick-match, bulk auto-match, and photo
+- [x] Existing manual match, quick-match, bulk auto-match, and photo
       search flows are unaffected.
-- [ ] No compile errors.
-- [ ] All existing tests pass.
+- [x] No compile errors.
+- [x] All existing tests pass.

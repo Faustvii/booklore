@@ -152,6 +152,22 @@
             </p>
           </div>
         </div>
+
+        <div class="setting-item">
+          <div class="setting-info">
+            <div class="setting-label-row">
+              <label class="setting-label">{{ t('search.autoFetchAuthorMetadata') }}</label>
+              <p-toggleswitch
+                [(ngModel)]="toggles.autoFetchAuthorMetadata"
+                (onChange)="onToggleChange('autoFetchAuthorMetadata', $event.checked)">
+              </p-toggleswitch>
+            </div>
+            <p class="setting-description">
+              <i class="pi pi-info-circle"></i>
+              {{ t('search.autoFetchAuthorMetadataDesc') }}
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
