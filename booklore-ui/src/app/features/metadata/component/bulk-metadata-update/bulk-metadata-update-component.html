@@ -331,49 +331,6 @@
         </div>
       </div>
 
-      <!-- Cover Image Upload Section -->
-      <div class="cover-section">
-        <label class="cover-label">
-          <i class="pi pi-image"></i>
-          Cover Image
-        </label>
-        <p class="cover-description">
-          Upload an image to set as the cover for all selected books.
-        </p>
-        <div class="cover-actions">
-          @if (selectedCoverFile) {
-            <div class="cover-file-info">
-              <i class="pi pi-file-image"></i>
-              <span>{{ selectedCoverFile.name }}</span>
-              <p-button
-                icon="pi pi-times"
-                [text]="true"
-                size="small"
-                severity="danger"
-                (onClick)="clearCoverFile()"
-                pTooltip="Remove file"
-                tooltipPosition="top">
-              </p-button>
-            </div>
-          } @else {
-            <input
-              type="file"
-              #coverFileInput
-              accept="image/jpeg,image/png,image/webp"
-              (change)="onCoverFileSelect($event)"
-              class="file-input-hidden">
-            <p-button
-              icon="pi pi-upload"
-              label="Select Image"
-              [outlined]="true"
-              size="small"
-              severity="info"
-              (onClick)="coverFileInput.click()">
-            </p-button>
-          }
-        </div>
-      </div>
-
       <div class="form-submit">
         <p-button type="submit" label="Apply to Selected" [disabled]="loading"/>
       </div>

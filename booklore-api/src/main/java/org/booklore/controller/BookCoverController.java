@@ -1,27 +1,16 @@
 package org.booklore.controller;
 
 import org.booklore.config.security.annotation.CheckBookAccess;
-import org.booklore.model.dto.CoverImage;
 import org.booklore.model.dto.request.BulkBookIdsRequest;
-import org.booklore.model.dto.request.CoverFetchRequest;
-import org.booklore.model.dto.request.CoverUrlRequest;
 import org.booklore.service.metadata.BookCoverService;
-import org.booklore.service.metadata.DuckDuckGoCoverService;
-import org.booklore.util.RemoteUrlSanitizer;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/books")
@@ -30,54 +19,6 @@ import java.util.List;
 public class BookCoverController {
 
     private final BookCoverService bookCoverService;
-    private final DuckDuckGoCoverService duckDuckGoCoverService;
-    private final RemoteUrlSanitizer remoteUrlSanitizer;
-
-    @Operation(summary = "Upload cover image from file", description = "Upload a cover image for a book from a file. Requires metadata edit permission or admin.")
-    @ApiResponse(responseCode = "200", description = "Cover image uploaded successfully")
-    @PostMapping("/{bookId}/metadata/cover/upload")
-    @PreAuthorize("@securityUtil.canEditMetadata() or @securityUtil.isAdmin()")
-    @CheckBookAccess(bookIdParam = "bookId")
-    public void uploadCoverFromFile(
-            @Parameter(description = "ID of the book") @PathVariable Long bookId,
-            @Parameter(description = "Cover image file") @RequestParam("file") MultipartFile file) {
-        bookCoverService.updateCoverFromFile(bookId, file);
-    }
-
-    @Operation(summary = "Upload cover image from URL", description = "Upload a cover image for a book from a URL. Requires metadata edit permission or admin.")
-    @ApiResponse(responseCode = "200", description = "Cover image uploaded successfully")
-    @PostMapping("/{bookId}/metadata/cover/from-url")
-    @PreAuthorize("@securityUtil.canEditMetadata() or @securityUtil.isAdmin()")
-    @CheckBookAccess(bookIdParam = "bookId")
-    public void uploadCoverFromUrl(
-            @Parameter(description = "ID of the book") @PathVariable Long bookId,
-            @Parameter(description = "URL body") @Valid @RequestBody CoverUrlRequest body) {
-        URI sanitizedUrl = remoteUrlSanitizer.sanitizeHttpUrl(body.getUrl());
-        bookCoverService.updateCoverFromUrl(bookId, sanitizedUrl);
-    }
-
-    @Operation(summary = "Upload audiobook cover image from file", description = "Upload an audiobook cover image for a book from a file. Requires metadata edit permission or admin.")
-    @ApiResponse(responseCode = "200", description = "Audiobook cover image uploaded successfully")
-    @PostMapping("/{bookId}/metadata/audiobook-cover/upload")
-    @PreAuthorize("@securityUtil.canEditMetadata() or @securityUtil.isAdmin()")
-    @CheckBookAccess(bookIdParam = "bookId")
-    public void uploadAudiobookCoverFromFile(
-            @Parameter(description = "ID of the book") @PathVariable Long bookId,
-            @Parameter(description = "Cover image file") @RequestParam("file") MultipartFile file) {
-        bookCoverService.updateAudiobookCoverFromFile(bookId, file);
-    }
-
-    @Operation(summary = "Upload audiobook cover image from URL", description = "Upload an audiobook cover image for a book from a URL. Requires metadata edit permission or admin.")
-    @ApiResponse(responseCode = "200", description = "Audiobook cover image uploaded successfully")
-    @PostMapping("/{bookId}/metadata/audiobook-cover/from-url")
-    @PreAuthorize("@securityUtil.canEditMetadata() or @securityUtil.isAdmin()")
-    @CheckBookAccess(bookIdParam = "bookId")
-    public void uploadAudiobookCoverFromUrl(
-            @Parameter(description = "ID of the book") @PathVariable Long bookId,
-            @Parameter(description = "URL body") @Valid @RequestBody CoverUrlRequest body) {
-        URI sanitizedUrl = remoteUrlSanitizer.sanitizeHttpUrl(body.getUrl());
-        bookCoverService.updateAudiobookCoverFromUrl(bookId, sanitizedUrl);
-    }
 
     @Operation(summary = "Regenerate audiobook cover for a book", description = "Regenerate audiobook cover for a specific book by extracting from the audiobook file. Requires metadata edit permission or admin.")
     @ApiResponse(responseCode = "204", description = "Audiobook cover regenerated successfully")
@@ -137,22 +78,5 @@ public class BookCoverController {
     @PreAuthorize("@securityUtil.canBulkRegenerateCover() or @securityUtil.isAdmin()")
     public void generateCustomCoversForBooks(@Parameter(description = "List of book IDs") @Validated @RequestBody BulkBookIdsRequest request) {
         bookCoverService.generateCustomCoversForBooks(request.getBookIds());
-    }
-
-    @Operation(summary = "Upload cover image for multiple books", description = "Upload a cover image to apply to multiple books. Requires metadata edit permission or admin.")
-    @ApiResponse(responseCode = "204", description = "Cover upload started successfully")
-    @PostMapping("/bulk-upload-cover")
-    @PreAuthorize("@securityUtil.canBulkEditMetadata() or @securityUtil.isAdmin()")
-    public void bulkUploadCover(
-            @Parameter(description = "Cover image file") @RequestParam("file") MultipartFile file,
-            @Parameter(description = "Comma-separated book IDs") @RequestParam("bookIds") @jakarta.validation.constraints.NotEmpty java.util.Set<Long> bookIds) {
-        bookCoverService.updateCoverFromFileForBooks(bookIds, file);
-    }
-
-    @Operation(summary = "Get cover images for a book", description = "Fetch cover images for a book.")
-    @ApiResponse(responseCode = "200", description = "Cover images returned successfully")
-    @PostMapping("/{bookId}/metadata/covers")
-    public ResponseEntity<List<CoverImage>> getImages(@Parameter(description = "Cover fetch request") @RequestBody CoverFetchRequest request) {
-        return ResponseEntity.ok(duckDuckGoCoverService.getCovers(request));
     }
 }

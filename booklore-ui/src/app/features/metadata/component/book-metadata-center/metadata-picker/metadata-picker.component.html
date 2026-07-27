@@ -144,41 +144,15 @@
                   </div>
                 </div>
 
-                @if (isAudibleProvider()) {
-                  <button
-                    type="button"
-                    class="transfer-btn"
-                    [class.saved]="isValueSaved('audiobookThumbnailUrl')"
-                    [class.copied]="isValueCopied('audiobookThumbnailUrl') && !hoveredFields['audiobookThumbnailUrl']"
-                    [class.reset]="isValueCopied('audiobookThumbnailUrl') && hoveredFields['audiobookThumbnailUrl']"
-                    (click)="hoveredFields['audiobookThumbnailUrl'] && isValueCopied('audiobookThumbnailUrl') ? resetField('audiobookThumbnailUrl') : copyFetchedToCurrent('audiobookThumbnailUrl')"
-                    (mouseenter)="onMouseEnter('audiobookThumbnailUrl')"
-                    (mouseleave)="onMouseLeave('audiobookThumbnailUrl')"
-                  >
-                    <i [class]="isValueSaved('audiobookThumbnailUrl') ? 'pi pi-check' : (hoveredFields['audiobookThumbnailUrl'] && isValueCopied('audiobookThumbnailUrl') ? 'pi pi-times' : 'pi pi-arrow-left')"></i>
-                  </button>
-                } @else {
-                  <div class="transfer-btn-placeholder"></div>
-                }
+                <div class="transfer-btn-placeholder"></div>
 
                 <div class="field-side fetched cover-side">
                   <span class="cover-label mobile-only">{{ t('mobileFetchedLabel') }}</span>
                   <div class="cover-wrapper">
-                    @if (isAudibleProvider()) {
-                      <p-image
-                        class="cover-image square-cover"
-                        [src]="fetchedMetadata.thumbnailUrl!"
-                        [alt]="t('fetchedAudiobookCoverAlt')"
-                        appendTo="body"
-                        lazyLoad
-                        [preview]="true"
-                      />
-                    } @else {
-                      <div class="no-cover-placeholder">
-                        <i class="pi pi-image"></i>
-                        <span>{{ t('na') }}</span>
-                      </div>
-                    }
+                    <div class="no-cover-placeholder">
+                      <i class="pi pi-image"></i>
+                      <span>{{ t('na') }}</span>
+                    </div>
                   </div>
                 </div>
               </div>

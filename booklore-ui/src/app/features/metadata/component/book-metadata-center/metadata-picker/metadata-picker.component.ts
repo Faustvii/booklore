@@ -310,14 +310,6 @@ export class MetadataPickerComponent implements OnInit {
       this.bookMetadataManageService.updateBookMetadata(this.currentBookId, updatedBookMetadata, false, 'REPLACE_WHEN_PROVIDED')
     ];
 
-    // Handle audiobook cover upload when fetched from Audible provider
-    if (this.isAudibleProvider() && this.copiedFields['audiobookThumbnailUrl']) {
-      const audiobookCoverUrl = this.fetchedMetadata.thumbnailUrl;
-      if (audiobookCoverUrl) {
-        requests.push(this.bookMetadataManageService.uploadAudiobookCoverFromUrl(this.currentBookId, audiobookCoverUrl));
-      }
-    }
-
     forkJoin(requests).subscribe({
       next: () => {
         this.isSaving = false;
@@ -523,14 +515,6 @@ export class MetadataPickerComponent implements OnInit {
     if (this.copiedFields['thumbnailUrl']) {
       return (this.fetchedMetadata['thumbnailUrl' as keyof BookMetadata] as string) || null;
     }
-    // For Audible provider, audiobook cover is handled separately via uploadAudiobookCoverFromUrl
-    if (this.isAudibleProvider()) {
-      return null;
-    }
-    const thumbnailUrl = this.metadataForm.get('thumbnailUrl')?.value;
-    if (thumbnailUrl?.includes('api/v1')) {
-      return null;
-    }
     return null;
   }
 
@@ -655,13 +639,6 @@ export class MetadataPickerComponent implements OnInit {
       });
       return;
     }
-    // For audiobook cover from Audible, use the thumbnailUrl from fetched metadata
-    if (field === 'audiobookThumbnailUrl') {
-      this.metadataForm.get('audiobookThumbnailUrl')?.setValue(this.fetchedMetadata.thumbnailUrl);
-      this.copiedFields['audiobookThumbnailUrl'] = true;
-      this.highlightCopiedInput(field);
-      return;
-    }
     if (this.metadataUtils.copyFieldToForm(field, this.fetchedMetadata, this.metadataForm, this.copiedFields)) {
       this.highlightCopiedInput(field);
     }
@@ -713,10 +690,6 @@ export class MetadataPickerComponent implements OnInit {
       return;
     }
     this.metadataUtils.resetField(field, this.metadataForm, this.originalMetadata, this.copiedFields, this.hoveredFields);
-  }
-
-  isAudibleProvider(): boolean {
-    return this.fetchedMetadata?.provider?.toLowerCase() === 'audible';
   }
 
   getFetchedAudiobookValue(key: string): unknown {

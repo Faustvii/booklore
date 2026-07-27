@@ -9,8 +9,6 @@ import {MessageService} from "primeng/api";
 import {Book, BookMetadata, ComicMetadata, MetadataClearFlags, MetadataUpdateWrapper,} from "../../../../book/model/book.model";
 import {UrlHelperService} from "../../../../../shared/service/url-helper.service";
 import {ALL_COMIC_METADATA_FIELDS, AUDIOBOOK_METADATA_FIELDS, COMIC_FORM_TO_MODEL_LOCK, COMIC_TEXT_METADATA_FIELDS, COMIC_ARRAY_METADATA_FIELDS, COMIC_TEXTAREA_METADATA_FIELDS, MetadataFieldConfig} from '../../../../../shared/metadata';
-import {FileUpload, FileUploadErrorEvent, FileUploadEvent,} from "primeng/fileupload";
-import {HttpResponse} from "@angular/common/http";
 import {BookService} from "../../../../book/service/book.service";
 import {BookMetadataManageService} from "../../../../book/service/book-metadata-manage.service";
 import {ProgressSpinner} from "primeng/progressspinner";
@@ -23,7 +21,6 @@ import {Textarea} from "primeng/textarea";
 import {Image} from "primeng/image";
 import {LazyLoadImageModule} from "ng-lazyload-image";
 import {Select} from "primeng/select";
-import {BookDialogHelperService} from "../../../../book/components/book-browser/book-dialog-helper.service";
 import {BookNavigationService} from '../../../../book/service/book-navigation.service';
 import {BookMetadataHostService} from '../../../../../shared/service/book-metadata-host.service';
 import {Router} from '@angular/router';
@@ -65,7 +62,6 @@ interface ProviderIdFieldsVisibility {
     FormsModule,
     AsyncPipe,
     ReactiveFormsModule,
-    FileUpload,
     ProgressSpinner,
     Tooltip,
     AutoComplete,
@@ -93,7 +89,6 @@ export class MetadataEditorComponent implements OnInit {
   private bookService = inject(BookService);
   private bookMetadataManageService = inject(BookMetadataManageService);
   protected urlHelper = inject(UrlHelperService);
-  private bookDialogHelperService = inject(BookDialogHelperService);
   private bookNavigationService = inject(BookNavigationService);
   private metadataHostService = inject(BookMetadataHostService);
   private router = inject(Router);
@@ -103,7 +98,6 @@ export class MetadataEditorComponent implements OnInit {
 
   metadataForm: FormGroup;
   currentBookId!: number;
-  isUploading = false;
   isLoading = false;
   isSaving = false;
   isGeneratingCover = false;
@@ -920,40 +914,6 @@ export class MetadataEditorComponent implements OnInit {
       });
   }
 
-  getUploadCoverUrl(): string {
-    return this.bookMetadataManageService.getUploadCoverUrl(this.currentBookId);
-  }
-
-  onBeforeSend(): void {
-    this.isUploading = true;
-  }
-
-  onUpload(event: FileUploadEvent): void {
-    const response: HttpResponse<unknown> =
-      event.originalEvent as HttpResponse<unknown>;
-    if (response && response.status === 200) {
-      this.isUploading = false;
-    } else {
-      this.isUploading = false;
-      this.messageService.add({
-        severity: "error",
-        summary: this.t.translate('metadata.editor.toast.uploadFailedSummary'),
-        detail: this.t.translate('metadata.editor.toast.uploadFailedDetail'),
-        life: 3000,
-      });
-    }
-  }
-
-  onUploadError($event: FileUploadErrorEvent) {
-    this.isUploading = false;
-    this.messageService.add({
-      severity: "error",
-      summary: this.t.translate('metadata.editor.toast.uploadErrorSummary'),
-      detail: this.t.translate('metadata.editor.toast.uploadErrorDetail'),
-      life: 3000,
-    });
-  }
-
   regenerateCover(bookId: number) {
     this.bookMetadataManageService.regenerateCover(bookId).pipe(
       switchMap(() => this.bookService.getBookByIdFromAPI(bookId, false)),
@@ -1095,18 +1055,6 @@ export class MetadataEditorComponent implements OnInit {
     this.closeDialogButtonClicked.emit();
   }
 
-  openCoverSearch() {
-    const ref = this.bookDialogHelperService.openCoverSearchDialog(this.currentBookId, 'ebook');
-    ref?.onClose.pipe(
-      take(1),
-      filter(result => !!result),
-      switchMap(() => this.bookService.getBookByIdFromAPI(this.currentBookId, false)),
-      takeUntilDestroyed(this.destroyRef)
-    ).subscribe(updatedBook => {
-      this.bookService.handleBookUpdate(updatedBook);
-    });
-  }
-
   canNavigatePrevious(): boolean {
     return this.bookNavigationService.canNavigatePrevious();
   }
@@ -1189,40 +1137,4 @@ export class MetadataEditorComponent implements OnInit {
     return book.primaryFile?.bookType === 'AUDIOBOOK';
   }
 
-  getUploadAudiobookCoverUrl(): string {
-    return this.bookMetadataManageService.getUploadAudiobookCoverUrl(this.currentBookId);
-  }
-
-  openAudiobookCoverSearch() {
-    const ref = this.bookDialogHelperService.openCoverSearchDialog(this.currentBookId, 'audiobook');
-    ref?.onClose.pipe(
-      take(1),
-      filter(result => !!result),
-      switchMap(() => this.bookService.getBookByIdFromAPI(this.currentBookId, false)),
-      takeUntilDestroyed(this.destroyRef)
-    ).subscribe(updatedBook => {
-      this.bookService.handleBookUpdate(updatedBook);
-    });
-  }
-
-  onAudiobookCoverUpload(event: FileUploadEvent): void {
-    const response: HttpResponse<unknown> =
-      event.originalEvent as HttpResponse<unknown>;
-    if (response && response.status === 200) {
-      this.isUploading = false;
-      this.bookService.getBookByIdFromAPI(this.currentBookId, false).pipe(
-        takeUntilDestroyed(this.destroyRef)
-      ).subscribe(updatedBook => {
-        this.bookService.handleBookUpdate(updatedBook);
-      });
-    } else {
-      this.isUploading = false;
-      this.messageService.add({
-        severity: 'error',
-        summary: this.t.translate('metadata.editor.toast.uploadFailedSummary'),
-        detail: this.t.translate('metadata.editor.toast.audiobookUploadFailed'),
-        life: 3000,
-      });
-    }
-  }
 }

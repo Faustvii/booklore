@@ -19,11 +19,8 @@ import org.booklore.util.SecurityContextVirtualThread;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.net.URI;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -75,75 +72,9 @@ public class BookCoverService {
         notifyBookCoverUpdate(bookEntity);
     }
 
-    /**
-     * Update cover image from uploaded file for a single book.
-     */
-    @Transactional
-    public void updateCoverFromFile(Long bookId, MultipartFile file) {
-        BookEntity bookEntity = bookRepository.findById(bookId).orElseThrow(() -> ApiError.BOOK_NOT_FOUND.createException(bookId));
-
-        if (isCoverLocked(bookEntity)) {
-            throw ApiError.METADATA_LOCKED.createException();
-        }
-
-        fileService.createThumbnailFromFile(bookId, file);
-        updateBookCoverMetadata(bookEntity);
-        bookRepository.save(bookEntity);
-        notifyBookCoverUpdate(bookEntity);
-    }
-
-    @Transactional
-    public void updateCoverFromUrl(Long bookId, URI sanitizedUrl) {
-        BookEntity bookEntity = bookRepository.findById(bookId).orElseThrow(() -> ApiError.BOOK_NOT_FOUND.createException(bookId));
-
-        if (isCoverLocked(bookEntity)) {
-            throw ApiError.METADATA_LOCKED.createException();
-        }
-
-        String sanitizedUrlString = sanitizedUrl.toString();
-
-        fileService.createThumbnailFromUrl(bookId, sanitizedUrlString);
-        updateBookCoverMetadata(bookEntity);
-        bookRepository.save(bookEntity);
-        notifyBookCoverUpdate(bookEntity);
-    }
-
     // =========================
     // SECTION: AUDIOBOOK COVER UPDATES
     // =========================
-
-    /**
-     * Update audiobook cover image from uploaded file for a single book.
-     */
-    @Transactional
-    public void updateAudiobookCoverFromFile(Long bookId, MultipartFile file) {
-        BookEntity bookEntity = bookRepository.findByIdWithBookFiles(bookId).orElseThrow(() -> ApiError.BOOK_NOT_FOUND.createException(bookId));
-
-        if (isAudiobookCoverLocked(bookEntity)) {
-            throw ApiError.METADATA_LOCKED.createException();
-        }
-
-        fileService.createAudiobookThumbnailFromFile(bookId, file);
-        updateAudiobookCoverMetadata(bookEntity);
-        bookRepository.save(bookEntity);
-        notifyBookCoverUpdate(bookEntity);
-    }
-
-    @Transactional
-    public void updateAudiobookCoverFromUrl(Long bookId, URI sanitizedUrl) {
-        BookEntity bookEntity = bookRepository.findByIdWithBookFiles(bookId).orElseThrow(() -> ApiError.BOOK_NOT_FOUND.createException(bookId));
-
-        if (isAudiobookCoverLocked(bookEntity)) {
-            throw ApiError.METADATA_LOCKED.createException();
-        }
-
-        String sanitizedUrlString = sanitizedUrl.toString();
-
-        fileService.createAudiobookThumbnailFromUrl(bookId, sanitizedUrlString);
-        updateAudiobookCoverMetadata(bookEntity);
-        bookRepository.save(bookEntity);
-        notifyBookCoverUpdate(bookEntity);
-    }
 
     /**
      * Regenerate audiobook cover for a single book by extracting from the audiobook file.
@@ -189,16 +120,6 @@ public class BookCoverService {
         updateAudiobookCoverMetadata(bookEntity);
         bookRepository.save(bookEntity);
         notifyBookCoverUpdate(bookEntity);
-    }
-
-    /**
-     * Bulk update cover images from a file for multiple books.
-     */
-    public void updateCoverFromFileForBooks(Set<Long> bookIds, MultipartFile file) {
-        validateCoverFile(file);
-        byte[] coverImageBytes = extractBytesFromMultipartFile(file);
-        List<BookCoverInfo> unlockedBooks = getUnlockedBookCoverInfos(bookIds);
-        SecurityContextVirtualThread.runWithSecurityContext(() -> processBulkCoverUpdate(unlockedBooks, coverImageBytes));
     }
 
     // =========================
@@ -341,44 +262,6 @@ public class BookCoverService {
     // SECTION: BULK OPERATIONS
     // =========================
 
-    private void processBulkCoverUpdate(List<BookCoverInfo> books, byte[] coverImageBytes) {
-        try {
-            int total = books.size();
-            notificationService.sendMessage(Topic.LOG, LogNotification.info("Started updating covers for " + total + " selected book(s)"));
-
-            int current = 1;
-            List<Long> refreshedIds = new ArrayList<>();
-
-            for (BookCoverInfo bookInfo : books) {
-                try {
-                    String progress = "(" + current + "/" + total + ") ";
-                    notificationService.sendMessage(Topic.LOG, LogNotification.info(progress + "Updating cover for: " + bookInfo.title()));
-
-                    transactionTemplate.execute(status -> {
-                        bookRepository.findById(bookInfo.id()).ifPresent(book -> {
-                            fileService.createThumbnailFromBytes(bookInfo.id(), coverImageBytes);
-                            updateBookCoverMetadata(book);
-                            bookRepository.save(book);
-                            refreshedIds.add(book.getId());
-                        });
-                        return null;
-                    });
-
-                    log.info("{}Successfully updated cover for book ID {} ({})", progress, bookInfo.id(), bookInfo.title());
-                } catch (Exception e) {
-                    log.error("Failed to update cover for book ID {}: {}", bookInfo.id(), e.getMessage(), e);
-                }
-                current++;
-            }
-
-            notifyBulkCoverUpdate(refreshedIds);
-            notificationService.sendMessage(Topic.LOG, LogNotification.info("Finished updating covers for selected books"));
-        } catch (Exception e) {
-            log.error("Error during cover update: {}", e.getMessage(), e);
-            notificationService.sendMessage(Topic.LOG, LogNotification.error("Error occurred during cover update"));
-        }
-    }
-
     private void processBulkCoverRegeneration(List<BookRegenerationInfo> books) {
         try {
             int total = books.size();
@@ -466,29 +349,6 @@ public class BookCoverService {
     // =========================
     // SECTION: INTERNAL HELPERS
     // =========================
-
-    private void validateCoverFile(MultipartFile file) {
-        if (file.isEmpty()) {
-            throw ApiError.INVALID_INPUT.createException("Uploaded file is empty");
-        }
-        String contentType = file.getContentType();
-        if (contentType == null || (!contentType.toLowerCase().startsWith("image/jpeg") && !contentType.toLowerCase().startsWith("image/png"))) {
-            throw ApiError.INVALID_INPUT.createException("Only JPEG and PNG files are allowed");
-        }
-        long maxFileSize = 5L * 1024 * 1024;
-        if (file.getSize() > maxFileSize) {
-            throw ApiError.FILE_TOO_LARGE.createException(5);
-        }
-    }
-
-    private byte[] extractBytesFromMultipartFile(MultipartFile file) {
-        try {
-            return file.getBytes();
-        } catch (Exception e) {
-            log.error("Failed to read cover file: {}", e.getMessage());
-            throw new RuntimeException("Failed to read cover file", e);
-        }
-    }
 
     private List<BookCoverInfo> getUnlockedBookCoverInfos(Set<Long> bookIds) {
         return bookQueryService.findAllWithMetadataByIds(bookIds).stream()

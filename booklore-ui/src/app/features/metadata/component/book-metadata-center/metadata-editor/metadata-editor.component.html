@@ -25,9 +25,6 @@
                 lazyLoad
                 [preview]="true">
               </p-image>
-              @if (isUploading) {
-                <p-progressSpinner class="upload-spinner"></p-progressSpinner>
-              }
               <div class="cover-actions">
                 @if (!book.isPhysical) {
                   <p-button
@@ -52,32 +49,6 @@
                   [loading]="isGeneratingCover"
                   [disabled]="book.metadata!['coverLocked'] || isGeneratingCover">
                 </p-button>
-                <p-button
-                  [disabled]="book.metadata!['coverLocked']"
-                  outlined
-                  size="small"
-                  icon="pi pi-search"
-                  (onClick)="openCoverSearch()"
-                  [pTooltip]="t('searchCoverTooltip')"
-                  tooltipPosition="top"
-                  severity="info">
-                </p-button>
-                <p-fileupload
-                  [chooseStyleClass]="'p-button-sm p-button-outlined p-button-danger'"
-                  [pTooltip]="t('uploadCoverTooltip')"
-                  tooltipPosition="top"
-                  [disabled]="book.metadata!['coverLocked']"
-                  name="file"
-                  [url]="getUploadCoverUrl()"
-                  mode="basic"
-                  chooseIcon="pi pi-upload"
-                  accept="image/jpeg,image/png"
-                  maxFileSize="5000000"
-                  (onUpload)="onUpload($event)"
-                  (onError)="onUploadError($event)"
-                  [auto]="true"
-                  (onBeforeUpload)="onBeforeSend()">
-                </p-fileupload>
                 @if (!book.metadata!['coverLocked']) {
                   <p-button [pTooltip]="t('lockCoverTooltip')" tooltipPosition="top" size="small" icon="pi pi-lock-open" [outlined]="true" (onClick)="toggleLock('thumbnailUrl')" severity="success"></p-button>
                 }
@@ -103,9 +74,6 @@
                 [preview]="true"
                 class="square-cover">
               </p-image>
-              @if (isUploading) {
-                <p-progressSpinner class="upload-spinner"></p-progressSpinner>
-              }
               <div class="cover-actions">
                 <p-button
                   icon="pi pi-refresh"
@@ -128,32 +96,6 @@
                   [loading]="isGeneratingAudiobookCover"
                   [disabled]="book.metadata!['audiobookCoverLocked'] || isGeneratingAudiobookCover">
                 </p-button>
-                <p-button
-                  [disabled]="book.metadata!['audiobookCoverLocked']"
-                  outlined
-                  size="small"
-                  icon="pi pi-search"
-                  (onClick)="openAudiobookCoverSearch()"
-                  [pTooltip]="t('searchAudiobookCoverTooltip')"
-                  tooltipPosition="top"
-                  severity="info">
-                </p-button>
-                <p-fileupload
-                  [chooseStyleClass]="'p-button-sm p-button-outlined p-button-danger'"
-                  [pTooltip]="t('uploadAudiobookCoverTooltip')"
-                  tooltipPosition="top"
-                  [disabled]="book.metadata!['audiobookCoverLocked']"
-                  name="file"
-                  [url]="getUploadAudiobookCoverUrl()"
-                  mode="basic"
-                  chooseIcon="pi pi-upload"
-                  accept="image/jpeg,image/png"
-                  maxFileSize="5000000"
-                  (onUpload)="onAudiobookCoverUpload($event)"
-                  (onError)="onUploadError($event)"
-                  [auto]="true"
-                  (onBeforeUpload)="onBeforeSend()">
-                </p-fileupload>
                 @if (!book.metadata!['audiobookCoverLocked']) {
                   <p-button [pTooltip]="t('lockCoverTooltip')" tooltipPosition="top" size="small" icon="pi pi-lock-open" [outlined]="true" (onClick)="toggleLock('audiobookCover')" severity="success"></p-button>
                 }
