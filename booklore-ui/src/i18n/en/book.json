@@ -608,6 +608,7 @@
       "seriesName": "Series Name",
       "seriesNumber": "Series Number",
       "lastReadTime": "Last Read",
+      "rating": "Rating",
       "personalRating": "Personal Rating",
       "addedOn": "Added On",
       "fileSizeKb": "File Size",

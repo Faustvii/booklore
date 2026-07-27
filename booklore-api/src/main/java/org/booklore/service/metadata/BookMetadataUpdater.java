@@ -51,6 +51,7 @@ public class BookMetadataUpdater {
     private final MetadataMatchService metadataMatchService;
     private final NewAuthorTrackingContext newAuthorTrackingContext;
     private final AuthorAutoFetchService authorAutoFetchService;
+    private final RatingAggregationService ratingAggregationService;
 
     @Transactional
     public void setBookMetadata(MetadataUpdateContext context) {
@@ -91,6 +92,7 @@ public class BookMetadataUpdater {
         BookFileType bookType = primaryFile != null ? primaryFile.getBookType() : null;
 
         updateBasicFields(newMetadata, metadata, clearFlags, replaceMode);
+        updateUnifiedRatingIfNeeded(newMetadata, metadata);
         boolean ownsAuthorTrackingSession = newAuthorTrackingContext.begin();
         try {
             updateAuthorsIfNeeded(newMetadata, metadata, clearFlags, mergeCategories, replaceMode);
@@ -153,6 +155,19 @@ public class BookMetadataUpdater {
         handleFieldUpdate(e.getAudibleReviewCountLocked(), clear.isAudibleReviewCount(), m.getAudibleReviewCount(), e::setAudibleReviewCount, e::getAudibleReviewCount, replaceMode);
         handleFieldUpdate(e.getAgeRatingLocked(), clear.isAgeRating(), m.getAgeRating(), e::setAgeRating, e::getAgeRating, replaceMode);
         handleFieldUpdate(e.getContentRatingLocked(), clear.isContentRating(), m.getContentRating(), v -> e.setContentRating(nullIfBlank(v)), e::getContentRating, replaceMode);
+    }
+
+    private void updateUnifiedRatingIfNeeded(BookMetadata m, BookMetadataEntity e) {
+        if (m.getRating() != null) {
+            // Embedded/explicit rating (e.g. a PDF's booklore:rating tag, or a direct edit)
+            // always wins over the computed aggregate.
+            e.setRating(m.getRating());
+            return;
+        }
+        Double aggregate = ratingAggregationService.computeAggregateRating(e);
+        if (aggregate != null) {
+            e.setRating(aggregate);
+        }
     }
 
     private <T> void handleFieldUpdate(Boolean locked, boolean shouldClear, T newValue, Consumer<T> setter, Supplier<T> getter, MetadataReplaceMode mode) {

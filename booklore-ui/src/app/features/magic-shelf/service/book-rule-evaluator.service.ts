@@ -328,6 +328,8 @@ export class BookRuleEvaluatorService {
         return book.metadata?.hardcoverRating;
       case 'hardcoverReviewCount':
         return book.metadata?.hardcoverReviewCount;
+      case 'rating':
+        return book.metadata?.rating;
       case 'ranobedbRating':
         return book.metadata?.ranobedbRating;
       case 'addedOn':
@@ -525,6 +527,7 @@ export class BookRuleEvaluatorService {
       case 'moods': return book.metadata?.moods;
       case 'tags': return book.metadata?.tags;
       case 'personalRating': return book.personalRating;
+      case 'rating': return book.metadata?.rating;
       case 'amazonRating': return book.metadata?.amazonRating;
       case 'goodreadsRating': return book.metadata?.goodreadsRating;
       case 'hardcoverRating': return book.metadata?.hardcoverRating;

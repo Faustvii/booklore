@@ -1,7 +1,7 @@
 # Task 15 — Add Unified/Aggregated Rating Field
 
 **Priority:** P2
-**Status:** Not Started
+**Status:** Done
 **Scope:** Backend + Frontend
 
 ---
@@ -108,18 +108,18 @@ while every individual provider field and UI element stays exactly as-is.
 
 ## Acceptance Criteria
 
-- [ ] `rating` on `BookMetadataEntity` is populated with a weighted
+- [x] `rating` on `BookMetadataEntity` is populated with a weighted
       average of hardcover/amazon/goodreads ratings (weighted by review
       count where available) whenever at least one of those three is
       present and `rating` wasn't already set by embedded-file extraction.
-- [ ] `rating` is left untouched when already populated from embedded
+- [x] `rating` is left untouched when already populated from embedded
       file metadata (e.g. `booklore:rating` PDF tag) — extraction always
       wins over computation.
-- [ ] Recomputation happens automatically on metadata update/scan/sidecar
+- [x] Recomputation happens automatically on metadata update/scan/sidecar
       sync when input provider ratings change.
-- [ ] `rating` is sortable and filterable (Magic Shelf `RATING` rule
+- [x] `rating` is sortable and filterable (Magic Shelf `RATING` rule
       field) same as other numeric fields.
-- [ ] All existing per-provider rating fields, locks, and UI remain fully
+- [x] All existing per-provider rating fields, locks, and UI remain fully
       functional and unchanged.
-- [ ] No compile errors.
-- [ ] All existing tests pass.
+- [x] No compile errors.
+- [x] All existing tests pass.
