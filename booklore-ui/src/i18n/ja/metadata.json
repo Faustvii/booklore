@@ -396,7 +396,6 @@
   "manager": {
     "title": "メタデータマネージャー",
     "description": "ライブラリ全体の著者、ジャンル、ムード、タグを整理、マージ、分割、リネーム、標準化します。",
-    "writeToFileWarning": "重要：設定で「ファイルに書き込み」が有効な場合、操作はすべての関連ファイルを変更します。数千冊の本があるライブラリでは、パフォーマンスの問題やデータ破損を防ぐために、この機能を使用する前に「ファイルに書き込み」を無効にしてください。",
     "clearSelection": "選択をクリア",
     "deleteSelected": "選択を削除",
     "mergeSplitSelected": "選択をマージ/分割",
@@ -414,7 +413,6 @@
     "multiValuePlaceholder": "例: フィクション、ミステリー、スリラー",
     "singleMergeHowItWorks": "<strong>仕組み：</strong><br/>• 選択したすべてのアイテムをマージする標準化された値を入力します<br/>• 選択した{{ type }}のいずれかを持つすべての本がこの単一の値に更新されます<br/><br/><strong>例：</strong>「En」、「English」、「en-US」をマージする場合<br/>• 「English」と入力 → すべての本の{{ singular }}が「English」にマージされます<br/><br/><strong>注意：</strong>各本は1つの{{ singular }}しか持てないため、ターゲット値は1つだけ入力してください。",
     "multiMergeHowItWorks": "<strong>仕組み：</strong><br/>• 1つの値を入力すると、選択したすべての{{ type }}を1つにマージします<br/>• カンマ区切りで複数の値を入力すると、複数の{{ type }}に分割します<br/><br/><strong>例：</strong>「Sci-Fi」、「SciFi」、「Science Fiction」をマージ/分割する場合<br/>• マージ：「Science Fiction」と入力 → すべての本が1つの標準化されたタグを取得<br/>• 分割：「Science Fiction, Sci-Fi」と入力 → すべての本が正式名と略称の両方を取得",
-    "processingNote": "設定で「ファイルに書き込み」が有効な場合、この処理には時間がかかることがあります。",
     "processing": "処理中...",
     "renameSplitDialogTitle": "{{ type }}をリネーム/分割",
     "renameSplitDescription": "リネーム/分割しています：",
@@ -423,7 +421,6 @@
     "multiRenamePlaceholder": "例: ミステリー、探偵",
     "singleRenameHowItWorks": "<strong>仕組み：</strong><br/>• この{{ singular }}のリネームに新しい値を入力します<br/><br/><strong>注意：</strong>各本は1つの{{ singular }}しか持てないため、複数の値への分割はできません。",
     "multiRenameHowItWorks": "<strong>仕組み：</strong><br/>• 1つの値を入力すると{{ singular }}をリネームします<br/>• カンマ区切りで複数の値を入力すると複数の{{ type }}に分割します<br/><br/><strong>例：</strong>「ミステリー＆探偵」をリネーム/分割する場合<br/>• リネーム：「ミステリー」と入力 → 「ミステリー」だけにリネーム<br/>• 分割：「ミステリー、探偵」と入力 → 2つの別々の{{ type }}に分割",
-    "renameProcessingNote": "設定で「ファイルに書き込み」が有効な場合、この処理には時間がかかることがあります。",
     "deleteDialogTitle": "{{ type }}を削除",
     "deleteWarning": "{{ count }}件の{{ type }}を削除しようとしています：",
     "whatWillHappen": "実行される操作：",

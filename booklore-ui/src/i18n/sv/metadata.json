@@ -130,8 +130,7 @@
       "audiobookUploadFailed": "Ett fel uppstod vid uppladdning av ljudboksomslaget",
       "fileMetadataLoaded": "Metadata laddad från bokfil. Granska och spara.",
       "fileMetadataFailed": "Kunde inte extrahera metadata från bokfilen"
-    },
-    "writtenToFileTooltip": "Det här fältet skrivs till den fysiska filen"
+    }
   },
   "picker": {
     "loadingMetadata": "Laddar komplett metadata...",
@@ -421,7 +420,6 @@
   "manager": {
     "title": "Metadatahanterare",
     "description": "Organisera, sammanfoga, dela, byt namn och standardisera författare, genrer, stämningar och taggar i hela ditt bibliotek.",
-    "writeToFileWarning": "Viktigt: Om \"Skriv till fil\" är aktiverat i inställningarna kommer operationer att modifiera alla relevanta filer. För bibliotek med tusentals böcker, inaktivera \"Skriv till fil\" innan du använder denna funktion för att undvika prestandaproblem och potentiell datakorruption.",
     "clearSelection": "Rensa val",
     "deleteSelected": "Radera valda",
     "mergeSplitSelected": "Sammanfoga/Dela valda",
@@ -439,7 +437,6 @@
     "multiValuePlaceholder": "t.ex. Fiktion, Deckare, Thriller",
     "singleMergeHowItWorks": "<strong>Så fungerar det:</strong><br/>• Ange det standardiserade värdet du vill sammanfoga alla valda objekt till<br/>• Alla böcker med någon av de valda {{ type }} uppdateras till att använda detta enda värde<br/><br/><strong>Exempel:</strong> Vid sammanfogning av \"En\", \"English\", \"en-US\"<br/>• Ange \"English\" > Alla böcker får sin {{ singular }} sammanfogad till \"English\"<br/><br/><strong>Obs:</strong> Varje bok kan bara ha en {{ singular }}, så ange bara ett målvärde.",
     "multiMergeHowItWorks": "<strong>Så fungerar det:</strong><br/>• Ange ett enda värde för att sammanfoga alla valda {{ type }} till ett<br/>• Ange flera värden separerade med komma för att dela upp i flera {{ type }}<br/><br/><strong>Exempel:</strong> Vid sammanfogning/delning av \"Sci-Fi\", \"SciFi\", \"Science Fiction\"<br/>• Sammanfoga: Ange \"Science Fiction\" > Alla böcker får en standardiserad tagg<br/>• Dela: Ange \"Science Fiction, Sci-Fi\" > Alla böcker får både det formella namnet och den vanliga förkortningen",
-    "processingNote": "Denna process kan ta längre tid om \"Skriv till fil\" är aktiverat i inställningarna.",
     "processing": "Bearbetar...",
     "renameSplitDialogTitle": "Byt namn/Dela {{ type }}",
     "renameSplitDescription": "Du byter namn/delar:",
@@ -448,7 +445,6 @@
     "multiRenamePlaceholder": "t.ex. Deckare, Detektiv",
     "singleRenameHowItWorks": "<strong>Så fungerar det:</strong><br/>• Ange ett nytt värde för att byta namn på denna {{ singular }}<br/><br/><strong>Obs:</strong> Varje bok kan bara ha en {{ singular }}, så uppdelning i flera värden är inte tillåtet.",
     "multiRenameHowItWorks": "<strong>Så fungerar det:</strong><br/>• Ange ett enda värde för att byta namn på {{ singular }}<br/>• Ange flera värden separerade med komma för att dela upp i flera {{ type }}<br/><br/><strong>Exempel:</strong> Vid namnbyte/delning av \"Deckare & Detektiv\"<br/>• Byt namn: Ange \"Deckare\" > Byter namn till bara \"Deckare\"<br/>• Dela: Ange \"Deckare, Detektiv\" > Delar upp i två separata {{ type }}",
-    "renameProcessingNote": "Denna process kan ta tid om \"Skriv till fil\" är aktiverat i inställningarna.",
     "deleteDialogTitle": "Radera {{ type }}",
     "deleteWarning": "Du är på väg att radera {{ count }} {{ type }}:",
     "whatWillHappen": "Vad som kommer att hända:",

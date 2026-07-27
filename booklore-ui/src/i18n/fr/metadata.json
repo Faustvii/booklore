@@ -396,7 +396,6 @@
   "manager": {
     "title": "Gestionnaire de métadonnées",
     "description": "Organisez, fusionnez, divisez, renommez et standardisez les auteurs, genres, humeurs et tags à travers votre bibliothèque.",
-    "writeToFileWarning": "Important : Si l'option « Écrire dans le fichier » est activée dans les paramètres, les opérations modifieront tous les fichiers concernés. Pour les bibliothèques contenant des milliers de livres, désactivez « Écrire dans le fichier » avant d'utiliser cette fonctionnalité pour éviter les problèmes de performance et la corruption potentielle des données.",
     "clearSelection": "Effacer la sélection",
     "deleteSelected": "Supprimer la sélection",
     "mergeSplitSelected": "Fusionner/Diviser la sélection",
@@ -414,7 +413,6 @@
     "multiValuePlaceholder": "ex. Fiction, Mystère, Thriller",
     "singleMergeHowItWorks": "<strong>Comment ça marche :</strong><br/>• Entrez la valeur standardisée dans laquelle vous souhaitez fusionner tous les éléments sélectionnés<br/>• Tous les livres ayant l'un des {{ type }} sélectionnés seront mis à jour pour utiliser cette valeur unique<br/><br/><strong>Exemple :</strong> Lors de la fusion de « Fr », « Français », « fr-FR »<br/>• Entrez « Français » → Tous les livres auront leur {{ singular }} fusionné en « Français »<br/><br/><strong>Note :</strong> Chaque livre ne peut avoir qu'un seul {{ singular }}, entrez donc une seule valeur cible.",
     "multiMergeHowItWorks": "<strong>Comment ça marche :</strong><br/>• Entrez une seule valeur pour fusionner tous les {{ type }} sélectionnés en un seul<br/>• Entrez plusieurs valeurs séparées par des virgules pour diviser en plusieurs {{ type }}<br/><br/><strong>Exemple :</strong> Lors de la fusion/division de « SF », « SciFi », « Science-Fiction »<br/>• Fusionner : Entrez « Science-Fiction » → Tous les livres obtiennent un tag standardisé<br/>• Diviser : Entrez « Science-Fiction, SF » → Tous les livres obtiennent le nom complet et l'abréviation",
-    "processingNote": "Ce processus peut prendre plus de temps si « Écrire dans le fichier » est activé dans les paramètres.",
     "processing": "Traitement...",
     "renameSplitDialogTitle": "Renommer/Diviser {{ type }}",
     "renameSplitDescription": "Vous renommez/divisez :",
@@ -423,7 +421,6 @@
     "multiRenamePlaceholder": "ex. Mystère, Policier",
     "singleRenameHowItWorks": "<strong>Comment ça marche :</strong><br/>• Entrez une nouvelle valeur pour renommer ce {{ singular }}<br/><br/><strong>Note :</strong> Chaque livre ne peut avoir qu'un seul {{ singular }}, la division en plusieurs valeurs n'est donc pas autorisée.",
     "multiRenameHowItWorks": "<strong>Comment ça marche :</strong><br/>• Entrez une seule valeur pour renommer le {{ singular }}<br/>• Entrez plusieurs valeurs séparées par des virgules pour diviser en plusieurs {{ type }}<br/><br/><strong>Exemple :</strong> Lors du renommage/division de « Mystère & Policier »<br/>• Renommer : Entrez « Mystère » → Renomme en « Mystère »<br/>• Diviser : Entrez « Mystère, Policier » → Divise en deux {{ type }} séparés",
-    "renameProcessingNote": "Ce processus peut prendre un certain temps si « Écrire dans le fichier » est activé dans les paramètres.",
     "deleteDialogTitle": "Supprimer {{ type }}",
     "deleteWarning": "Vous êtes sur le point de supprimer {{ count }} {{ type }} :",
     "whatWillHappen": "Ce qui va se passer :",

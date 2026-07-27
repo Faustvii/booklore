@@ -8,11 +8,6 @@
     </h2>
     <p class="settings-description">
       {{ t('description') }}
-      <i
-        class="pi pi-exclamation-triangle info-icon"
-        [pTooltip]="t('writeToFileWarning')"
-        tooltipPosition="right"
-        [escape]="false"></i>
     </p>
   </div>
 
@@ -190,12 +185,6 @@
           <small class="help-text" [innerHTML]="t('multiMergeHowItWorks', { type: getTypeLabel(currentMergeType, true) })"></small>
         }
       </div>
-      @if (mergingInProgress) {
-        <div class="processing-note">
-          <i class="pi pi-info-circle"></i>
-          <span>{{ t('processingNote') }}</span>
-        </div>
-      }
     </div>
 
     <ng-template pTemplate="footer">
@@ -247,12 +236,6 @@
           <small class="help-text" [innerHTML]="t('multiRenameHowItWorks', { singular: getTypeLabel(currentMergeType, false), type: getTypeLabel(currentMergeType, true) })"></small>
         }
       </div>
-      @if (mergingInProgress) {
-        <div class="processing-note">
-          <i class="pi pi-info-circle"></i>
-          <span>{{ t('renameProcessingNote') }}</span>
-        </div>
-      }
     </div>
 
     <ng-template pTemplate="footer">
@@ -310,12 +293,6 @@
           <li>{{ t('totalBooksAffected') }} <strong>{{ currentDeleteItem ? currentDeleteItem.count : getTotalAffectedBooks(getSelectedItems(currentMergeType)) }}</strong></li>
         </ul>
       </div>
-      @if (deletingInProgress) {
-        <div class="processing-note">
-          <i class="pi pi-info-circle"></i>
-          <span>{{ t('renameProcessingNote') }}</span>
-        </div>
-      }
     </div>
 
     <ng-template pTemplate="footer">
