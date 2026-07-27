@@ -93,7 +93,6 @@ export interface AppSettings {
   metadataPersistenceSettings: MetadataPersistenceSettings;
   koboSettings: KoboSettings;
   coverCroppingSettings: CoverCroppingSettings;
-  telemetryEnabled: boolean;
   oidcSessionDurationHours: number | null;
   oidcGroupSyncMode: string | null;
   oidcForceOnlyMode: boolean;
@@ -114,7 +113,6 @@ export enum AppSettingKey {
   METADATA_PERSISTENCE_SETTINGS = 'METADATA_PERSISTENCE_SETTINGS',
   KOBO_SETTINGS = 'KOBO_SETTINGS',
   COVER_CROPPING_SETTINGS = 'COVER_CROPPING_SETTINGS',
-  TELEMETRY_ENABLED = 'TELEMETRY_ENABLED',
   OIDC_SESSION_DURATION_HOURS = 'OIDC_SESSION_DURATION_HOURS',
   OIDC_GROUP_SYNC_MODE = 'OIDC_GROUP_SYNC_MODE',
   OIDC_FORCE_ONLY_MODE = 'OIDC_FORCE_ONLY_MODE',

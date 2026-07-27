@@ -10,10 +10,7 @@ import {BookMetadataManageService} from '../../book/service/book-metadata-manage
 import {AppSettingKey, AppSettings, CoverCroppingSettings} from '../../../shared/model/app-settings.model';
 import {filter, take} from 'rxjs/operators';
 import {Slider} from 'primeng/slider';
-import {ExternalDocLinkComponent} from '../../../shared/components/external-doc-link/external-doc-link.component';
 import {TranslocoDirective, TranslocoService} from '@jsverse/transloco';
-
-export const SUPPORT_ANIMATION_KEY = 'booklore-support-animation';
 
 @Component({
   selector: 'app-global-preferences',
@@ -23,7 +20,6 @@ export const SUPPORT_ANIMATION_KEY = 'booklore-support-animation';
     FormsModule,
     Slider,
     SplitButton,
-    ExternalDocLinkComponent,
     TranslocoDirective,
   ],
   templateUrl: './global-preferences.component.html',
@@ -34,10 +30,7 @@ export class GlobalPreferencesComponent implements OnInit {
   toggles = {
     autoBookSearch: false,
     similarBookRecommendation: false,
-    enableTelemetry: true,
   };
-
-  supportButtonAnimation = localStorage.getItem(SUPPORT_ANIMATION_KEY) !== 'false';
 
   coverCroppingSettings: CoverCroppingSettings = {
     verticalCroppingEnabled: false,
@@ -72,7 +65,6 @@ export class GlobalPreferencesComponent implements OnInit {
       }
       this.toggles.autoBookSearch = settings.autoBookSearch ?? false;
       this.toggles.similarBookRecommendation = settings.similarBookRecommendation ?? false;
-      this.toggles.enableTelemetry = settings?.telemetryEnabled ?? true;
     });
   }
 
@@ -81,7 +73,6 @@ export class GlobalPreferencesComponent implements OnInit {
     const toggleKeyMap: Record<string, AppSettingKey> = {
       autoBookSearch: AppSettingKey.AUTO_BOOK_SEARCH,
       similarBookRecommendation: AppSettingKey.SIMILAR_BOOK_RECOMMENDATION,
-      enableTelemetry: AppSettingKey.TELEMETRY_ENABLED,
     };
     const keyToSend = toggleKeyMap[settingKey];
     if (keyToSend) {
@@ -89,12 +80,6 @@ export class GlobalPreferencesComponent implements OnInit {
     } else {
       console.warn(`Unknown toggle key: ${settingKey}`);
     }
-  }
-
-  onSupportAnimationChange(checked: boolean): void {
-    this.supportButtonAnimation = checked;
-    localStorage.setItem(SUPPORT_ANIMATION_KEY, String(checked));
-    window.dispatchEvent(new StorageEvent('storage', {key: SUPPORT_ANIMATION_KEY, newValue: String(checked)}));
   }
 
   onCoverCroppingChange(): void {

@@ -19,7 +19,6 @@ public class AppSettings {
     private Integer pdfCacheSizeInMb;
     private boolean remoteAuthEnabled;
     private boolean oidcEnabled;
-    private boolean telemetryEnabled;
     private OidcProviderDetails oidcProviderDetails;
     private OidcAutoProvisionDetails oidcAutoProvisionDetails;
     private MetadataMatchWeights metadataMatchWeights;

@@ -25,17 +25,7 @@
     "similarBook": "",
     "similarBookDesc": ""
   },
-  "telemetry": {
-    "sectionTitle": "",
-    "enableTelemetry": "",
-    "telemetryDesc": ""
-  },
   "settingsSaved": "",
   "settingsSavedDetail": "",
-  "settingsError": "",
-  "appearance": {
-    "supportButtonAnimation": "",
-    "supportButtonAnimationDesc": "",
-    "sectionTitle": ""
-  }
+  "settingsError": ""
 }
