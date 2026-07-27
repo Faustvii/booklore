@@ -1,4 +1,5 @@
-import {Component, EventEmitter, inject, Input, Output} from '@angular/core';
+import {Component, EventEmitter, inject, Input, OnInit, Output} from '@angular/core';
+import {filter, take} from 'rxjs/operators';
 import {UpperCasePipe} from '@angular/common';
 import {Book, BookRecommendation, BookType, FileInfo} from '../../../../../book/model/book.model';
 import {Tab, TabList, TabPanel, TabPanels, Tabs} from 'primeng/tabs';
@@ -14,6 +15,7 @@ import {BookMetadataManageService} from '../../../../../book/service/book-metada
 import {TranslocoDirective, TranslocoService} from '@jsverse/transloco';
 import {AudiobookService} from '../../../../../readers/audiobook-player/audiobook.service';
 import {AudiobookInfo} from '../../../../../readers/audiobook-player/audiobook.model';
+import {User, UserService} from '../../../../../settings/user-management/user.service';
 
 export interface ReadEvent {
   bookId: number;
@@ -76,7 +78,7 @@ export interface DetachBookFileEvent {
   templateUrl: './metadata-tabs.component.html',
   styleUrl: './metadata-tabs.component.scss'
 })
-export class MetadataTabsComponent {
+export class MetadataTabsComponent implements OnInit {
   @Input() book!: Book;
   @Input() bookInSeries: Book[] = [];
   @Input() recommendedBooks: BookRecommendation[] = [];
@@ -84,10 +86,12 @@ export class MetadataTabsComponent {
   protected urlHelper = inject(UrlHelperService);
   private bookMetadataManageService = inject(BookMetadataManageService);
   private audiobookService = inject(AudiobookService);
+  private userService = inject(UserService);
   private t = inject(TranslocoService);
 
   audiobookInfo: AudiobookInfo | null = null;
   chaptersLoading = false;
+  private user: User | null = null;
 
   @Output() readBook = new EventEmitter<ReadEvent>();
   @Output() downloadBook = new EventEmitter<DownloadEvent>();
@@ -97,8 +101,23 @@ export class MetadataTabsComponent {
   @Output() deleteSupplementaryFile = new EventEmitter<DeleteSupplementaryFileEvent>();
   @Output() detachBookFile = new EventEmitter<DetachBookFileEvent>();
 
+  ngOnInit(): void {
+    this.userService.userState$
+      .pipe(
+        filter(userState => !!userState?.user && userState.loaded),
+        take(1)
+      )
+      .subscribe(userState => {
+        this.user = userState.user;
+      });
+  }
+
   get defaultTabValue(): string {
     return this.bookInSeries && this.bookInSeries.length > 1 ? 'series' : 'similar';
+  }
+
+  get isAdmin(): boolean {
+    return !!this.user?.permissions.admin;
   }
 
   read(bookId: number, reader?: 'epub-streaming', bookType?: BookType): void {
