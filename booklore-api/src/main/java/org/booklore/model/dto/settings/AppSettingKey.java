@@ -31,7 +31,6 @@ public enum AppSettingKey {
     AUTO_BOOK_SEARCH                    ("auto_book_search",                     false, false, List.of(PermissionType.ADMIN, PermissionType.MANAGE_GLOBAL_PREFERENCES)),
     SIMILAR_BOOK_RECOMMENDATION         ("similar_book_recommendation",          false, false, List.of(PermissionType.ADMIN, PermissionType.MANAGE_GLOBAL_PREFERENCES)),
     PDF_CACHE_SIZE_IN_MB                ("pdf_cache_size_in_mb",                 false, false, List.of(PermissionType.ADMIN, PermissionType.MANAGE_GLOBAL_PREFERENCES)),
-    TELEMETRY_ENABLED                   ("telemetryEnabled",                     false, false, List.of(PermissionType.ADMIN, PermissionType.MANAGE_GLOBAL_PREFERENCES)),
 
     // No specific permissions required
     SIDEBAR_LIBRARY_SORTING             ("sidebar_library_sorting",              true,  false, List.of()),

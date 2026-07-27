@@ -49,18 +49,6 @@
   "liveNotification": {
     "defaultMessage": ""
   },
-  "supportDialog": {
-    "title": "",
-    "subtitle": "",
-    "intro": "",
-    "starTitle": "",
-    "starDesc": "",
-    "collectiveTitle": "",
-    "collectiveDesc": "",
-    "kofiTitle": "",
-    "kofiDesc": "",
-    "closing": ""
-  },
   "metadataProgress": {
     "taskStalled": "",
     "taskCancelled": "",
