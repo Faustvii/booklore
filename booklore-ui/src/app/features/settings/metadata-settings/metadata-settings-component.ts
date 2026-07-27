@@ -6,7 +6,6 @@ import {Observable} from 'rxjs';
 import {AppSettings} from '../../../shared/model/app-settings.model';
 import {filter, take} from 'rxjs/operators';
 import {MetadataMatchWeightsComponent} from '../global-preferences/metadata-match-weights/metadata-match-weights-component';
-import {MetadataPersistenceSettingsComponent} from './metadata-persistence-settings/metadata-persistence-settings-component';
 import {TranslocoDirective, TranslocoService} from '@jsverse/transloco';
 
 @Component({
@@ -16,7 +15,6 @@ import {TranslocoDirective, TranslocoService} from '@jsverse/transloco';
     ReactiveFormsModule,
     FormsModule,
     MetadataMatchWeightsComponent,
-    MetadataPersistenceSettingsComponent,
     TranslocoDirective
   ],
   templateUrl: './metadata-settings-component.html',

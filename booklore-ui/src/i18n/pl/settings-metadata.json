@@ -7,28 +7,6 @@
     "enableLabel": "Włącz automatyczne pobieranie metadanych dla importów Bookdrop",
     "loadError": "Nie udało się załadować ustawień."
   },
-  "persistence": {
-    "sectionTitle": "Trwałość metadanych",
-    "sectionDesc": "Skonfiguruj sposób zapisywania metadanych do oryginalnych plików i przenoszenia lub zmiany nazw plików przy zmianach metadanych.",
-    "networkWarningTitle": "Ostrzeżenie dotyczące przechowywania sieciowego:",
-    "networkWarning": "Te funkcje bezpośrednio modyfikują i przenoszą pliki książek na dysku (w tym przepisywanie metadanych i zmianę nazw plików). Są przeznaczone wyłącznie dla lokalnych systemów plików. Używanie ich na NAS lub w chmurze nie zostało przetestowane i może prowadzić do uszkodzenia plików, niekompletnych zapisów lub trwałej utraty danych. Zgłoszenia na GitHub dotyczące przechowywania sieciowego nie będą obsługiwane.",
-    "unsupportedNote": "Zapis metadanych <b>nie jest obsługiwany</b> dla formatów FB2, AZW3 i MOBI.",
-    "writeEpub": "Zapisuj metadane do EPUB",
-    "writeEpubDesc": "Zapisuj metadane bezpośrednio w plikach EPUB podczas edycji informacji o książce.",
-    "writeCbx": "Zapisuj metadane do CBX",
-    "writeCbxDesc": "Zapisuj metadane bezpośrednio w plikach CBX podczas edycji informacji o książce.",
-    "writePdf": "Zapisuj metadane do PDF",
-    "writePdfDesc": "Zapisuj metadane bezpośrednio w plikach PDF podczas edycji informacji o książce.",
-    "writePdfNote": "Pliki PDF nie obsługują osadzonych okładek. Tylko tytuł, autorzy, wydawca, kategorie, opis, język i data wydania mogą być zaktualizowane.",
-    "writeAudiobook": "Zapisuj metadane do audiobooków",
-    "writeAudiobookDesc": "Zapisuj metadane bezpośrednio w plikach audiobooków (M4B, M4A, MP3, itp.) podczas edycji informacji o książce.",
-    "writeAudiobookNote": "Obsługuje tytuł, autorów, narratora, opis, wydawcę, kategorie, serię, język i okładkę. Dla audiobooków folderowych okładka jest zapisywana jako cover.jpg w folderze.",
-    "maxFileSize": "Maks. rozmiar pliku:",
-    "maxFileSizeTooltip": "Tylko pliki do tego rozmiaru będą aktualizowane. Większe pliki są pomijane.",
-    "autoMove": "Automatyczne przenoszenie plików przy aktualizacji metadanych",
-    "autoMoveDesc": "Automatycznie przenoś i zmieniaj nazwy plików zgodnie z wzorcem nazewnictwa biblioteki, gdy metadane są aktualizowane.",
-    "loadError": "Nie udało się załadować ustawień."
-  },
   "providers": {
     "sectionTitle": "Dostawcy metadanych",
     "sectionDesc": "Skonfiguruj źródła online do pobierania metadanych książek. Włącz dostawców i skonfiguruj ich tokeny API lub ciasteczka, aby uzyskać bogatsze informacje o książkach.",

@@ -7,28 +7,6 @@
     "enableLabel": "Ativar download automático de metadados para importações do Bookdrop",
     "loadError": "Falha ao carregar configurações."
   },
-  "persistence": {
-    "sectionTitle": "Persistência de Metadados",
-    "sectionDesc": "Configure como os metadados são gravados nos arquivos originais e como os arquivos são movidos ou renomeados quando os metadados mudam.",
-    "networkWarningTitle": "Aviso de Armazenamento em Rede:",
-    "networkWarning": "Estes recursos modificam e movem diretamente os arquivos de livros no disco (incluindo reescrita de metadados e renomeação de arquivos). Foram projetados apenas para sistemas de arquivos locais. Usá-los em NAS ou armazenamento em nuvem não foi testado e pode levar a corrupção de arquivos, gravações incompletas ou perda permanente de dados. Issues no Github relacionadas a armazenamento em rede não serão suportadas.",
-    "unsupportedNote": "A gravação de metadados <b>não é suportada</b> para formatos FB2, AZW3 e MOBI.",
-    "writeEpub": "Gravar Metadados no EPUB",
-    "writeEpubDesc": "Gravar metadados diretamente nos arquivos EPUB ao editar informações do livro.",
-    "writeCbx": "Gravar Metadados no CBX",
-    "writeCbxDesc": "Gravar metadados diretamente nos arquivos CBX ao editar informações do livro.",
-    "writePdf": "Gravar Metadados no PDF",
-    "writePdfDesc": "Gravar metadados diretamente nos arquivos PDF ao editar informações do livro.",
-    "writePdfNote": "PDFs não suportam capas incorporadas. Apenas Título, Autores, Editora, Categorias, Descrição, Idioma e Data de Publicação podem ser atualizados.",
-    "writeAudiobook": "Gravar Metadados em Audiolivros",
-    "writeAudiobookDesc": "Gravar metadados diretamente nos arquivos de audiolivro (M4B, M4A, MP3, etc.) ao editar informações do livro.",
-    "writeAudiobookNote": "Suporta título, autores, narrador, descrição, editora, categorias, série, idioma e arte da capa. Para audiolivros em pastas, a capa é salva como cover.jpg na pasta.",
-    "maxFileSize": "Tamanho máximo do arquivo:",
-    "maxFileSizeTooltip": "Apenas arquivos até este tamanho serão atualizados. Arquivos maiores são ignorados.",
-    "autoMove": "Mover Arquivos Automaticamente na Atualização de Metadados",
-    "autoMoveDesc": "Mover e renomear automaticamente os arquivos de acordo com o padrão de nomenclatura da biblioteca quando os metadados são atualizados.",
-    "loadError": "Falha ao carregar configurações."
-  },
   "providers": {
     "sectionTitle": "Provedores de Metadados",
     "sectionDesc": "Configure quais fontes online usar para buscar metadados de livros. Ative provedores e configure seus tokens de API ou cookies para acessar informações mais ricas sobre livros.",

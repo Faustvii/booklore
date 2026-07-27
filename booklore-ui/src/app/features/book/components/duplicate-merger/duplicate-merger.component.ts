@@ -8,13 +8,12 @@ import {SelectButton} from 'primeng/selectbutton';
 import {ProgressBar} from 'primeng/progressbar';
 import {Tag} from 'primeng/tag';
 import {Paginator} from 'primeng/paginator';
-import {filter, Subject, take, takeUntil} from 'rxjs';
+import {Subject, takeUntil} from 'rxjs';
 import {BookFileService} from '../../service/book-file.service';
 import {Book, DuplicateDetectionRequest, DuplicateGroup} from '../../model/book.model';
 import {MessageService} from 'primeng/api';
 import {TranslocoDirective, TranslocoPipe, TranslocoService} from '@jsverse/transloco';
 import {UrlHelperService} from '../../../../shared/service/url-helper.service';
-import {AppSettingsService} from '../../../../shared/service/app-settings.service';
 
 type PresetMode = 'strict' | 'balanced' | 'aggressive' | 'custom';
 
@@ -72,18 +71,9 @@ export class DuplicateMergerComponent implements OnInit, OnDestroy {
   private readonly config = inject(DynamicDialogConfig);
   private readonly t = inject(TranslocoService);
   readonly urlHelper = inject(UrlHelperService);
-  private readonly appSettingsService = inject(AppSettingsService);
 
   ngOnInit(): void {
     this.libraryId = this.config.data.libraryId;
-
-    this.appSettingsService.appSettings$.pipe(
-      filter(settings => !!settings),
-      take(1),
-      takeUntil(this.destroy$)
-    ).subscribe(settings => {
-      this.moveFiles = settings!.metadataPersistenceSettings?.moveFilesToLibraryPattern ?? false;
-    });
 
     this.presetOptions = [
       {label: this.t.translate('book.duplicateMerger.presetStrict'), value: 'strict'},

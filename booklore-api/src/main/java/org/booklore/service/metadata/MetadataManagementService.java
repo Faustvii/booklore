@@ -1,96 +1,40 @@
 package org.booklore.service.metadata;
 
-import org.booklore.config.AppProperties;
-import org.booklore.model.dto.FileMoveResult;
-import org.booklore.model.dto.settings.MetadataPersistenceSettings;
 import org.booklore.model.entity.*;
-import org.booklore.model.enums.BookFileType;
 import org.booklore.model.enums.MergeMetadataType;
 import org.booklore.repository.*;
-import org.booklore.service.appsettings.AppSettingService;
-import org.booklore.service.file.FileFingerprint;
-import org.booklore.service.file.FileMoveService;
-import org.booklore.service.metadata.writer.MetadataWriter;
-import org.booklore.service.metadata.writer.MetadataWriterFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.File;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class MetadataManagementService {
 
-    private final AppProperties appProperties;
     private final AuthorRepository authorRepository;
     private final CategoryRepository categoryRepository;
     private final MoodRepository moodRepository;
     private final TagRepository tagRepository;
     private final BookMetadataRepository bookMetadataRepository;
-    private final AppSettingService appSettingService;
-    private final MetadataWriterFactory metadataWriterFactory;
-    private final FileMoveService fileMoveService;
-    private final BookRepository bookRepository;
-
 
     @Transactional
     public void consolidateMetadata(MergeMetadataType metadataType, List<String> targetValues, List<String> valuesToMerge) {
-
-        MetadataPersistenceSettings settings = appSettingService.getAppSettings().getMetadataPersistenceSettings();
-        boolean moveFile = settings.isMoveFilesToLibraryPattern();
-
         switch (metadataType) {
-            case authors -> consolidateAuthors(targetValues, valuesToMerge, moveFile);
-            case categories -> consolidateCategories(targetValues, valuesToMerge, moveFile);
-            case moods -> consolidateMoods(targetValues, valuesToMerge, moveFile);
-            case tags -> consolidateTags(targetValues, valuesToMerge, moveFile);
-            case series -> consolidateSeries(targetValues, valuesToMerge, moveFile);
-            case publishers -> consolidatePublishers(targetValues, valuesToMerge, moveFile);
-            case languages -> consolidateLanguages(targetValues, valuesToMerge, moveFile);
+            case authors -> consolidateAuthors(targetValues, valuesToMerge);
+            case categories -> consolidateCategories(targetValues, valuesToMerge);
+            case moods -> consolidateMoods(targetValues, valuesToMerge);
+            case tags -> consolidateTags(targetValues, valuesToMerge);
+            case series -> consolidateSeries(targetValues, valuesToMerge);
+            case publishers -> consolidatePublishers(targetValues, valuesToMerge);
+            case languages -> consolidateLanguages(targetValues, valuesToMerge);
         }
     }
 
-    private void writeMetadataToFile(List<BookMetadataEntity> metadataList, boolean moveFile) {
-        for (BookMetadataEntity metadata : metadataList) {
-            if (metadata.getBook() != null) {
-                BookEntity book = metadata.getBook();
-                boolean bookModified = false;
-
-                var primaryFile = book.getPrimaryBookFile();
-                BookFileType bookType = primaryFile.getBookType();
-                if (appProperties.isLocalStorage()) {
-                    Optional<MetadataWriter> writerOpt = metadataWriterFactory.getWriter(bookType);
-                    if (writerOpt.isPresent()) {
-                        File file = book.getFullFilePath().toFile();
-                        writerOpt.get().saveMetadataToFile(file, metadata, null, null);
-                        String newHash = FileFingerprint.generateHash(book.getFullFilePath());
-                        primaryFile.setCurrentHash(newHash);
-                        bookModified = true;
-                    }
-                }
-
-                if (moveFile) {
-                    FileMoveResult result = fileMoveService.moveSingleFile(book);
-                    if (result.isMoved()) {
-                        primaryFile.setFileName(result.getNewFileName());
-                        primaryFile.setFileSubPath(result.getNewFileSubPath());
-                        bookModified = true;
-                    }
-                }
-
-                if (bookModified) {
-                    bookRepository.saveAndFlush(book);
-                }
-            }
-        }
-    }
-
-    private void consolidateAuthors(List<String> targetValues, List<String> valuesToMerge, boolean moveFile) {
+    private void consolidateAuthors(List<String> targetValues, List<String> valuesToMerge) {
         List<AuthorEntity> targetAuthors = targetValues.stream()
                 .map(name -> authorRepository.findByNameIgnoreCase(name)
                         .map(existing -> {
@@ -121,14 +65,13 @@ public class MetadataManagementService {
 
             bookMetadataRepository.saveAll(booksWithOldAuthor);
             bookMetadataRepository.flush();
-            writeMetadataToFile(booksWithOldAuthor, moveFile);
             authorRepository.delete(oldAuthor);
         }
 
         log.info("Consolidated {} authors into {}: {}", authorsToMerge.size(), targetValues, valuesToMerge);
     }
 
-    private void consolidateCategories(List<String> targetValues, List<String> valuesToMerge, boolean moveFile) {
+    private void consolidateCategories(List<String> targetValues, List<String> valuesToMerge) {
         List<CategoryEntity> targetCategories = targetValues.stream()
                 .map(name -> categoryRepository.findByNameIgnoreCase(name)
                         .map(existing -> {
@@ -158,14 +101,13 @@ public class MetadataManagementService {
 
             bookMetadataRepository.saveAll(booksWithOldCategory);
             bookMetadataRepository.flush();
-            writeMetadataToFile(booksWithOldCategory, moveFile);
             categoryRepository.delete(oldCategory);
         }
 
         log.info("Consolidated {} categories into {}: {}", categoriesToMerge.size(), targetValues, valuesToMerge);
     }
 
-    private void consolidateMoods(List<String> targetValues, List<String> valuesToMerge, boolean moveFile) {
+    private void consolidateMoods(List<String> targetValues, List<String> valuesToMerge) {
         List<MoodEntity> targetMoods = targetValues.stream()
                 .map(name -> moodRepository.findByNameIgnoreCase(name)
                         .map(existing -> {
@@ -196,14 +138,13 @@ public class MetadataManagementService {
             bookMetadataRepository.saveAll(booksWithOldMood);
             bookMetadataRepository.flush();
 
-            writeMetadataToFile(booksWithOldMood, moveFile);
             moodRepository.delete(oldMood);
         }
 
         log.info("Consolidated {} moods into {}: {}", moodsToMerge.size(), targetValues, valuesToMerge);
     }
 
-    private void consolidateTags(List<String> targetValues, List<String> valuesToMerge, boolean moveFile) {
+    private void consolidateTags(List<String> targetValues, List<String> valuesToMerge) {
         List<TagEntity> targetTags = targetValues.stream()
                 .map(name -> tagRepository.findByNameIgnoreCase(name)
                         .map(existing -> {
@@ -234,14 +175,13 @@ public class MetadataManagementService {
             bookMetadataRepository.saveAll(booksWithOldTag);
             bookMetadataRepository.flush();
 
-            writeMetadataToFile(booksWithOldTag, moveFile);
             tagRepository.delete(oldTag);
         }
 
         log.info("Consolidated {} tags into {}: {}", tagsToMerge.size(), targetValues, valuesToMerge);
     }
 
-    private void consolidateSeries(List<String> targetValues, List<String> valuesToMerge, boolean moveFile) {
+    private void consolidateSeries(List<String> targetValues, List<String> valuesToMerge) {
         if (targetValues.size() != 1) {
             throw new IllegalArgumentException("Series merge requires exactly one target value");
         }
@@ -255,13 +195,12 @@ public class MetadataManagementService {
             }
 
             bookMetadataRepository.saveAll(booksWithOldSeries);
-            writeMetadataToFile(booksWithOldSeries, moveFile);
         }
 
         log.info("Consolidated {} series into '{}': {}", valuesToMerge.size(), targetSeriesName, valuesToMerge);
     }
 
-    private void consolidatePublishers(List<String> targetValues, List<String> valuesToMerge, boolean moveFile) {
+    private void consolidatePublishers(List<String> targetValues, List<String> valuesToMerge) {
         if (targetValues.size() != 1) {
             throw new IllegalArgumentException("Publisher merge requires exactly one target value");
         }
@@ -275,13 +214,12 @@ public class MetadataManagementService {
             }
 
             bookMetadataRepository.saveAll(booksWithOldPublisher);
-            writeMetadataToFile(booksWithOldPublisher, moveFile);
         }
 
         log.info("Consolidated {} publishers into '{}': {}", valuesToMerge.size(), targetPublisher, valuesToMerge);
     }
 
-    private void consolidateLanguages(List<String> targetValues, List<String> valuesToMerge, boolean moveFile) {
+    private void consolidateLanguages(List<String> targetValues, List<String> valuesToMerge) {
         if (targetValues.size() != 1) {
             throw new IllegalArgumentException("Language merge requires exactly one target value");
         }
@@ -295,7 +233,6 @@ public class MetadataManagementService {
             }
 
             bookMetadataRepository.saveAll(booksWithOldLanguage);
-            writeMetadataToFile(booksWithOldLanguage, moveFile);
         }
 
         log.info("Consolidated {} languages into '{}': {}", valuesToMerge.size(), targetLanguage, valuesToMerge);
@@ -303,21 +240,18 @@ public class MetadataManagementService {
 
     @Transactional
     public void deleteMetadata(MergeMetadataType metadataType, List<String> valuesToDelete) {
-        MetadataPersistenceSettings settings = appSettingService.getAppSettings().getMetadataPersistenceSettings();
-        boolean moveFile = settings.isMoveFilesToLibraryPattern();
-
         switch (metadataType) {
-            case authors -> deleteAuthors(valuesToDelete, moveFile);
-            case categories -> deleteCategories(valuesToDelete, moveFile);
-            case moods -> deleteMoods(valuesToDelete, moveFile);
-            case tags -> deleteTags(valuesToDelete, moveFile);
-            case series -> deleteSeries(valuesToDelete, moveFile);
-            case publishers -> deletePublishers(valuesToDelete, moveFile);
-            case languages -> deleteLanguages(valuesToDelete, moveFile);
+            case authors -> deleteAuthors(valuesToDelete);
+            case categories -> deleteCategories(valuesToDelete);
+            case moods -> deleteMoods(valuesToDelete);
+            case tags -> deleteTags(valuesToDelete);
+            case series -> deleteSeries(valuesToDelete);
+            case publishers -> deletePublishers(valuesToDelete);
+            case languages -> deleteLanguages(valuesToDelete);
         }
     }
 
-    private void deleteAuthors(List<String> valuesToDelete, boolean moveFile) {
+    private void deleteAuthors(List<String> valuesToDelete) {
         List<AuthorEntity> authorsToDelete = valuesToDelete.stream()
                 .map(authorRepository::findByName)
                 .filter(java.util.Optional::isPresent)
@@ -333,14 +267,13 @@ public class MetadataManagementService {
 
             bookMetadataRepository.saveAll(booksWithAuthor);
             bookMetadataRepository.flush();
-            writeMetadataToFile(booksWithAuthor, moveFile);
             authorRepository.delete(author);
         }
 
         log.info("Deleted {} authors: {}", authorsToDelete.size(), valuesToDelete);
     }
 
-    private void deleteCategories(List<String> valuesToDelete, boolean moveFile) {
+    private void deleteCategories(List<String> valuesToDelete) {
         List<CategoryEntity> categoriesToDelete = valuesToDelete.stream()
                 .map(categoryRepository::findByNameIgnoreCase)
                 .filter(java.util.Optional::isPresent)
@@ -356,14 +289,13 @@ public class MetadataManagementService {
 
             bookMetadataRepository.saveAll(booksWithCategory);
             bookMetadataRepository.flush();
-            writeMetadataToFile(booksWithCategory, moveFile);
             categoryRepository.delete(category);
         }
 
         log.info("Deleted {} categories: {}", categoriesToDelete.size(), valuesToDelete);
     }
 
-    private void deleteMoods(List<String> valuesToDelete, boolean moveFile) {
+    private void deleteMoods(List<String> valuesToDelete) {
         List<MoodEntity> moodsToDelete = valuesToDelete.stream()
                 .map(moodRepository::findByNameIgnoreCase)
                 .filter(java.util.Optional::isPresent)
@@ -379,14 +311,13 @@ public class MetadataManagementService {
 
             bookMetadataRepository.saveAll(booksWithMood);
             bookMetadataRepository.flush();
-            writeMetadataToFile(booksWithMood, moveFile);
             moodRepository.delete(mood);
         }
 
         log.info("Deleted {} moods: {}", moodsToDelete.size(), valuesToDelete);
     }
 
-    private void deleteTags(List<String> valuesToDelete, boolean moveFile) {
+    private void deleteTags(List<String> valuesToDelete) {
         List<TagEntity> tagsToDelete = valuesToDelete.stream()
                 .map(tagRepository::findByNameIgnoreCase)
                 .filter(java.util.Optional::isPresent)
@@ -402,14 +333,13 @@ public class MetadataManagementService {
 
             bookMetadataRepository.saveAll(booksWithTag);
             bookMetadataRepository.flush();
-            writeMetadataToFile(booksWithTag, moveFile);
             tagRepository.delete(tag);
         }
 
         log.info("Deleted {} tags: {}", tagsToDelete.size(), valuesToDelete);
     }
 
-    private void deleteSeries(List<String> valuesToDelete, boolean moveFile) {
+    private void deleteSeries(List<String> valuesToDelete) {
         for (String seriesName : valuesToDelete) {
             List<BookMetadataEntity> booksWithSeries = bookMetadataRepository.findAllBySeriesNameIgnoreCase(seriesName);
 
@@ -421,14 +351,13 @@ public class MetadataManagementService {
 
             if (!booksWithSeries.isEmpty()) {
                 bookMetadataRepository.saveAll(booksWithSeries);
-                writeMetadataToFile(booksWithSeries, moveFile);
             }
         }
 
         log.info("Deleted {} series: {}", valuesToDelete.size(), valuesToDelete);
     }
 
-    private void deletePublishers(List<String> valuesToDelete, boolean moveFile) {
+    private void deletePublishers(List<String> valuesToDelete) {
         for (String publisher : valuesToDelete) {
             List<BookMetadataEntity> booksWithPublisher = bookMetadataRepository.findAllByPublisherIgnoreCase(publisher);
 
@@ -438,14 +367,13 @@ public class MetadataManagementService {
 
             if (!booksWithPublisher.isEmpty()) {
                 bookMetadataRepository.saveAll(booksWithPublisher);
-                writeMetadataToFile(booksWithPublisher, moveFile);
             }
         }
 
         log.info("Deleted {} publishers: {}", valuesToDelete.size(), valuesToDelete);
     }
 
-    private void deleteLanguages(List<String> valuesToDelete, boolean moveFile) {
+    private void deleteLanguages(List<String> valuesToDelete) {
         for (String language : valuesToDelete) {
             List<BookMetadataEntity> booksWithLanguage = bookMetadataRepository.findAllByLanguageIgnoreCase(language);
 
@@ -455,7 +383,6 @@ public class MetadataManagementService {
 
             if (!booksWithLanguage.isEmpty()) {
                 bookMetadataRepository.saveAll(booksWithLanguage);
-                writeMetadataToFile(booksWithLanguage, moveFile);
             }
         }
 

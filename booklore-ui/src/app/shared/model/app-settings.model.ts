@@ -48,22 +48,7 @@ export interface OidcAutoProvisionDetails {
   defaultLibraryIds: number[];
 }
 
-export interface FormatWriteSettings {
-  enabled: boolean;
-  maxFileSizeInMb: number;
-}
-
-export interface SaveToOriginalFileSettings {
-  epub: FormatWriteSettings;
-  pdf: FormatWriteSettings;
-  cbx: FormatWriteSettings;
-  audiobook: FormatWriteSettings;
-}
-
 export interface MetadataPersistenceSettings {
-  moveFilesToLibraryPattern: boolean;
-  saveToOriginalFile: SaveToOriginalFileSettings;
-  convertCbrCb7ToCbz: boolean;
 }
 
 export interface KoboSettings {

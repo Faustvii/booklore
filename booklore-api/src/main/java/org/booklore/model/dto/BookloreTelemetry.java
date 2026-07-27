@@ -30,7 +30,6 @@ public class BookloreTelemetry {
     private int totalKoreaderUsers;
 
     private UserStatistics userStatistics;
-    private MetadataStatistics metadataStatistics;
     private OpdsStatistics opdsStatistics;
     private KoboStatistics koboStatistics;
     private EmailStatistics emailStatistics;
@@ -46,15 +45,6 @@ public class BookloreTelemetry {
         private int totalLocalUsers;
         private int totalOidcUsers;
         private boolean oidcEnabled;
-    }
-
-    @Builder
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class MetadataStatistics {
-        private boolean saveMetadataToFile;
-        private boolean moveFileViaPattern;
     }
 
     @Builder

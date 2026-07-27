@@ -1,25 +1,17 @@
 package org.booklore.service.metadata;
 
-import org.booklore.config.AppProperties;
 import org.booklore.exception.APIException;
 import org.booklore.exception.ApiError;
-import org.booklore.model.dto.settings.AppSettings;
-import org.booklore.model.dto.settings.MetadataPersistenceSettings;
 import org.booklore.model.entity.*;
 import org.booklore.model.enums.BookFileType;
 import org.booklore.repository.BookRepository;
 import org.booklore.repository.projection.BookCoverUpdateProjection;
 import org.booklore.service.NotificationService;
-import org.booklore.service.appsettings.AppSettingService;
 import org.booklore.service.book.BookQueryService;
 import org.booklore.service.fileprocessor.BookFileProcessor;
 import org.booklore.service.fileprocessor.BookFileProcessorRegistry;
-import org.booklore.service.metadata.writer.MetadataWriter;
-import org.booklore.service.metadata.writer.MetadataWriterFactory;
-import org.booklore.service.file.FileFingerprint;
 import org.booklore.util.FileService;
 import org.booklore.util.SecurityContextVirtualThread;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,24 +33,16 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class BookCoverServiceTest {
 
-    @Mock private AppProperties appProperties;
     @Mock private BookRepository bookRepository;
     @Mock private NotificationService notificationService;
-    @Mock private AppSettingService appSettingService;
     @Mock private FileService fileService;
     @Mock private BookFileProcessorRegistry processorRegistry;
     @Mock private BookQueryService bookQueryService;
     @Mock private CoverImageGenerator coverImageGenerator;
-    @Mock private MetadataWriterFactory metadataWriterFactory;
     @Mock private TransactionTemplate transactionTemplate;
 
     @InjectMocks
     private BookCoverService service;
-
-    @BeforeEach
-    void setUp() {
-        lenient().when(appProperties.isLocalStorage()).thenReturn(true);
-    }
 
     private BookEntity buildBook(long id, boolean coverLocked) {
         BookMetadataEntity metadata = BookMetadataEntity.builder()
@@ -959,54 +943,6 @@ class BookCoverServiceTest {
     }
 
     @Nested
-    class WriteCoverToBookFile {
-
-        @Test
-        void writesAndUpdatesHashWhenWriterExists() {
-            BookEntity book = buildBook(1L, false);
-            BookFileEntity primaryFile = BookFileEntity.builder()
-                    .bookType(BookFileType.EPUB).isBookFormat(true)
-                    .fileName("test.epub").fileSubPath("sub")
-                    .build();
-            book.setBookFiles(List.of(primaryFile));
-            book.setLibrary(LibraryEntity.builder().build());
-            book.setLibraryPath(LibraryPathEntity.builder().path("/lib").build());
-
-            AppSettings appSettings = mock(AppSettings.class);
-            MetadataPersistenceSettings persistSettings = mock(MetadataPersistenceSettings.class);
-            when(appSettingService.getAppSettings()).thenReturn(appSettings);
-            when(appSettings.getMetadataPersistenceSettings()).thenReturn(persistSettings);
-            when(persistSettings.isConvertCbrCb7ToCbz()).thenReturn(false);
-
-            MetadataWriter writer = mock(MetadataWriter.class);
-            when(metadataWriterFactory.getWriter(BookFileType.EPUB)).thenReturn(Optional.of(writer));
-            when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
-            when(bookRepository.findCoverUpdateInfoByIds(any())).thenReturn(List.of());
-
-            try (MockedStatic<FileFingerprint> fpMock = mockStatic(FileFingerprint.class)) {
-                fpMock.when(() -> FileFingerprint.generateHash(any())).thenReturn("abc123");
-
-                service.updateCoverFromUrl(1L, URI.create("https://example.com/cover.jpg"));
-
-                verify(metadataWriterFactory).getWriter(BookFileType.EPUB);
-                assertThat(primaryFile.getCurrentHash()).isEqualTo("abc123");
-            }
-        }
-
-        @Test
-        void skipsWriteWhenNoPrimaryFile() {
-            BookEntity book = buildBook(1L, false);
-            book.setBookFiles(new ArrayList<>());
-            when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
-            when(bookRepository.findCoverUpdateInfoByIds(any())).thenReturn(List.of());
-
-            service.updateCoverFromUrl(1L, URI.create("https://example.com/cover.jpg"));
-
-            verify(metadataWriterFactory, never()).getWriter(any());
-        }
-    }
-
-    @Nested
     class NotifyBookCoverUpdate {
 
         @Test
@@ -1068,44 +1004,4 @@ class BookCoverServiceTest {
         }
     }
 
-    @Nested
-    class NetworkStorageGating {
-
-        @Test
-        void writeCoverToBookFile_networkStorage_skipsFileWrite() {
-            when(appProperties.isLocalStorage()).thenReturn(false);
-
-            BookEntity book = buildBook(1L, false);
-            BookFileEntity bookFile = BookFileEntity.builder()
-                    .bookType(BookFileType.EPUB)
-                    .isBookFormat(true)
-                    .build();
-            book.setBookFiles(List.of(bookFile));
-            when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
-            when(bookRepository.findCoverUpdateInfoByIds(any())).thenReturn(List.of());
-
-            service.updateCoverFromUrl(1L, URI.create("https://example.com/cover.jpg"));
-
-            verify(metadataWriterFactory, never()).getWriter(any());
-            verify(bookRepository).save(book);
-        }
-
-        @Test
-        void writeAudiobookCoverToFile_networkStorage_skipsFileWrite() {
-            when(appProperties.isLocalStorage()).thenReturn(false);
-
-            BookEntity book = buildBookWithAudiobookLock(1L, false);
-            BookFileEntity audiobookFile = BookFileEntity.builder()
-                    .bookType(BookFileType.AUDIOBOOK)
-                    .build();
-            book.setBookFiles(List.of(audiobookFile));
-            when(bookRepository.findByIdWithBookFiles(1L)).thenReturn(Optional.of(book));
-            when(bookRepository.findCoverUpdateInfoByIds(any())).thenReturn(List.of());
-
-            service.updateAudiobookCoverFromUrl(1L, URI.create("https://example.com/audiobook-cover.jpg"));
-
-            verify(metadataWriterFactory, never()).getWriter(any());
-            verify(bookRepository).save(book);
-        }
-    }
 }

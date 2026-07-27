@@ -1,8 +1,6 @@
 package org.booklore.service.metadata;
 
-import org.booklore.config.AppProperties;
 import org.booklore.exception.ApiError;
-import org.booklore.model.dto.settings.MetadataPersistenceSettings;
 import org.booklore.model.entity.AuthorEntity;
 import org.booklore.model.entity.BookEntity;
 import org.booklore.model.entity.BookFileEntity;
@@ -12,13 +10,9 @@ import org.booklore.model.websocket.Topic;
 import org.booklore.repository.BookRepository;
 import org.booklore.repository.projection.BookCoverUpdateProjection;
 import org.booklore.service.NotificationService;
-import org.booklore.service.appsettings.AppSettingService;
 import org.booklore.service.book.BookQueryService;
-import org.booklore.service.file.FileFingerprint;
 import org.booklore.service.fileprocessor.BookFileProcessor;
 import org.booklore.service.fileprocessor.BookFileProcessorRegistry;
-import org.booklore.service.metadata.writer.MetadataWriter;
-import org.booklore.service.metadata.writer.MetadataWriterFactory;
 import org.booklore.util.BookCoverUtils;
 import org.booklore.util.FileService;
 import org.booklore.util.SecurityContextVirtualThread;
@@ -34,7 +28,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -44,15 +37,12 @@ public class BookCoverService {
 
     private static final int BATCH_SIZE = 100;
 
-    private final AppProperties appProperties;
     private final BookRepository bookRepository;
     private final NotificationService notificationService;
-    private final AppSettingService appSettingService;
     private final FileService fileService;
     private final BookFileProcessorRegistry processorRegistry;
     private final BookQueryService bookQueryService;
     private final CoverImageGenerator coverImageGenerator;
-    private final MetadataWriterFactory metadataWriterFactory;
     private final TransactionTemplate transactionTemplate;
 
     private record BookCoverInfo(Long id, String title) {
@@ -80,7 +70,6 @@ public class BookCoverService {
         byte[] coverBytes = coverImageGenerator.generateCover(title, author);
 
         fileService.createThumbnailFromBytes(bookId, coverBytes);
-        writeCoverToBookFile(bookEntity, (writer, book) -> writer.replaceCoverImageFromBytes(book, coverBytes));
         updateBookCoverMetadata(bookEntity);
         bookRepository.save(bookEntity);
         notifyBookCoverUpdate(bookEntity);
@@ -98,7 +87,6 @@ public class BookCoverService {
         }
 
         fileService.createThumbnailFromFile(bookId, file);
-        writeCoverToBookFile(bookEntity, (writer, book) -> writer.replaceCoverImageFromUpload(book, file));
         updateBookCoverMetadata(bookEntity);
         bookRepository.save(bookEntity);
         notifyBookCoverUpdate(bookEntity);
@@ -115,7 +103,6 @@ public class BookCoverService {
         String sanitizedUrlString = sanitizedUrl.toString();
 
         fileService.createThumbnailFromUrl(bookId, sanitizedUrlString);
-        writeCoverToBookFile(bookEntity, (writer, book) -> writer.replaceCoverImageFromUrl(book, sanitizedUrlString));
         updateBookCoverMetadata(bookEntity);
         bookRepository.save(bookEntity);
         notifyBookCoverUpdate(bookEntity);
@@ -137,7 +124,6 @@ public class BookCoverService {
         }
 
         fileService.createAudiobookThumbnailFromFile(bookId, file);
-        writeAudiobookCoverToFile(bookEntity, (writer, book) -> writer.replaceCoverImageFromUpload(book, file));
         updateAudiobookCoverMetadata(bookEntity);
         bookRepository.save(bookEntity);
         notifyBookCoverUpdate(bookEntity);
@@ -154,7 +140,6 @@ public class BookCoverService {
         String sanitizedUrlString = sanitizedUrl.toString();
 
         fileService.createAudiobookThumbnailFromUrl(bookId, sanitizedUrlString);
-        writeAudiobookCoverToFile(bookEntity, (writer, book) -> writer.replaceCoverImageFromUrl(book, sanitizedUrlString));
         updateAudiobookCoverMetadata(bookEntity);
         bookRepository.save(bookEntity);
         notifyBookCoverUpdate(bookEntity);
@@ -201,7 +186,6 @@ public class BookCoverService {
         byte[] coverBytes = coverImageGenerator.generateSquareCover(title, author);
 
         fileService.createAudiobookThumbnailFromBytes(bookId, coverBytes);
-        writeAudiobookCoverToFile(bookEntity, (writer, book) -> writer.replaceCoverImageFromBytes(book, coverBytes));
         updateAudiobookCoverMetadata(bookEntity);
         bookRepository.save(bookEntity);
         notifyBookCoverUpdate(bookEntity);
@@ -373,7 +357,6 @@ public class BookCoverService {
                     transactionTemplate.execute(status -> {
                         bookRepository.findById(bookInfo.id()).ifPresent(book -> {
                             fileService.createThumbnailFromBytes(bookInfo.id(), coverImageBytes);
-                            writeCoverToBookFile(book, (writer, b) -> writer.replaceCoverImageFromBytes(b, coverImageBytes));
                             updateBookCoverMetadata(book);
                             bookRepository.save(book);
                             refreshedIds.add(book.getId());
@@ -458,7 +441,6 @@ public class BookCoverService {
                             byte[] coverBytes = coverImageGenerator.generateCover(title, author);
 
                             fileService.createThumbnailFromBytes(book.getId(), coverBytes);
-                            writeCoverToBookFile(book, (writer, b) -> writer.replaceCoverImageFromBytes(b, coverBytes));
                             updateBookCoverMetadata(book);
                             bookRepository.save(book);
                             refreshedIds.add(book.getId());
@@ -538,51 +520,6 @@ public class BookCoverService {
                     .collect(Collectors.joining(", "));
         }
         return null;
-    }
-
-    private void writeCoverToBookFile(BookEntity bookEntity, BiConsumer<MetadataWriter, BookEntity> writerAction) {
-        if (!appProperties.isLocalStorage()) {
-            return;
-        }
-        var primaryFile = bookEntity.getPrimaryBookFile();
-        if (primaryFile == null) {
-            return;
-        }
-
-        MetadataPersistenceSettings settings = appSettingService.getAppSettings().getMetadataPersistenceSettings();
-        boolean convertCbrCb7ToCbz = settings.isConvertCbrCb7ToCbz();
-
-        if ((primaryFile.getBookType() != BookFileType.CBX || convertCbrCb7ToCbz)) {
-            metadataWriterFactory.getWriter(primaryFile.getBookType())
-                    .ifPresent(writer -> {
-                        writerAction.accept(writer, bookEntity);
-                        String newHash = FileFingerprint.generateHash(bookEntity.getFullFilePath());
-                        primaryFile.setCurrentHash(newHash);
-                    });
-        }
-    }
-
-    private void writeAudiobookCoverToFile(BookEntity bookEntity, BiConsumer<MetadataWriter, BookEntity> writerAction) {
-        if (!appProperties.isLocalStorage()) {
-            return;
-        }
-        var audiobookFile = bookEntity.getBookFiles().stream()
-                .filter(f -> f.getBookType() == BookFileType.AUDIOBOOK)
-                .findFirst()
-                .orElse(null);
-
-        if (audiobookFile == null) {
-            return;
-        }
-
-        metadataWriterFactory.getWriter(BookFileType.AUDIOBOOK)
-                .ifPresent(writer -> {
-                    writerAction.accept(writer, bookEntity);
-                    if (!audiobookFile.isFolderBased()) {
-                        String newHash = FileFingerprint.generateHash(audiobookFile.getFullFilePath());
-                        audiobookFile.setCurrentHash(newHash);
-                    }
-                });
     }
 
     private void updateBookCoverMetadata(BookEntity bookEntity) {

@@ -276,29 +276,6 @@ public class MetadataChangeDetectorTest {
     }
 
     @Test
-    void testHasValueChangesForFileWrite_whenNoChanges_returnsFalse() {
-        boolean result = MetadataChangeDetector.hasValueChangesForFileWrite(newMeta, existingMeta, clearFlags);
-        assertFalse(result, "Should return false when no value changes exist for file write");
-    }
-
-    @Test
-    void testHasValueChangesForFileWrite_whenTitleChanged_returnsTrue() {
-        newMeta.setTitle("New Title");
-        boolean result = MetadataChangeDetector.hasValueChangesForFileWrite(newMeta, existingMeta, clearFlags);
-        assertTrue(result, "Should return true when title value changes for file write");
-    }
-
-    @Test
-    void testHasValueChangesForFileWrite_excludesRatingsForFileWrite() {
-        // Change rating fields that should not be considered for file write
-        newMeta.setAmazonRating(4.8);
-        newMeta.setGoodreadsRating(4.4);
-        newMeta.setHardcoverRating(4.3);
-        boolean result = MetadataChangeDetector.hasValueChangesForFileWrite(newMeta, existingMeta, clearFlags);
-        assertFalse(result, "Should return false when only rating fields change for file write");
-    }
-
-    @Test
     void testEdgeCase_nullToEmptyString_returnsFalse() {
         existingMeta.setTitle(null);
         newMeta.setTitle("");
@@ -520,56 +497,6 @@ public class MetadataChangeDetectorTest {
     }
 
     @Test
-    @DisplayName("hasValueChangesForFileWrite() excludes certain fields from triggering file writes")
-    void testHasValueChangesForFileWrite_excludesPageCount() {
-        newMeta.setPageCount(999);
-        boolean result = MetadataChangeDetector.hasValueChangesForFileWrite(newMeta, existingMeta, clearFlags);
-        assertFalse(result, "PageCount should not trigger file write");
-    }
-
-    @Test
-    void testHasValueChangesForFileWrite_excludesMoods() {
-        newMeta.setMoods(Set.of("New Mood"));
-        boolean result = MetadataChangeDetector.hasValueChangesForFileWrite(newMeta, existingMeta, clearFlags);
-        assertFalse(result, "Moods should not trigger file write");
-    }
-
-    @Test
-    void testHasValueChangesForFileWrite_excludesTags() {
-        newMeta.setTags(Set.of("New Tag"));
-        boolean result = MetadataChangeDetector.hasValueChangesForFileWrite(newMeta, existingMeta, clearFlags);
-        assertFalse(result, "Tags should not trigger file write");
-    }
-
-    @Test
-    void testHasValueChangesForFileWrite_excludesRatingFields() {
-        newMeta.setAmazonRating(4.9);
-        newMeta.setGoodreadsRating(4.8);
-        newMeta.setHardcoverRating(4.7);
-        newMeta.setAmazonReviewCount(2000);
-        newMeta.setGoodreadsReviewCount(35000);
-        newMeta.setHardcoverReviewCount(800);
-        newMeta.setAudibleRating(4.6);
-        newMeta.setAudibleReviewCount(3000);
-        boolean result = MetadataChangeDetector.hasValueChangesForFileWrite(newMeta, existingMeta, clearFlags);
-        assertFalse(result, "Rating and review count fields should not trigger file write");
-    }
-
-    @Test
-    void testHasValueChangesForFileWrite_includesAuthors() {
-        newMeta.setAuthors(List.of("New Author"));
-        boolean result = MetadataChangeDetector.hasValueChangesForFileWrite(newMeta, existingMeta, clearFlags);
-        assertTrue(result, "Authors change should trigger file write");
-    }
-
-    @Test
-    void testHasValueChangesForFileWrite_includesCategories() {
-        newMeta.setCategories(Set.of("New Category"));
-        boolean result = MetadataChangeDetector.hasValueChangesForFileWrite(newMeta, existingMeta, clearFlags);
-        assertTrue(result, "Categories change should trigger file write");
-    }
-
-    @Test
     void testIsDifferent_whenBothSubtitleValuesNull_returnsFalse() {
         existingMeta.setSubtitle(null);
         newMeta.setSubtitle(null);
@@ -741,14 +668,6 @@ public class MetadataChangeDetectorTest {
                 .build();
         boolean result = MetadataChangeDetector.hasValueChanges(testNew, testExisting, clearFlags);
         assertTrue(result, "Should return true for empty set to null transition");
-    }
-
-    @Test
-    void testHasValueChangesForFileWrite_whenTitleAndPageCountChange_onlyTitleTriggers() {
-        newMeta.setTitle("New Title");
-        newMeta.setPageCount(999);
-        boolean result = MetadataChangeDetector.hasValueChangesForFileWrite(newMeta, existingMeta, clearFlags);
-        assertTrue(result, "Should return true when title changes, even if pageCount also changes");
     }
 
     @Test

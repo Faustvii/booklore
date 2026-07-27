@@ -7,28 +7,6 @@
     "enableLabel": "",
     "loadError": ""
   },
-  "persistence": {
-    "sectionTitle": "",
-    "sectionDesc": "",
-    "networkWarningTitle": "",
-    "networkWarning": "",
-    "unsupportedNote": "",
-    "writeEpub": "",
-    "writeEpubDesc": "",
-    "writeCbx": "",
-    "writeCbxDesc": "",
-    "writePdf": "",
-    "writePdfDesc": "",
-    "writePdfNote": "",
-    "writeAudiobook": "",
-    "writeAudiobookDesc": "",
-    "writeAudiobookNote": "",
-    "maxFileSize": "",
-    "maxFileSizeTooltip": "",
-    "autoMove": "",
-    "autoMoveDesc": "",
-    "loadError": ""
-  },
   "providers": {
     "sectionTitle": "",
     "sectionDesc": "",
