@@ -233,7 +233,7 @@
       "optionsLabel": "Opções",
       "addPhysicalBook": "Adicionar Livro Físico",
       "editLibrary": "Editar Biblioteca",
-      "rescanLibrary": "Reescanear Biblioteca",
+      "rescanLibrary": "Sincronizar Arquivos da Biblioteca",
       "customFetchMetadata": "Busca Personalizada de Metadados",
       "autoFetchMetadata": "Busca Automática de Metadados",
       "findDuplicates": "Encontrar Duplicatas",
@@ -252,16 +252,16 @@
       "deleteMagicShelf": "Excluir Prateleira Mágica"
     },
     "confirm": {
-      "rescanLibraryMessage": "Tem certeza de que deseja atualizar a biblioteca: {{ name }}?",
+      "rescanLibraryMessage": "Tem certeza de que deseja sincronizar os arquivos da biblioteca: {{ name }}?",
       "deleteLibraryMessage": "Tem certeza de que deseja excluir a biblioteca: {{ name }}?",
       "deleteShelfMessage": "Tem certeza de que deseja excluir a prateleira: {{ name }}?",
       "deleteMagicShelfMessage": "Tem certeza de que deseja excluir a prateleira mágica: {{ name }}?",
       "header": "Confirmação",
-      "rescanLabel": "Reescanear"
+      "rescanLabel": "Sincronizar"
     },
     "toast": {
-      "libraryRefreshSuccessDetail": "Atualização da biblioteca agendada",
-      "libraryRefreshFailedDetail": "Falha ao atualizar a biblioteca",
+      "libraryRefreshSuccessDetail": "Sincronização de arquivos da biblioteca agendada",
+      "libraryRefreshFailedDetail": "Falha ao sincronizar arquivos da biblioteca",
       "libraryDeletedDetail": "Biblioteca excluída",
       "libraryDeleteFailedDetail": "Falha ao excluir a biblioteca",
       "shelfDeletedDetail": "Prateleira excluída",

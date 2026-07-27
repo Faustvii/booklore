@@ -238,7 +238,7 @@
       "optionsLabel": "Alternativ",
       "addPhysicalBook": "Lägg till fysisk bok",
       "editLibrary": "Redigera bibliotek",
-      "rescanLibrary": "Skanna om bibliotek",
+      "rescanLibrary": "Synkronisera biblioteksfiler",
       "customFetchMetadata": "Anpassad metadatahämtning",
       "autoFetchMetadata": "Auto-hämta metadata",
       "findDuplicates": "Hitta dubbletter",
@@ -259,16 +259,16 @@
       "exportJson": "Kopiera JSON"
     },
     "confirm": {
-      "rescanLibraryMessage": "Är du säker på att du vill uppdatera biblioteket: {{ name }}?",
+      "rescanLibraryMessage": "Är du säker på att du vill synkronisera biblioteksfiler för: {{ name }}?",
       "deleteLibraryMessage": "Är du säker på att du vill radera biblioteket: {{ name }}?",
       "deleteShelfMessage": "Är du säker på att du vill radera hyllan: {{ name }}?",
       "deleteMagicShelfMessage": "Är du säker på att du vill radera den magiska hyllan: {{ name }}?",
       "header": "Bekräftelse",
-      "rescanLabel": "Skanna om"
+      "rescanLabel": "Synkronisera"
     },
     "toast": {
-      "libraryRefreshSuccessDetail": "Biblioteksuppdatering schemalagd",
-      "libraryRefreshFailedDetail": "Kunde inte uppdatera bibliotek",
+      "libraryRefreshSuccessDetail": "Synkronisering av biblioteksfiler schemalagd",
+      "libraryRefreshFailedDetail": "Det gick inte att synkronisera biblioteksfiler",
       "libraryDeletedDetail": "Biblioteket raderades",
       "libraryDeleteFailedDetail": "Kunde inte radera bibliotek",
       "shelfDeletedDetail": "Hyllan raderades",

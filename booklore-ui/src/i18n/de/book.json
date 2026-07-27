@@ -238,7 +238,7 @@
       "optionsLabel": "Optionen",
       "addPhysicalBook": "Physisches Buch hinzufügen",
       "editLibrary": "Bibliothek bearbeiten",
-      "rescanLibrary": "Bibliothek neu scannen",
+      "rescanLibrary": "Bibliotheksdateien synchronisieren",
       "customFetchMetadata": "Metadaten benutzerdefiniert abrufen",
       "autoFetchMetadata": "Metadaten automatisch abrufen",
       "findDuplicates": "Duplikate finden",
@@ -259,16 +259,16 @@
       "exportJson": "Kopiere JSON"
     },
     "confirm": {
-      "rescanLibraryMessage": "Sind Sie sicher, dass Sie die Bibliothek aktualisieren möchten: {{ name }}?",
+      "rescanLibraryMessage": "Möchten Sie die Bibliotheksdateien wirklich synchronisieren: {{ name }}?",
       "deleteLibraryMessage": "Sind Sie sicher, dass Sie die Bibliothek löschen möchten: {{ name }}?",
       "deleteShelfMessage": "Sind Sie sicher, dass Sie das Regal löschen möchten: {{ name }}?",
       "deleteMagicShelfMessage": "Sind Sie sicher, dass Sie das magische Regal löschen möchten: {{ name }}?",
       "header": "Bestätigung",
-      "rescanLabel": "Neu scannen"
+      "rescanLabel": "Synchronisieren"
     },
     "toast": {
-      "libraryRefreshSuccessDetail": "Bibliotheksaktualisierung geplant",
-      "libraryRefreshFailedDetail": "Bibliotheksaktualisierung fehlgeschlagen",
+      "libraryRefreshSuccessDetail": "Synchronisierung der Bibliotheksdateien geplant",
+      "libraryRefreshFailedDetail": "Synchronisierung der Bibliotheksdateien fehlgeschlagen",
       "libraryDeletedDetail": "Bibliothek wurde gelöscht",
       "libraryDeleteFailedDetail": "Bibliothek konnte nicht gelöscht werden",
       "shelfDeletedDetail": "Regal wurde gelöscht",

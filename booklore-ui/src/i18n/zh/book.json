@@ -234,7 +234,7 @@
       "optionsLabel": "选项",
       "addPhysicalBook": "添加实体书",
       "editLibrary": "编辑书库",
-      "rescanLibrary": "重新扫描书库",
+      "rescanLibrary": "同步书库文件",
       "customFetchMetadata": "自定义获取元数据",
       "autoFetchMetadata": "自动获取元数据",
       "findDuplicates": "查找重复",
@@ -253,16 +253,16 @@
       "deleteMagicShelf": "删除智能书架"
     },
     "confirm": {
-      "rescanLibraryMessage": "确定要刷新书库：{{ name }}？",
+      "rescanLibraryMessage": "确定要同步书库文件吗：{{ name }}？",
       "deleteLibraryMessage": "确定要删除书库：{{ name }}？",
       "deleteShelfMessage": "确定要删除书架：{{ name }}？",
       "deleteMagicShelfMessage": "确定要删除智能书架：{{ name }}？",
       "header": "确认",
-      "rescanLabel": "重新扫描"
+      "rescanLabel": "同步"
     },
     "toast": {
-      "libraryRefreshSuccessDetail": "书库刷新已安排",
-      "libraryRefreshFailedDetail": "刷新书库失败",
+      "libraryRefreshSuccessDetail": "已安排同步书库文件",
+      "libraryRefreshFailedDetail": "同步书库文件失败",
       "libraryDeletedDetail": "书库已删除",
       "libraryDeleteFailedDetail": "删除书库失败",
       "shelfDeletedDetail": "书架已删除",

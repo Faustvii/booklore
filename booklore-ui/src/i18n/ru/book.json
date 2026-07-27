@@ -233,7 +233,7 @@
       "optionsLabel": "Опции",
       "addPhysicalBook": "Добавить физическую книгу",
       "editLibrary": "Редактировать библиотеку",
-      "rescanLibrary": "Пересканировать библиотеку",
+      "rescanLibrary": "Синхронизировать файлы библиотеки",
       "customFetchMetadata": "Настраиваемое получение метаданных",
       "autoFetchMetadata": "Автоматическое получение метаданных",
       "findDuplicates": "Найти дубликаты",
@@ -252,16 +252,16 @@
       "deleteMagicShelf": "Удалить умную полку"
     },
     "confirm": {
-      "rescanLibraryMessage": "Вы уверены, что хотите обновить библиотеку: {{ name }}?",
+      "rescanLibraryMessage": "Вы уверены, что хотите синхронизировать файлы библиотеки: {{ name }}?",
       "deleteLibraryMessage": "Вы уверены, что хотите удалить библиотеку: {{ name }}?",
       "deleteShelfMessage": "Вы уверены, что хотите удалить полку: {{ name }}?",
       "deleteMagicShelfMessage": "Вы уверены, что хотите удалить умную полку: {{ name }}?",
       "header": "Подтверждение",
-      "rescanLabel": "Пересканировать"
+      "rescanLabel": "Синхронизировать"
     },
     "toast": {
-      "libraryRefreshSuccessDetail": "Обновление библиотеки запланировано",
-      "libraryRefreshFailedDetail": "Не удалось обновить библиотеку",
+      "libraryRefreshSuccessDetail": "Синхронизация файлов библиотеки запланирована",
+      "libraryRefreshFailedDetail": "Не удалось синхронизировать файлы библиотеки",
       "libraryDeletedDetail": "Библиотека удалена",
       "libraryDeleteFailedDetail": "Не удалось удалить библиотеку",
       "shelfDeletedDetail": "Полка удалена",

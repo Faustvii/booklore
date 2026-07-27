@@ -233,7 +233,7 @@
       "optionsLabel": "Opzioni",
       "addPhysicalBook": "Aggiungi libro fisico",
       "editLibrary": "Modifica libreria",
-      "rescanLibrary": "Riscansiona libreria",
+      "rescanLibrary": "Sincronizza file della libreria",
       "customFetchMetadata": "Recupero personalizzato metadati",
       "autoFetchMetadata": "Recupero automatico metadati",
       "findDuplicates": "Trova duplicati",
@@ -252,16 +252,16 @@
       "deleteMagicShelf": "Elimina scaffale magico"
     },
     "confirm": {
-      "rescanLibraryMessage": "Sei sicuro di voler aggiornare la libreria: {{ name }}?",
+      "rescanLibraryMessage": "Sei sicuro di voler sincronizzare i file della libreria: {{ name }}?",
       "deleteLibraryMessage": "Sei sicuro di voler eliminare la libreria: {{ name }}?",
       "deleteShelfMessage": "Sei sicuro di voler eliminare lo scaffale: {{ name }}?",
       "deleteMagicShelfMessage": "Sei sicuro di voler eliminare lo scaffale magico: {{ name }}?",
       "header": "Conferma",
-      "rescanLabel": "Riscansiona"
+      "rescanLabel": "Sincronizza"
     },
     "toast": {
-      "libraryRefreshSuccessDetail": "Aggiornamento libreria pianificato",
-      "libraryRefreshFailedDetail": "Aggiornamento libreria fallito",
+      "libraryRefreshSuccessDetail": "Sincronizzazione dei file della libreria pianificata",
+      "libraryRefreshFailedDetail": "Sincronizzazione dei file della libreria non riuscita",
       "libraryDeletedDetail": "Libreria eliminata",
       "libraryDeleteFailedDetail": "Eliminazione libreria fallita",
       "shelfDeletedDetail": "Scaffale eliminato",

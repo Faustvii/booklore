@@ -239,7 +239,7 @@
       "addPhysicalBook": "Add Physical Book",
       "bulkIsbnImport": "Import ISBNs from File",
       "editLibrary": "Edit Library",
-      "rescanLibrary": "Re-scan Library",
+      "rescanLibrary": "Sync Library Files",
       "customFetchMetadata": "Custom Fetch Metadata",
       "autoFetchMetadata": "Auto Fetch Metadata",
       "findDuplicates": "Find Duplicates",
@@ -259,16 +259,16 @@
       "deleteMagicShelf": "Delete Magic Shelf"
     },
     "confirm": {
-      "rescanLibraryMessage": "Are you sure you want to refresh library: {{ name }}?",
+      "rescanLibraryMessage": "Are you sure you want to sync library files for: {{ name }}?",
       "deleteLibraryMessage": "Are you sure you want to delete library: {{ name }}?",
       "deleteShelfMessage": "Are you sure you want to delete shelf: {{ name }}?",
       "deleteMagicShelfMessage": "Are you sure you want to delete magic shelf: {{ name }}?",
       "header": "Confirmation",
-      "rescanLabel": "Rescan"
+      "rescanLabel": "Sync"
     },
     "toast": {
-      "libraryRefreshSuccessDetail": "Library refresh scheduled",
-      "libraryRefreshFailedDetail": "Failed to refresh library",
+      "libraryRefreshSuccessDetail": "Library file sync scheduled",
+      "libraryRefreshFailedDetail": "Failed to sync library files",
       "libraryDeletedDetail": "Library was deleted",
       "libraryDeleteFailedDetail": "Failed to delete library",
       "shelfDeletedDetail": "Shelf was deleted",
