@@ -3,13 +3,13 @@ package org.booklore.model.enums;
 import lombok.Getter;
 
 public enum TaskType {
-    REFRESH_LIBRARY_METADATA(
+    LIBRARY_RESCAN(
             false,
             true,
+            true,
             false,
-            false,
-            "Refresh Metadata",
-            "Re-reads book information (title, author, cover, etc.) from your files and updates the Booklore database."
+            "Library Rescan",
+            "Re-reads book information (title, author, cover, etc.) from your library files and updates the Booklore database."
     ),
     UPDATE_BOOK_RECOMMENDATIONS(
             false,
@@ -34,30 +34,6 @@ public enum TaskType {
             false,
             "Sync Library Files",
             "Scans your library folders to detect new books and removes entries for files that no longer exist."
-    ),
-    BOOKDROP_PERIODIC_SCANNING(
-            false,
-            false,
-            true,
-            false,
-            "Bookdrop Periodic Scanning",
-            "Scans the bookdrop ingest folder for newly added files and queues them for bookdrop processing."
-    ),
-    CLEANUP_TEMP_METADATA(
-            false,
-            false,
-            true,
-            false,
-            "Cleanup Temporary Metadata",
-            "Removes temporary metadata files created during the bookdrop and manual metadata review processes."
-    ),
-    REFRESH_METADATA_MANUAL(
-            false,
-            true,
-            false,
-            true,
-            "Refresh Metadata",
-            "Updates metadata information for your selected books."
     );
 
     @Getter

@@ -1,6 +1,5 @@
 package org.booklore.model.dto;
 
-import org.booklore.model.enums.MetadataProvider;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 
@@ -32,9 +31,6 @@ public class BookMetadata {
     private String narrator;
     private Boolean abridged;
 
-    private AudiobookMetadata audiobookMetadata;
-    private ComicMetadata comicMetadata;
-
     private String asin;
     private Double amazonRating;
     private Integer amazonReviewCount;
@@ -57,6 +53,10 @@ public class BookMetadata {
     private String audibleId;
     private Double audibleRating;
     private Integer audibleReviewCount;
+
+    private AudiobookMetadata audiobookMetadata;
+    private ComicMetadata comicMetadata;
+
     private String externalUrl;
     private Instant coverUpdatedOn;
     private Instant audiobookCoverUpdatedOn;
@@ -64,10 +64,9 @@ public class BookMetadata {
     private Set<String> categories;
     private Set<String> moods;
     private Set<String> tags;
-    private MetadataProvider provider;
     private String thumbnailUrl;
-    private List<BookReview> bookReviews;
     private Double rating;
+    private Integer reviewCount;
 
     private Boolean allMetadataLocked;
 
@@ -81,6 +80,17 @@ public class BookMetadata {
     private Boolean seriesTotalLocked;
     private Boolean isbn13Locked;
     private Boolean isbn10Locked;
+    private Boolean pageCountLocked;
+    private Boolean languageLocked;
+    private Boolean coverLocked;
+    private Boolean audiobookCoverLocked;
+    private Boolean authorsLocked;
+    private Boolean categoriesLocked;
+    private Boolean moodsLocked;
+    private Boolean tagsLocked;
+    private Boolean narratorLocked;
+    private Boolean abridgedLocked;
+
     private Boolean asinLocked;
     private Boolean goodreadsIdLocked;
     private Boolean comicvineIdLocked;
@@ -88,8 +98,10 @@ public class BookMetadata {
     private Boolean hardcoverBookIdLocked;
     private Boolean doubanIdLocked;
     private Boolean googleIdLocked;
-    private Boolean pageCountLocked;
-    private Boolean languageLocked;
+    private Boolean lubimyczytacIdLocked;
+    private Boolean ranobedbIdLocked;
+    private Boolean audibleIdLocked;
+
     private Boolean amazonRatingLocked;
     private Boolean amazonReviewCountLocked;
     private Boolean goodreadsRatingLocked;
@@ -98,23 +110,11 @@ public class BookMetadata {
     private Boolean hardcoverReviewCountLocked;
     private Boolean doubanRatingLocked;
     private Boolean doubanReviewCountLocked;
-    private Boolean lubimyczytacIdLocked;
     private Boolean lubimyczytacRatingLocked;
-    private Boolean ranobedbIdLocked;
     private Boolean ranobedbRatingLocked;
-    private Boolean audibleIdLocked;
     private Boolean audibleRatingLocked;
     private Boolean audibleReviewCountLocked;
     private Boolean externalUrlLocked;
-    private Boolean coverLocked;
-    private Boolean audiobookCoverLocked;
-    private Boolean authorsLocked;
-    private Boolean categoriesLocked;
-    private Boolean moodsLocked;
-    private Boolean tagsLocked;
-    private Boolean reviewsLocked;
-    private Boolean narratorLocked;
-    private Boolean abridgedLocked;
 
     private Integer ageRating;
     private String contentRating;

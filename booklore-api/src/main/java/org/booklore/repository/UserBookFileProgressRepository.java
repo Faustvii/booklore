@@ -68,4 +68,11 @@ public interface UserBookFileProgressRepository extends JpaRepository<UserBookFi
           AND ubfp.bookFile.book.id IN :bookIds
     """)
     int deleteByUserIdAndBookIds(@Param("userId") Long userId, @Param("bookIds") Iterable<Long> bookIds);
+
+    @Modifying
+    @Query("""
+        DELETE FROM UserBookFileProgressEntity ubfp
+        WHERE ubfp.bookFile.book.id IN :bookIds
+    """)
+    void deleteByBookIdIn(@Param("bookIds") Iterable<Long> bookIds);
 }

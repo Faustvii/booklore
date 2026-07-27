@@ -29,7 +29,7 @@ public class KoboSettingsService {
     private final ShelfService shelfService;
     private final HardcoverSyncSettingsService hardcoverSyncSettingsService;
 
-    @Transactional(readOnly = true)
+    @Transactional
     public KoboSyncSettings getCurrentUserSettings() {
         BookLoreUser user = authenticationService.getAuthenticatedUser();
         KoboUserSettingsEntity entity = repository.findByUserId(user.getId())

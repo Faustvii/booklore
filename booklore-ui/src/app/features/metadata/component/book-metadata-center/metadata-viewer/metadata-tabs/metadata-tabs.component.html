@@ -28,9 +28,6 @@
     <p-tab value="sessions">
       <i class="pi pi-clock"></i> {{ t('readingSessions') }}
     </p-tab>
-    <p-tab value="reviews">
-      <i class="pi pi-comments"></i> {{ t('reviews') }}
-    </p-tab>
   </p-tablist>
   <p-tabpanels>
     <p-tabpanel value="series">
@@ -106,11 +103,6 @@
     <p-tabpanel value="sessions">
       <ng-template #content>
         <app-book-reading-sessions [bookId]="book.id"></app-book-reading-sessions>
-      </ng-template>
-    </p-tabpanel>
-    <p-tabpanel value="reviews">
-      <ng-template #content>
-        <app-book-reviews [bookId]="book.id"></app-book-reviews>
       </ng-template>
     </p-tabpanel>
     <p-tabpanel value="chapters">
@@ -294,15 +286,6 @@
                           (onClick)="detachFile(book, book.primaryFile!.id, book.primaryFile!.fileName || 'file')">
                         </p-button>
                       }
-                      <p-button
-                        icon="pi pi-trash"
-                        size="small"
-                        text
-                        severity="danger"
-                        [pTooltip]="t('deleteTooltip')"
-                        tooltipPosition="top"
-                        (onClick)="deleteFile(book, book.primaryFile!.id, book.primaryFile!.fileName || 'file', true)">
-                      </p-button>
                     </div>
                   </div>
                 </div>
@@ -382,15 +365,6 @@
                             (onClick)="detachFile(book, format.id, format.fileName || 'file')">
                           </p-button>
                         }
-                        <p-button
-                          icon="pi pi-trash"
-                          size="small"
-                          text
-                          severity="danger"
-                          [pTooltip]="t('deleteTooltip')"
-                          tooltipPosition="top"
-                          (onClick)="deleteFile(book, format.id, format.fileName || 'file', false)">
-                        </p-button>
                       </div>
                     </div>
                   }
@@ -429,15 +403,6 @@
                             (onClick)="detachFile(book, file.id, file.fileName || 'file')">
                           </p-button>
                         }
-                        <p-button
-                          icon="pi pi-trash"
-                          size="small"
-                          text
-                          severity="danger"
-                          [pTooltip]="t('deleteTooltip')"
-                          tooltipPosition="top"
-                          (onClick)="deleteSupplementary(book.id, file.id, file.fileName || 'file')">
-                        </p-button>
                       </div>
                     </div>
                   }

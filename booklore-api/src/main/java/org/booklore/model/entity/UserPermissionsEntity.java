@@ -23,10 +23,6 @@ public class UserPermissionsEntity {
     @Column(name = "permission_admin", nullable = false)
     private boolean permissionAdmin;
 
-    @Column(name = "permission_upload", nullable = false)
-    @Builder.Default
-    private boolean permissionUpload = false;
-
     @Column(name = "permission_download", nullable = false)
     @Builder.Default
     private boolean permissionDownload = false;
@@ -43,10 +39,6 @@ public class UserPermissionsEntity {
     @Builder.Default
     private boolean permissionEmailBook = false;
 
-    @Column(name = "permission_delete_book", nullable = false)
-    @Builder.Default
-    private boolean permissionDeleteBook = false;
-
     @Column(name = "permission_sync_koreader", nullable = false)
     @Builder.Default
     private boolean permissionSyncKoreader = false;
@@ -62,10 +54,6 @@ public class UserPermissionsEntity {
     @Column(name = "permission_manage_metadata_config", nullable = false)
     @Builder.Default
     private boolean permissionManageMetadataConfig = false;
-
-    @Column(name = "permission_access_bookdrop", nullable = false)
-    @Builder.Default
-    private boolean permissionAccessBookdrop = false;
 
     @Column(name = "permission_access_library_stats", nullable = false)
     @Builder.Default
@@ -110,10 +98,6 @@ public class UserPermissionsEntity {
     @Column(name = "permission_bulk_regenerate_cover", nullable = false)
     @Builder.Default
     private boolean permissionBulkRegenerateCover = false;
-
-    @Column(name = "permission_move_organize_files", nullable = false)
-    @Builder.Default
-    private boolean permissionMoveOrganizeFiles = false;
 
     @Column(name = "permission_bulk_lock_unlock_metadata", nullable = false)
     @Builder.Default

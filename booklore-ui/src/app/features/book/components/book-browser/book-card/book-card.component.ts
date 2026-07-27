@@ -9,7 +9,6 @@ import {BookFileService} from '../../../service/book-file.service';
 import {BookMetadataManageService} from '../../../service/book-metadata-manage.service';
 import {CheckboxChangeEvent, CheckboxModule} from 'primeng/checkbox';
 import {FormsModule} from '@angular/forms';
-import {MetadataRefreshType} from '../../../../metadata/model/request/metadata-refresh-type.enum';
 import {UrlHelperService} from '../../../../../shared/service/url-helper.service';
 import {NgClass} from '@angular/common';
 import {User, UserService} from '../../../../settings/user-management/user.service';
@@ -24,10 +23,8 @@ import {readStatusLabels} from '../book-filter/book-filter.config';
 import {ResetProgressTypes} from '../../../../../shared/constants/reset-progress-type';
 import {ReadStatusHelper} from '../../../helpers/read-status.helper';
 import {BookDialogHelperService} from '../book-dialog-helper.service';
-import {TaskHelperService} from '../../../../settings/task-management/task-helper.service';
 import {BookNavigationService} from '../../../service/book-navigation.service';
 import {BookCardOverlayPreferenceService} from '../book-card-overlay-preference.service';
-import {AppSettingsService} from '../../../../../shared/service/app-settings.service';
 import {TranslocoPipe, TranslocoService} from '@jsverse/transloco';
 
 @Component({
@@ -66,7 +63,6 @@ export class BookCardComponent implements OnInit, OnChanges, OnDestroy {
   private bookService = inject(BookService);
   private bookFileService = inject(BookFileService);
   private bookMetadataManageService = inject(BookMetadataManageService);
-  private taskHelperService = inject(TaskHelperService);
   private userService = inject(UserService);
   private emailService = inject(EmailService);
   private messageService = inject(MessageService);
@@ -76,7 +72,6 @@ export class BookCardComponent implements OnInit, OnChanges, OnDestroy {
   private bookDialogHelperService = inject(BookDialogHelperService);
   private bookNavigationService = inject(BookNavigationService);
   private cdr = inject(ChangeDetectorRef);
-  private appSettingsService = inject(AppSettingsService);
   private readonly t = inject(TranslocoService);
 
   protected _progressPercentage: number | null = null;
@@ -101,7 +96,6 @@ export class BookCardComponent implements OnInit, OnChanges, OnDestroy {
   private destroy$ = new Subject<void>();
   protected readStatusHelper = inject(ReadStatusHelper);
   private user: User | null = null;
-  private diskType: string = 'LOCAL';
   private menuInitialized = false;
 
   showBookTypePill = true;
@@ -119,16 +113,6 @@ export class BookCardComponent implements OnInit, OnChanges, OnDestroy {
       .subscribe(userState => {
         this.user = userState.user;
         this.metadataCenterViewMode = userState.user?.userSettings?.metadataCenterViewMode ?? 'route';
-      });
-
-    this.appSettingsService.appSettings$
-      .pipe(
-        filter(settings => !!settings),
-        take(1),
-        takeUntil(this.destroy$)
-      )
-      .subscribe(settings => {
-        this.diskType = settings?.diskType ?? 'LOCAL';
       });
 
     if (this.overlayPreferenceService) {
@@ -344,8 +328,7 @@ export class BookCardComponent implements OnInit, OnChanges, OnDestroy {
     const hasNoAlternativeFormats = !this.book.alternativeFormats || this.book.alternativeFormats.length === 0;
     const hasNoSupplementaryFiles = !this.book.supplementaryFiles || this.book.supplementaryFiles.length === 0;
     const canDownload = !!this.user?.permissions.canDownload;
-    const canDeleteBook = !!this.user?.permissions.canDeleteBook;
-    return (canDownload || canDeleteBook) && hasNoAlternativeFormats && hasNoSupplementaryFiles;
+    return canDownload && hasNoAlternativeFormats && hasNoSupplementaryFiles;
   }
 
   private initMenu() {
@@ -395,47 +378,6 @@ export class BookCardComponent implements OnInit, OnChanges, OnDestroy {
         items.push({
           label: this.t.translate('book.card.menu.download'),
           icon: this.isSubMenuLoading ? 'pi pi-spin pi-spinner' : 'pi pi-download',
-          items: [{label: this.t.translate('book.card.menu.loading'), disabled: true}]
-        });
-      }
-    }
-
-    if (this.user?.permissions.canDeleteBook) {
-      const hasAdditionalFiles = (this.book.alternativeFormats && this.book.alternativeFormats.length > 0) ||
-        (this.book.supplementaryFiles && this.book.supplementaryFiles.length > 0);
-
-      if (hasAdditionalFiles) {
-        const deleteItems = this.getDeleteMenuItems();
-        items.push({
-          label: this.t.translate('book.card.menu.delete'),
-          icon: 'pi pi-trash',
-          items: deleteItems
-        });
-      } else if (this.additionalFilesLoaded) {
-        items.push({
-          label: this.t.translate('book.card.menu.delete'),
-          icon: 'pi pi-trash',
-          command: () => {
-            this.confirmationService.confirm({
-              message: this.t.translate('book.card.confirm.deleteBookMessage', {title: this.book.metadata?.title}),
-              header: this.t.translate('book.card.confirm.deleteBookHeader'),
-              icon: 'pi pi-exclamation-triangle',
-              acceptIcon: 'pi pi-trash',
-              rejectIcon: 'pi pi-times',
-              acceptLabel: this.t.translate('common.delete'),
-              rejectLabel: this.t.translate('common.cancel'),
-              acceptButtonStyleClass: 'p-button-danger',
-              rejectButtonStyleClass: 'p-button-outlined',
-              accept: () => {
-                this.bookService.deleteBooks(new Set([this.book.id])).subscribe();
-              }
-            });
-          }
-        });
-      } else {
-        items.push({
-          label: this.t.translate('book.card.menu.delete'),
-          icon: this.isSubMenuLoading ? 'pi pi-spin pi-spinner' : 'pi pi-trash',
           items: [{label: this.t.translate('book.card.menu.loading'), disabled: true}]
         });
       }
@@ -514,23 +456,6 @@ export class BookCardComponent implements OnInit, OnChanges, OnDestroy {
             },
           },
           {
-            label: this.t.translate('book.card.menu.autoFetch'),
-            icon: 'pi pi-bolt',
-            command: () => {
-              this.taskHelperService.refreshMetadataTask({
-                refreshType: MetadataRefreshType.BOOKS,
-                bookIds: [this.book.id],
-              }).subscribe();
-            }
-          },
-          {
-            label: this.t.translate('book.card.menu.customFetch'),
-            icon: 'pi pi-sync',
-            command: () => {
-              this.bookDialogHelperService.openMetadataRefreshDialog(new Set([this.book!.id]))
-            },
-          },
-          {
             label: this.t.translate('book.card.menu.regenerateCover'),
             icon: 'pi pi-image',
             command: () => {
@@ -576,16 +501,6 @@ export class BookCardComponent implements OnInit, OnChanges, OnDestroy {
   private moreMenuItems(): MenuItem[] {
     const items: MenuItem[] = [];
     const moreActions: MenuItem[] = [];
-
-    if (this.user?.permissions.canMoveOrganizeFiles && this.diskType === 'LOCAL') {
-      moreActions.push({
-        label: this.t.translate('book.card.menu.organizeFile'),
-        icon: 'pi pi-arrows-h',
-        command: () => {
-          this.bookDialogHelperService.openFileMoverDialog(new Set([this.book.id]));
-        }
-      });
-    }
 
     moreActions.push(
       {
@@ -748,64 +663,6 @@ export class BookCardComponent implements OnInit, OnChanges, OnDestroy {
     return items;
   }
 
-  private getDeleteMenuItems(): MenuItem[] {
-    const items: MenuItem[] = [];
-
-    items.push({
-      label: this.t.translate('book.card.menu.book'),
-      icon: 'pi pi-book',
-      command: () => {
-        this.confirmationService.confirm({
-          message: this.t.translate('book.card.confirm.deleteBookMessage', {title: this.book.metadata?.title}),
-          header: this.t.translate('book.card.confirm.deleteBookHeader'),
-          icon: 'pi pi-exclamation-triangle',
-          acceptIcon: 'pi pi-trash',
-          rejectIcon: 'pi pi-times',
-          acceptLabel: this.t.translate('common.delete'),
-          rejectLabel: this.t.translate('common.cancel'),
-          acceptButtonStyleClass: 'p-button-danger',
-          rejectButtonStyleClass: 'p-button-outlined',
-          accept: () => {
-            this.bookService.deleteBooks(new Set([this.book.id])).subscribe();
-          }
-        });
-      }
-    });
-
-    if (this.hasAdditionalFiles()) {
-      items.push({separator: true});
-    }
-
-    if (this.book.alternativeFormats && this.book.alternativeFormats.length > 0) {
-      this.book.alternativeFormats.forEach(format => {
-        const extension = this.getFileExtension(format.filePath);
-        items.push({
-          label: `${format.fileName} (${this.getFileSizeInMB(format)})`,
-          icon: this.getFileIcon(extension),
-          command: () => this.deleteAdditionalFile(this.book.id, format.id, format.fileName || 'file')
-        });
-      });
-    }
-
-    if (this.book.alternativeFormats && this.book.alternativeFormats.length > 0 &&
-      this.book.supplementaryFiles && this.book.supplementaryFiles.length > 0) {
-      items.push({separator: true});
-    }
-
-    if (this.book.supplementaryFiles && this.book.supplementaryFiles.length > 0) {
-      this.book.supplementaryFiles.forEach(file => {
-        const extension = this.getFileExtension(file.filePath);
-        items.push({
-          label: `${file.fileName} (${this.getFileSizeInMB(file)})`,
-          icon: this.getFileIcon(extension),
-          command: () => this.deleteAdditionalFile(this.book.id, file.id, file.fileName || 'file')
-        });
-      });
-    }
-
-    return items;
-  }
-
   private hasAdditionalFiles(): boolean {
     return !!(this.book.alternativeFormats && this.book.alternativeFormats.length > 0) ||
       !!(this.book.supplementaryFiles && this.book.supplementaryFiles.length > 0);
@@ -813,35 +670,6 @@ export class BookCardComponent implements OnInit, OnChanges, OnDestroy {
 
   private downloadAdditionalFile(book: Book, fileId: number): void {
     this.bookFileService.downloadAdditionalFile(book, fileId);
-  }
-
-  private deleteAdditionalFile(bookId: number, fileId: number, fileName: string): void {
-    this.confirmationService.confirm({
-      message: this.t.translate('book.card.confirm.deleteFileMessage', {fileName}),
-      header: this.t.translate('book.card.confirm.deleteFileHeader'),
-      icon: 'pi pi-exclamation-triangle',
-      acceptIcon: 'pi pi-trash',
-      rejectIcon: 'pi pi-times',
-      acceptButtonStyleClass: 'p-button-danger',
-      accept: () => {
-        this.bookFileService.deleteAdditionalFile(bookId, fileId).subscribe({
-          next: () => {
-            this.messageService.add({
-              severity: 'success',
-              summary: this.t.translate('common.success'),
-              detail: this.t.translate('book.card.toast.deleteFileSuccessDetail', {fileName})
-            });
-          },
-          error: (error) => {
-            this.messageService.add({
-              severity: 'error',
-              summary: this.t.translate('common.error'),
-              detail: this.t.translate('book.card.toast.deleteFileErrorDetail', {error: error.message || 'Unknown error'})
-            });
-          }
-        });
-      }
-    });
   }
 
   getFileExtension(filePath?: string): string | null {

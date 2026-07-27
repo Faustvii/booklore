@@ -18,7 +18,7 @@ import {
   TaskStatus,
   TaskType
 } from './task.service';
-import {MetadataRefreshRequest} from '../../metadata/model/request/metadata-refresh-request.model';
+
 import {finalize, forkJoin, Subscription} from 'rxjs';
 import {ExternalDocLinkComponent} from '../../../shared/components/external-doc-link/external-doc-link.component';
 import {ToggleSwitch} from 'primeng/toggleswitch';
@@ -59,19 +59,19 @@ export class TaskManagementComponent implements OnInit, OnDestroy {
   // Metadata Replace Options
   metadataReplaceOptions = [
     {
-      label: 'Update Missing Metadata Only (Recommended)',
+      label: 'Update Missing Metadata Only',
       value: MetadataReplaceMode.REPLACE_MISSING,
       translationKey: 'settingsTasks.metadataReplace.replaceMissing',
       descriptionKey: 'settingsTasks.metadataReplace.replaceMissingDesc'
     },
     {
-      label: 'Replace All Metadata (Overwrite Existing)',
+      label: 'Replace All Metadata (Overwrite Existing) (Recommended)',
       value: MetadataReplaceMode.REPLACE_ALL,
       translationKey: 'settingsTasks.metadataReplace.replaceAll',
       descriptionKey: 'settingsTasks.metadataReplace.replaceAllDesc'
     }
   ];
-  selectedMetadataReplaceMode: MetadataReplaceMode = MetadataReplaceMode.REPLACE_MISSING;
+  selectedMetadataReplaceMode: MetadataReplaceMode = MetadataReplaceMode.REPLACE_ALL;
 
   // Cron Editing State
   cronUpdating = false;
@@ -184,16 +184,16 @@ export class TaskManagementComponent implements OnInit, OnDestroy {
 
     let options = null;
 
-    if (type === TaskType.REFRESH_LIBRARY_METADATA) {
+    if (type === TaskType.LIBRARY_RESCAN) {
       options = {
         metadataReplaceMode: this.selectedMetadataReplaceMode
       };
     }
 
-    this.runTaskWithOptions(type, options);
+this.runTaskWithOptions(type, options);
   }
 
-  private runTaskWithOptions(type: string, options: LibraryRescanOptions | MetadataRefreshRequest | null): void {
+private runTaskWithOptions(type: string, options: LibraryRescanOptions | null): void {
     const request: TaskCreateRequest = {
       taskType: type as TaskType,
       triggeredByCron: false,
@@ -469,12 +469,10 @@ export class TaskManagementComponent implements OnInit, OnDestroy {
   getTaskIcon(taskType: string): string {
     const icons: Record<string, string> = {
       [TaskType.CLEAR_PDF_CACHE]: 'pi-database',
-      [TaskType.REFRESH_LIBRARY_METADATA]: 'pi-refresh',
+      [TaskType.LIBRARY_RESCAN]: 'pi-refresh',
       [TaskType.UPDATE_BOOK_RECOMMENDATIONS]: 'pi-sparkles',
       [TaskType.CLEANUP_DELETED_BOOKS]: 'pi-trash',
       [TaskType.SYNC_LIBRARY_FILES]: 'pi-sync',
-      [TaskType.BOOKDROP_PERIODIC_SCANNING]: 'pi-inbox',
-      [TaskType.CLEANUP_TEMP_METADATA]: 'pi-file'
     };
     return icons[taskType] || 'pi-cog';
   }
@@ -492,8 +490,8 @@ export class TaskManagementComponent implements OnInit, OnDestroy {
   getMetadataIcon(taskType: string): string {
     const icons: Record<string, string> = {
       [TaskType.CLEAR_PDF_CACHE]: 'pi-database',
-      [TaskType.CLEANUP_DELETED_BOOKS]: 'pi-trash',
-      [TaskType.CLEANUP_TEMP_METADATA]: 'pi-file'
+      [TaskType.LIBRARY_RESCAN]: 'pi-refresh',
+      [TaskType.CLEANUP_DELETED_BOOKS]: 'pi-trash'
     };
     return icons[taskType] || 'pi-info-circle';
   }

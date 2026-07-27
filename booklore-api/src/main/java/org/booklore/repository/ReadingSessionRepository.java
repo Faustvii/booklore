@@ -6,15 +6,21 @@ import org.booklore.model.entity.ReadingSessionEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.Instant;
+import java.util.Collection;
 import java.util.List;
 
 @Repository
 public interface ReadingSessionRepository extends JpaRepository<ReadingSessionEntity, Long> {
+
+    @Modifying
+    @Query("DELETE FROM ReadingSessionEntity rs WHERE rs.book.id IN :bookIds")
+    void deleteByBookIdIn(@Param("bookIds") Collection<Long> bookIds);
 
     @Query(value = """
             SELECT DATE(CONVERT_TZ(start_time, '+00:00', :tzOffset)) as date,

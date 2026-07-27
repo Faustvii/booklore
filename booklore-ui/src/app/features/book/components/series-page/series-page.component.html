@@ -397,16 +397,6 @@
                     tooltipPosition="top">
                   </p-button>
                 }
-                @if (userState.user!.permissions.canMoveOrganizeFiles && (appSettingsService.appSettings$ | async)?.diskType === 'LOCAL') {
-                  <p-button
-                    outlined="true"
-                    icon="pi pi-arrows-h"
-                    severity="info"
-                    (click)="moveFiles()"
-                    [pTooltip]="t('tooltip.organizeFiles')"
-                    tooltipPosition="top">
-                  </p-button>
-                }
                 @if (hasMoreActionsItems) {
                   <div class="more-actions-wrapper">
                     <p-button
@@ -440,17 +430,6 @@
                 tooltipPosition="top">
               </p-button>
             </div>
-            @if (userState.user!.permissions.admin || userState.user!.permissions.canDeleteBook) {
-              <p-divider layout="vertical"></p-divider>
-              <p-button
-                outlined="true"
-                icon="pi pi-trash"
-                severity="danger"
-                (click)="confirmDeleteBooks()"
-                [pTooltip]="t('tooltip.deleteSelected')"
-                tooltipPosition="top">
-              </p-button>
-            }
           </div>
           <div class="footer-right"></div>
         </div>

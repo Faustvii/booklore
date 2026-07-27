@@ -22,7 +22,6 @@ services:
       - /booklore-api/.gradle
       - ./shared/data:/app/data
       - ./shared/books:/books
-      - ./shared/bookdrop:/bookdrop
 
   backend_db:
     image: postgres:17
@@ -43,8 +42,9 @@ services:
       retries: 5
 
   ui:
-    image: node:22-alpine
-    command: sh -c "cd /angular-app && npm install -g @angular/cli --force && npm install --force && ng serve --host 0.0.0.0"
+    image: node:24-alpine
+    user: "${UID:-1000}:${GID:-1000}"
+    command: sh -c "mkdir -p /home/node/.npm-global && npm install -g @angular/cli --prefix /home/node/.npm-global && export PATH=/home/node/.npm-global/bin:$PATH && cd /angular-app && rm -rf .angular/cache && npm ci && ng serve --host 0.0.0.0"
     environment:
       - NODE_ENV=development
     stdin_open: true
@@ -55,13 +55,19 @@ services:
 
         # you can have node_modules in a volume. however, if you enable this, expect trouble in some IDEs, as the deps are not available anymore
         # - node_modules:/angular-app/node_modules
-
-        # we ignore package-lock otherwise will throw
-        # An unhandled exception occurred: Cannot find module @rollup/rollup-linux-x64-musl. npm has a bug related to optional dependencies (https://github.com/npm/cli/issues/4828).
-        # Please try `npm i` again after removing both package-lock.json and node_modules directory.
-      - '/dev/null:/angular-app/package-lock.json'
     ports:
       - "${FRONTEND_PORT:-4200}:4200"
+
+  pgweb:
+    image: sosedoff/pgweb:latest
+    container_name: pgweb
+    restart: unless-stopped
+    ports:
+      - "8081:8081"
+    environment:
+      - DATABASE_URL=postgres://booklore:booklore@backend_db:5432/booklore?sslmode=disable
+    depends_on:
+      - backend_db
 
 volumes:
   node_modules:

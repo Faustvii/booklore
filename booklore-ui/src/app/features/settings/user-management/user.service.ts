@@ -205,7 +205,7 @@ export interface TableColumnPreference {
 
 export type VisibleFilterType =
   | 'author' | 'category' | 'series' | 'bookType' | 'readStatus'
-  | 'personalRating' | 'publisher' | 'matchScore' | 'library' | 'shelf'
+  | 'personalRating' | 'rating' | 'publisher' | 'matchScore' | 'library' | 'shelf'
   | 'shelfStatus' | 'tag' | 'publishedDate' | 'fileSize' | 'amazonRating'
   | 'goodreadsRating' | 'hardcoverRating' | 'language' | 'pageCount' | 'mood'
   | 'ageRating' | 'contentRating'
@@ -214,14 +214,14 @@ export type VisibleFilterType =
 
 export const DEFAULT_VISIBLE_FILTERS: VisibleFilterType[] = [
   'author', 'category', 'series', 'bookType', 'readStatus',
-  'personalRating', 'library', 'tag', 'ageRating', 'contentRating',
+  'personalRating', 'rating', 'library', 'tag', 'ageRating', 'contentRating',
   'matchScore', 'publisher', 'publishedDate', 'fileSize'
 ];
 
 // Translation key for each filter option — use book.filter.labels.<value>
 export const ALL_FILTER_OPTION_VALUES: VisibleFilterType[] = [
   'author', 'category', 'series', 'bookType', 'readStatus',
-  'personalRating', 'library', 'tag', 'ageRating', 'contentRating',
+  'personalRating', 'rating', 'library', 'tag', 'ageRating', 'contentRating',
   'matchScore', 'publisher', 'publishedDate', 'fileSize', 'shelf',
   'shelfStatus', 'language', 'pageCount', 'mood', 'amazonRating',
   'goodreadsRating', 'hardcoverRating', 'narrator',
@@ -235,6 +235,7 @@ export const ALL_FILTER_OPTIONS: { label: string; value: VisibleFilterType }[] =
   {label: 'Book Type', value: 'bookType'},
   {label: 'Read Status', value: 'readStatus'},
   {label: 'Personal Rating', value: 'personalRating'},
+  {label: 'Rating', value: 'rating'},
   {label: 'Library', value: 'library'},
   {label: 'Tag', value: 'tag'},
   {label: 'Age Rating', value: 'ageRating'},
@@ -261,7 +262,7 @@ export const ALL_FILTER_OPTIONS: { label: string; value: VisibleFilterType }[] =
 export const DEFAULT_VISIBLE_SORT_FIELDS: string[] = [
   'title', 'seriesName', 'fileName', 'filePath',
   'author', 'authorSurnameVorname', 'seriesNumber',
-  'lastReadTime', 'personalRating', 'addedOn',
+  'lastReadTime', 'rating', 'personalRating', 'addedOn',
   'fileSizeKb', 'locked', 'publisher', 'publishedDate', 'pageCount', 'random'
 ];
 
@@ -295,17 +296,14 @@ export interface User {
   assignedLibraries: Library[];
   permissions: {
     admin: boolean;
-    canUpload: boolean;
     canDownload: boolean;
     canEmailBook: boolean;
-    canDeleteBook: boolean;
     canEditMetadata: boolean;
     canManageLibrary: boolean;
     canManageMetadataConfig: boolean;
     canSyncKoReader: boolean;
     canSyncKobo: boolean;
     canAccessOpds: boolean;
-    canAccessBookdrop: boolean;
     canAccessLibraryStats: boolean;
     canAccessUserStats: boolean;
     canAccessTaskManager: boolean;
@@ -318,7 +316,6 @@ export interface User {
     canBulkCustomFetchMetadata: boolean;
     canBulkEditMetadata: boolean;
     canBulkRegenerateCover: boolean;
-    canMoveOrganizeFiles: boolean;
     canBulkLockUnlockMetadata: boolean;
     canBulkResetBookloreReadProgress?: boolean;
     canBulkResetKoReaderReadProgress?: boolean;

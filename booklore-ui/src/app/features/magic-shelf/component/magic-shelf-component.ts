@@ -69,6 +69,7 @@ export type RuleField =
   | 'goodreadsReviewCount'
   | 'hardcoverRating'
   | 'hardcoverReviewCount'
+  | 'rating'
   | 'ranobedbRating'
   | 'personalRating'
   | 'fileType'
@@ -173,6 +174,7 @@ const FIELD_CONFIGS: Record<RuleField, FullFieldConfig> = {
   goodreadsReviewCount: {label: 'goodreadsReviewCount', type: 'number'},
   hardcoverRating: {label: 'hardcoverRating', type: 'decimal', max: 5},
   hardcoverReviewCount: {label: 'hardcoverReviewCount', type: 'number'},
+  rating: {label: 'rating', type: 'decimal', max: 5},
   ranobedbRating: {label: 'ranobedbRating', type: 'decimal', max: 5},
   addedOn: {label: 'addedOn', type: 'date'},
   lubimyczytacRating: {label: 'lubimyczytacRating', type: 'decimal', max: 5},
@@ -205,7 +207,7 @@ const FIELD_GROUPS: FieldGroup[] = [
   { translationKey: 'bookInfo', fields: ['title', 'subtitle', 'description', 'authors', 'categories', 'publisher', 'language', 'pageCount', 'ageRating', 'contentRating'] },
   { translationKey: 'series', fields: ['seriesName', 'seriesNumber', 'seriesTotal', 'seriesStatus', 'seriesGaps', 'seriesPosition'] },
   { translationKey: 'dates', fields: ['publishedDate', 'dateFinished', 'lastReadTime', 'addedOn'] },
-  { translationKey: 'ratingsReviews', fields: ['personalRating', 'amazonRating', 'amazonReviewCount', 'goodreadsRating', 'goodreadsReviewCount', 'hardcoverRating', 'hardcoverReviewCount', 'ranobedbRating', 'lubimyczytacRating', 'audibleRating', 'audibleReviewCount'] },
+  { translationKey: 'ratingsReviews', fields: ['rating', 'personalRating', 'amazonRating', 'amazonReviewCount', 'goodreadsRating', 'goodreadsReviewCount', 'hardcoverRating', 'hardcoverReviewCount', 'ranobedbRating', 'lubimyczytacRating', 'audibleRating', 'audibleReviewCount'] },
   { translationKey: 'qualityMetadata', fields: ['metadataScore', 'metadataPresence'] },
   { translationKey: 'tagsMoods', fields: ['moods', 'tags'] },
   { translationKey: 'audiobook', fields: ['narrator', 'abridged', 'audiobookDuration', 'audiobookCodec', 'audiobookChapterCount', 'audiobookBitrate'] },
@@ -379,6 +381,7 @@ export class MagicShelfComponent implements OnInit {
         {label: this.t.translate('magicShelf.metadataFields.contentRating'), value: 'contentRating'},
       ]},
       { label: this.t.translate('magicShelf.metadataFieldGroups.ratings'), items: [
+        {label: this.t.translate('magicShelf.metadataFields.rating'), value: 'rating'},
         {label: this.t.translate('magicShelf.metadataFields.personalRating'), value: 'personalRating'},
         {label: this.t.translate('magicShelf.metadataFields.amazonRating'), value: 'amazonRating'},
         {label: this.t.translate('magicShelf.metadataFields.goodreadsRating'), value: 'goodreadsRating'},

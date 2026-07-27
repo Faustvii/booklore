@@ -4,7 +4,6 @@ import org.booklore.model.entity.BookEntity;
 import org.booklore.model.entity.LibraryPathEntity;
 import org.booklore.model.enums.BookFileType;
 import org.booklore.repository.projection.BookCoverUpdateProjection;
-import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
@@ -119,15 +118,11 @@ public interface BookRepository extends JpaRepository<BookEntity, Long>, JpaSpec
             """)
     List<BookEntity> findBooksWithMetadataAndAuthors(@Param("bookIds") List<Long> bookIds);
 
-    @Modifying
-    @Transactional
-    @Query("DELETE FROM BookEntity b WHERE b.deleted IS TRUE")
-    int deleteAllSoftDeleted();
+    @Query("SELECT b.id FROM BookEntity b WHERE b.deleted IS TRUE")
+    List<Long> findIdsByDeletedTrue();
 
-    @Modifying
-    @Transactional
-    @Query("DELETE FROM BookEntity b WHERE b.deleted IS TRUE AND b.deletedAt < :cutoffDate")
-    int deleteSoftDeletedBefore(@Param("cutoffDate") Instant cutoffDate);
+    @Query("SELECT b.id FROM BookEntity b WHERE b.deleted IS TRUE AND b.deletedAt < :cutoffDate")
+    List<Long> findIdsByDeletedTrueAndDeletedAtBefore(@Param("cutoffDate") Instant cutoffDate);
 
     @Query("SELECT COUNT(b) FROM BookEntity b WHERE b.deleted = TRUE")
     long countAllSoftDeleted();

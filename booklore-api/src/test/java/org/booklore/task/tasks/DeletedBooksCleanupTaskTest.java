@@ -6,6 +6,7 @@ import org.booklore.model.dto.request.TaskCreateRequest;
 import org.booklore.model.dto.response.TaskCreateResponse;
 import org.booklore.model.enums.TaskType;
 import org.booklore.repository.BookRepository;
+import org.booklore.service.library.BookDeletionService;
 import org.booklore.task.TaskStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Instant;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -25,6 +27,9 @@ class DeletedBooksCleanupTaskTest {
 
     @Mock
     private BookRepository bookRepository;
+
+    @Mock
+    private BookDeletionService bookDeletionService;
 
     @InjectMocks
     private DeletedBooksCleanupTask deletedBooksCleanupTask;
@@ -55,32 +60,34 @@ class DeletedBooksCleanupTaskTest {
     @Test
     void execute_shouldDeleteOldRecords_whenTriggeredByCron() {
         request.setTriggeredByCron(true);
-        when(bookRepository.deleteSoftDeletedBefore(any(Instant.class))).thenReturn(5);
+        when(bookRepository.findIdsByDeletedTrueAndDeletedAtBefore(any(Instant.class))).thenReturn(List.of(1L, 2L));
 
         TaskCreateResponse response = deletedBooksCleanupTask.execute(request);
 
         assertEquals(TaskType.CLEANUP_DELETED_BOOKS, response.getTaskType());
         assertEquals(TaskStatus.COMPLETED, response.getStatus());
-        verify(bookRepository).deleteSoftDeletedBefore(any(Instant.class));
-        verify(bookRepository, never()).deleteAllSoftDeleted();
+        verify(bookRepository).findIdsByDeletedTrueAndDeletedAtBefore(any(Instant.class));
+        verify(bookRepository, never()).findIdsByDeletedTrue();
+        verify(bookDeletionService).deleteRemovedBooks(List.of(1L, 2L));
     }
 
     @Test
     void execute_shouldDeleteAllRecords_whenNotTriggeredByCron() {
         request.setTriggeredByCron(false);
-        when(bookRepository.deleteAllSoftDeleted()).thenReturn(10);
+        when(bookRepository.findIdsByDeletedTrue()).thenReturn(List.of(1L, 2L, 3L));
 
         TaskCreateResponse response = deletedBooksCleanupTask.execute(request);
 
         assertEquals(TaskStatus.COMPLETED, response.getStatus());
-        verify(bookRepository).deleteAllSoftDeleted();
-        verify(bookRepository, never()).deleteSoftDeletedBefore(any());
+        verify(bookRepository).findIdsByDeletedTrue();
+        verify(bookRepository, never()).findIdsByDeletedTrueAndDeletedAtBefore(any());
+        verify(bookDeletionService).deleteRemovedBooks(List.of(1L, 2L, 3L));
     }
 
     @Test
     void execute_shouldReturnFailed_whenRepositoryThrowsException() {
         request.setTriggeredByCron(false);
-        when(bookRepository.deleteAllSoftDeleted()).thenThrow(new RuntimeException("DB Error"));
+        when(bookRepository.findIdsByDeletedTrue()).thenThrow(new RuntimeException("DB Error"));
 
         TaskCreateResponse response = deletedBooksCleanupTask.execute(request);
 

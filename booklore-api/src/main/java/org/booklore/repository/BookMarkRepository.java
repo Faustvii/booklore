@@ -2,15 +2,21 @@ package org.booklore.repository;
 
 import org.booklore.model.entity.BookMarkEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
 public interface BookMarkRepository extends JpaRepository<BookMarkEntity, Long> {
 
     Optional<BookMarkEntity> findByIdAndUserId(Long id, Long userId);
+
+    @Modifying
+    @Query("DELETE FROM BookMarkEntity b WHERE b.bookId IN :bookIds")
+    void deleteByBookIdIn(@Param("bookIds") Collection<Long> bookIds);
 
     @Query("SELECT b FROM BookMarkEntity b WHERE b.bookId = :bookId AND b.userId = :userId ORDER BY b.priority ASC, b.createdAt DESC")
     List<BookMarkEntity> findByBookIdAndUserIdOrderByPriorityAscCreatedAtDesc(@Param("bookId") Long bookId, @Param("userId") Long userId);

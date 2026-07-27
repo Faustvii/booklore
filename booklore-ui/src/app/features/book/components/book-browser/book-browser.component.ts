@@ -43,8 +43,6 @@ import {BadgeModule} from 'primeng/badge';
 import {BookMenuService} from '../../service/book-menu.service';
 import {MagicShelf} from '../../../magic-shelf/service/magic-shelf.service';
 import {SidebarFilterTogglePrefService} from './filters/sidebar-filter-toggle-pref.service';
-import {MetadataRefreshType} from '../../../metadata/model/request/metadata-refresh-type.enum';
-import {TaskHelperService} from '../../../settings/task-management/task-helper.service';
 import {FilterLabelHelper} from './filter-label.helper';
 import {LoadingService} from '../../../../core/services/loading.service';
 import {LocalStorageService} from '../../../../shared/service/local-storage.service';
@@ -55,7 +53,6 @@ import {BookBrowserQueryParamsService, VIEW_MODES} from './book-browser-query-pa
 import {BookBrowserEntityService, EntityInfo} from './book-browser-entity.service';
 import {BookFilterOrchestrationService} from './book-filter-orchestration.service';
 import {BookBrowserScrollService} from './book-browser-scroll.service';
-import {AppSettingsService} from '../../../../shared/service/app-settings.service';
 import {MultiSortPopoverComponent} from './sorting/multi-sort-popover/multi-sort-popover.component';
 import {SortService} from '../../service/sort.service';
 import {TranslocoDirective, TranslocoService} from '@jsverse/transloco';
@@ -100,10 +97,8 @@ export class BookBrowserComponent implements OnInit, AfterViewInit, OnDestroy {
   protected sidebarFilterTogglePrefService = inject(SidebarFilterTogglePrefService);
   protected seriesCollapseFilter = inject(SeriesCollapseFilter);
   protected confirmationService = inject(ConfirmationService);
-  protected taskHelperService = inject(TaskHelperService);
   protected bookCardOverlayPreferenceService = inject(BookCardOverlayPreferenceService);
   protected bookSelectionService = inject(BookSelectionService);
-  protected appSettingsService = inject(AppSettingsService);
 
   private cdr = inject(ChangeDetectorRef);
   private activatedRoute = inject(ActivatedRoute);
@@ -396,8 +391,6 @@ export class BookBrowserComponent implements OnInit, AfterViewInit, OnDestroy {
     this.userService.userState$.pipe(filter(u => !!u?.user && u.loaded))
       .subscribe(userState => {
         this.metadataMenuItems = this.bookMenuService.getMetadataMenuItems(
-          () => this.autoFetchMetadata(),
-          () => this.fetchMetadata(),
           () => this.bulkEditMetadata(),
           () => this.multiBookEditMetadata(),
           () => this.regenerateCoversForSelected(),
@@ -574,30 +567,6 @@ export class BookBrowserComponent implements OnInit, AfterViewInit, OnDestroy {
       this.bookTableComponent.clearSelectedBooks();
     }
     this.moreActionsMenuItems = this.bookMenuService.getMoreActionsMenu(this.selectedBooks, this.user());
-  }
-
-  confirmDeleteBooks(): void {
-    this.confirmationService.confirm({
-      message: this.t.translate('book.browser.confirm.deleteMessage', {count: this.selectedBooks.size}),
-      header: this.t.translate('book.browser.confirm.deleteHeader'),
-      icon: 'pi pi-exclamation-triangle',
-      acceptIcon: 'pi pi-trash',
-      rejectIcon: 'pi pi-times',
-      acceptLabel: this.t.translate('common.delete'),
-      rejectLabel: this.t.translate('common.cancel'),
-      acceptButtonStyleClass: 'p-button-danger',
-      rejectButtonStyleClass: 'p-button-outlined',
-      accept: () => {
-        const count = this.selectedBooks.size;
-        const loader = this.loadingService.show(this.t.translate('book.browser.loading.deleting', {count}));
-
-        this.bookService.deleteBooks(this.selectedBooks)
-          .pipe(finalize(() => this.loadingService.hide(loader)))
-          .subscribe(() => {
-            this.bookSelectionService.deselectAll();
-          });
-      }
-    });
   }
 
   onSeriesCollapseCheckboxChange(value: boolean): void {
@@ -830,18 +799,6 @@ export class BookBrowserComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  autoFetchMetadata(): void {
-    if (!this.selectedBooks || this.selectedBooks.size === 0) return;
-    this.taskHelperService.refreshMetadataTask({
-      refreshType: MetadataRefreshType.BOOKS,
-      bookIds: Array.from(this.selectedBooks),
-    }).subscribe();
-  }
-
-  fetchMetadata(): void {
-    this.dialogHelperService.openMetadataRefreshDialog(this.selectedBooks);
-  }
-
   bulkEditMetadata(): void {
     this.dynamicDialogRef = this.dialogHelperService.openBulkMetadataEditDialog(this.selectedBooks);
     if (this.dynamicDialogRef) {
@@ -938,10 +895,6 @@ export class BookBrowserComponent implements OnInit, AfterViewInit, OnDestroy {
         });
       }
     });
-  }
-
-  moveFiles(): void {
-    this.dialogHelperService.openFileMoverDialog(this.selectedBooks);
   }
 
   attachFilesToBook(): void {

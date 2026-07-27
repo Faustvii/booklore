@@ -46,11 +46,9 @@ import static org.mockito.Mockito.mock;
         "spring.datasource.username=sa",
         "spring.datasource.password=",
         "app.path-config=build/tmp/test-config",
-        "app.bookdrop-folder=build/tmp/test-bookdrop",
         "spring.main.allow-bean-definition-overriding=true",
         "spring.task.scheduling.enabled=false",
         "app.task.scan-library-cron=*/1 * * * * *",
-        "app.task.process-bookdrop-cron=*/1 * * * * *",
         "app.features.oidc-enabled=false"
 })
 @Import(BookRuleEvaluatorServiceIntegrationTest.TestConfig.class)

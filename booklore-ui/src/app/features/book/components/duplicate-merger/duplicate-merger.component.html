@@ -152,17 +152,6 @@
                     (click)="mergeGroup(group)"
                     [disabled]="isMerging">
                   </p-button>
-                  @if (getDeleteSelectedCount(group) > 0) {
-                    <p-button
-                      [label]="t('deleteSelected', { count: getDeleteSelectedCount(group) })"
-                      icon="pi pi-trash"
-                      size="small"
-                      severity="danger"
-                      [outlined]="true"
-                      (click)="deleteGroup(group)"
-                      [disabled]="isMerging">
-                    </p-button>
-                  }
                   <p-button
                     [label]="t('dismiss')"
                     icon="pi pi-times"
@@ -176,16 +165,7 @@
               </div>
               <div class="group-books">
                 @for (book of group.books; track book.id) {
-                  <div class="book-row" [class.selected-target]="book.id === group.selectedTargetBookId" [class.marked-for-deletion]="group.selectedForDeletion.has(book.id)">
-                    @if (book.id !== group.selectedTargetBookId) {
-                      <p-checkbox
-                        [binary]="true"
-                        [ngModel]="group.selectedForDeletion.has(book.id)"
-                        (onChange)="toggleDeleteSelection(group, book.id)"
-                        [disabled]="isMerging"
-                        class="delete-checkbox">
-                      </p-checkbox>
-                    }
+                  <div class="book-row" [class.selected-target]="book.id === group.selectedTargetBookId">
                     <img class="book-cover"
                          [src]="urlHelper.getThumbnailUrl(book.id, book.metadata?.coverUpdatedOn)"
                          [alt]="book.metadata?.title || ''"
@@ -218,7 +198,6 @@
                         [name]="'target-' + group.suggestedTargetBookId"
                         [value]="book.id"
                         [(ngModel)]="group.selectedTargetBookId"
-                        (onClick)="onTargetChange(group)"
                         [disabled]="isMerging">
                       </p-radioButton>
                       @if (book.id === group.selectedTargetBookId) {

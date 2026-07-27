@@ -14,33 +14,6 @@
     <div class="preferences-section">
       <div class="section-header">
         <h3 class="section-title">
-          <i class="pi pi-palette"></i>
-          {{ t('appearance.sectionTitle') }}
-        </h3>
-      </div>
-
-      <div class="settings-card">
-        <div class="setting-item">
-          <div class="setting-info">
-            <div class="setting-label-row">
-              <label class="setting-label">{{ t('appearance.supportButtonAnimation') }}</label>
-              <p-toggleswitch
-                [(ngModel)]="supportButtonAnimation"
-                (onChange)="onSupportAnimationChange($event.checked)">
-              </p-toggleswitch>
-            </div>
-            <p class="setting-description">
-              <i class="pi pi-info-circle"></i>
-              {{ t('appearance.supportButtonAnimationDesc') }}
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="preferences-section">
-      <div class="section-header">
-        <h3 class="section-title">
           <i class="pi pi-image"></i>
           {{ t('covers.sectionTitle') }}
         </h3>
@@ -179,69 +152,19 @@
             </p>
           </div>
         </div>
-      </div>
-    </div>
 
-    <div class="preferences-section">
-      <div class="section-header">
-        <h3 class="section-title">
-          <i class="pi pi-upload"></i>
-          {{ t('fileManagement.sectionTitle') }}
-        </h3>
-      </div>
-
-      <div class="settings-card">
         <div class="setting-item">
           <div class="setting-info">
             <div class="setting-label-row">
-              <label class="setting-label">{{ t('fileManagement.maxUploadSize') }}</label>
-              <div class="input-group">
-                <div class="input-with-unit">
-                  <input
-                    type="text"
-                    pInputText
-                    [(ngModel)]="maxFileUploadSizeInMb"
-                    [placeholder]="t('fileManagement.maxUploadPlaceholder')"/>
-                  <span class="unit">MB</span>
-                </div>
-                <p-button [label]="'common.save' | transloco" outlined severity="success" (onClick)="saveFileSize()"></p-button>
-              </div>
-            </div>
-            <p class="setting-description">
-              <i class="pi pi-info-circle"></i>
-              {{ t('fileManagement.maxUploadDesc') }}
-            </p>
-            <div class="warning-message">
-              <i class="pi pi-exclamation-triangle"></i>
-              <span>{{ t('fileManagement.restartWarning') }}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Telemetry Setting Section -->
-    <div class="preferences-section">
-      <div class="section-header">
-        <h3 class="section-title">
-          <i class="pi pi-chart-bar"></i>
-          {{ t('telemetry.sectionTitle') }}
-          <app-external-doc-link docType="telemetry"></app-external-doc-link>
-        </h3>
-      </div>
-      <div class="settings-card">
-        <div class="setting-item">
-          <div class="setting-info">
-            <div class="setting-label-row">
-              <label class="setting-label">{{ t('telemetry.enableTelemetry') }}</label>
+              <label class="setting-label">{{ t('search.autoFetchAuthorMetadata') }}</label>
               <p-toggleswitch
-                [(ngModel)]="toggles.enableTelemetry"
-                (onChange)="onToggleChange('enableTelemetry', $event.checked)">
+                [(ngModel)]="toggles.autoFetchAuthorMetadata"
+                (onChange)="onToggleChange('autoFetchAuthorMetadata', $event.checked)">
               </p-toggleswitch>
             </div>
             <p class="setting-description">
               <i class="pi pi-info-circle"></i>
-              {{ t('telemetry.telemetryDesc') }}
+              {{ t('search.autoFetchAuthorMetadataDesc') }}
             </p>
           </div>
         </div>

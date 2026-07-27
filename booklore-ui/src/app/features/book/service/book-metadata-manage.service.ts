@@ -122,14 +122,6 @@ export class BookMetadataManageService {
 
   /*------------------ Cover Operations ------------------*/
 
-  getUploadCoverUrl(bookId: number): string {
-    return this.url + '/' + bookId + "/metadata/cover/upload"
-  }
-
-  uploadCoverFromUrl(bookId: number, url: string): Observable<BookMetadata> {
-    return this.http.post<BookMetadata>(`${this.url}/${bookId}/metadata/cover/from-url`, {url});
-  }
-
   regenerateCovers(missingOnly = false): Observable<void> {
     return this.http.post<void>(`${this.url}/regenerate-covers?missingOnly=${missingOnly}`, {});
   }
@@ -154,20 +146,6 @@ export class BookMetadataManageService {
     return this.http.post<void>(`${this.url}/bulk-regenerate-covers`, {bookIds});
   }
 
-  uploadAudiobookCoverFromUrl(bookId: number, url: string): Observable<BookMetadata> {
-    return this.http.post<BookMetadata>(`${this.url}/${bookId}/metadata/audiobook-cover/from-url`, {url});
-  }
-
-  uploadAudiobookCoverFromFile(bookId: number, file: File): Observable<void> {
-    const formData = new FormData();
-    formData.append('file', file);
-    return this.http.post<void>(`${this.url}/${bookId}/metadata/audiobook-cover/upload`, formData);
-  }
-
-  getUploadAudiobookCoverUrl(bookId: number): string {
-    return this.url + '/' + bookId + "/metadata/audiobook-cover/upload";
-  }
-
   regenerateAudiobookCover(bookId: number): Observable<void> {
     return this.http.post<void>(`${this.url}/${bookId}/regenerate-audiobook-cover`, {});
   }
@@ -181,12 +159,5 @@ export class BookMetadataManageService {
     const hasAudiobook = allFiles.some(f => f!.bookType === 'AUDIOBOOK');
     const hasEbook = allFiles.some(f => f!.bookType !== 'AUDIOBOOK');
     return hasAudiobook && hasEbook;
-  }
-
-  bulkUploadCover(bookIds: number[], file: File): Observable<void> {
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('bookIds', bookIds.join(','));
-    return this.http.post<void>(`${this.url}/bulk-upload-cover`, formData);
   }
 }

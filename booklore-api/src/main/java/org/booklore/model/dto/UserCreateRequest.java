@@ -24,18 +24,15 @@ public class UserCreateRequest {
     @Email
     private String email;
 
-    private boolean permissionUpload;
     private boolean permissionDownload;
     private boolean permissionEditMetadata;
     private boolean permissionManageLibrary;
     private boolean permissionEmailBook;
-    private boolean permissionDeleteBook;
     private boolean permissionAccessOpds;
     private boolean permissionSyncKoreader;
     private boolean permissionSyncKobo;
     private boolean permissionAdmin;
     private boolean permissionManageMetadataConfig;
-    private boolean permissionAccessBookdrop;
     private boolean permissionAccessLibraryStats;
     private boolean permissionAccessUserStats;
     private boolean permissionAccessTaskManager;
@@ -46,7 +43,6 @@ public class UserCreateRequest {
     private boolean permissionBulkCustomFetchMetadata;
     private boolean permissionBulkEditMetadata;
     private boolean permissionBulkRegenerateCover;
-    private boolean permissionMoveOrganizeFiles;
     private boolean permissionBulkLockUnlockMetadata;
     private boolean permissionBulkResetBookloreReadProgress;
     private boolean permissionBulkResetKoReaderReadProgress;

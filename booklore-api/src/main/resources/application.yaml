@@ -1,6 +1,5 @@
 app:
   path-config: '/app/data'
-  bookdrop-folder: '/bookdrop'
   version: 'development'
 
   cors:
@@ -19,8 +18,6 @@ app:
     admin-group: ${REMOTE_AUTH_ADMIN_GROUP}
     groups-delimiter: ${REMOTE_AUTH_GROUPS_DELIMITER:\\s+}
   force-disable-oidc: ${FORCE_DISABLE_OIDC:false}
-  telemetry:
-    base-url: ${TELEMETRY_BASE_URL:http://localhost}
   disk-type: ${DISK_TYPE:LOCAL}
 
 server:

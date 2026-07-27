@@ -83,9 +83,13 @@ public class LibraryProcessingService {
             String paths = libraryEntity.getLibraryPaths().stream()
                     .map(LibraryPathEntity::getPath)
                     .collect(Collectors.joining(", "));
-            log.error("Library '{}' has {} existing books but scan found 0 files. Paths may be offline: {}",
+            if (!context.isForce()) {
+                log.error("Library '{}' has {} existing books but scan found 0 files. Paths may be offline: {}",
+                        libraryEntity.getName(), existingBookCount, paths);
+                throw ApiError.LIBRARY_PATH_NOT_ACCESSIBLE.createException(paths);
+            }
+            log.warn("Library '{}' has {} existing books but scan found 0 files at {} - proceeding anyway because force was requested; all existing books will be treated as deleted.",
                     libraryEntity.getName(), existingBookCount, paths);
-            throw ApiError.LIBRARY_PATH_NOT_ACCESSIBLE.createException(paths);
         }
 
         List<Long> additionalFileIds = detectDeletedAdditionalFiles(allLibraryFiles, libraryEntity);
@@ -249,9 +253,18 @@ public class LibraryProcessingService {
 
         List<BookFileEntity> allAdditionalFiles = bookAdditionalFileRepository.findByLibraryId(libraryEntity.getId());
 
+        // A file still present on disk keeps its book non-empty; only files that would leave
+        // at least one other still-present file behind are safe to hard-delete here. A book
+        // whose last remaining file disappears must instead go through detectDeletedBookIds,
+        // which can properly delete (or format-demote) the whole book.
+        Map<Long, Long> remainingFileCountByBookId = allAdditionalFiles.stream()
+                .filter(bf -> currentFileKeys.contains(generateUniqueKey(bf)))
+                .collect(Collectors.groupingBy(bf -> bf.getBook().getId(), Collectors.counting()));
+
         return allAdditionalFiles.stream()
                 .filter(BookFileEntity::isBookFormat)
                 .filter(additionalFile -> !currentFileKeys.contains(generateUniqueKey(additionalFile)))
+                .filter(additionalFile -> remainingFileCountByBookId.getOrDefault(additionalFile.getBook().getId(), 0L) > 0)
                 .map(BookFileEntity::getId)
                 .collect(Collectors.toList());
     }

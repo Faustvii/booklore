@@ -29,8 +29,8 @@
   "metadataReplace": {
     "label": "Metadata Replace Mode:",
     "selectMode": "Select mode",
-    "replaceMissing": "Update Missing Metadata Only (Recommended)",
-    "replaceAll": "Replace All Metadata (Overwrite Existing)",
+    "replaceMissing": "Update Missing Metadata Only",
+    "replaceAll": "Replace All Metadata (Overwrite Existing) (Recommended)",
     "replaceMissingDesc": "Only update books that are missing metadata information. Existing metadata will be preserved.",
     "replaceAllDesc": "Replace all metadata for all books, even if they already have metadata. Use with caution as this will overwrite existing data."
   },

@@ -126,27 +126,14 @@ export class LibraryService {
     );
   }
 
-  refreshLibrary(id: number): Observable<void> {
-    return this.http.put<void>(`${this.url}/${id}/refresh`, {}).pipe(
+  refreshLibrary(id: number, force = false): Observable<void> {
+    return this.http.put<void>(`${this.url}/${id}/refresh`, {}, {params: {force}}).pipe(
       catchError(err => {
         const curr = this.libraryStateSubject.value;
         this.libraryStateSubject.next({...curr, error: err.message});
         throw err;
       })
     );
-  }
-
-  updateLibraryFileNamingPattern(id: number, pattern: string): Observable<Library> {
-    return this.http
-      .patch<Library>(`${this.url}/${id}/file-naming-pattern`, {fileNamingPattern: pattern})
-      .pipe(
-        map(updated => {
-          const curr = this.libraryStateSubject.value;
-          const list = curr.libraries?.map(l => (l.id === updated.id ? updated : l)) || [updated];
-          this.libraryStateSubject.next({...curr, libraries: this.sortLibraries(list)});
-          return updated;
-        })
-      );
   }
 
   doesLibraryExistByName(name: string): boolean {

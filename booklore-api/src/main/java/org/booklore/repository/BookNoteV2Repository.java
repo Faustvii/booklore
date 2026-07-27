@@ -2,15 +2,21 @@ package org.booklore.repository;
 
 import org.booklore.model.entity.BookNoteV2Entity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
 public interface BookNoteV2Repository extends JpaRepository<BookNoteV2Entity, Long> {
 
     Optional<BookNoteV2Entity> findByIdAndUserId(Long id, Long userId);
+
+    @Modifying
+    @Query("DELETE FROM BookNoteV2Entity n WHERE n.bookId IN :bookIds")
+    void deleteByBookIdIn(@Param("bookIds") Collection<Long> bookIds);
 
     @Query("SELECT n FROM BookNoteV2Entity n WHERE n.bookId = :bookId AND n.userId = :userId ORDER BY n.createdAt DESC")
     List<BookNoteV2Entity> findByBookIdAndUserIdOrderByCreatedAtDesc(

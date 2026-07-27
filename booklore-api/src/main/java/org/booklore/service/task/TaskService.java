@@ -9,9 +9,11 @@ import org.booklore.model.dto.request.TaskCreateRequest;
 import org.booklore.model.dto.response.TaskCancelResponse;
 import org.booklore.model.dto.response.TaskCreateResponse;
 import org.booklore.model.entity.TaskCronConfigurationEntity;
+import org.booklore.model.enums.MetadataReplaceMode;
 import org.booklore.model.enums.TaskType;
 import org.booklore.task.TaskCancellationManager;
 import org.booklore.task.TaskStatus;
+import org.booklore.task.options.LibraryRescanOptions;
 import org.booklore.task.tasks.Task;
 import org.booklore.util.SecurityContextVirtualThread;
 import org.springframework.context.annotation.Lazy;
@@ -142,10 +144,17 @@ public class TaskService {
             securityContext.setAuthentication(authentication);
             SecurityContextHolder.setContext(securityContext);
 
-            TaskCreateRequest request = TaskCreateRequest.builder()
+            TaskCreateRequest.TaskCreateRequestBuilder requestBuilder = TaskCreateRequest.builder()
                     .taskType(taskType)
-                    .triggeredByCron(true)
-                    .build();
+                    .triggeredByCron(true);
+
+            if (taskType == TaskType.LIBRARY_RESCAN) {
+                requestBuilder.options(LibraryRescanOptions.builder()
+                        .metadataReplaceMode(MetadataReplaceMode.REPLACE_ALL)
+                        .build());
+            }
+
+            TaskCreateRequest request = requestBuilder.build();
 
             runAsSystemUser(request);
         } catch (Exception e) {

@@ -1,63 +1,31 @@
 package org.booklore.service.metadata;
 
-import org.booklore.config.AppProperties;
-import org.booklore.model.dto.FileMoveResult;
-import org.booklore.model.dto.settings.AppSettings;
-import org.booklore.model.dto.settings.MetadataPersistenceSettings;
 import org.booklore.model.entity.*;
-import org.booklore.model.enums.BookFileType;
 import org.booklore.model.enums.MergeMetadataType;
 import org.booklore.repository.*;
-import org.booklore.service.appsettings.AppSettingService;
-import org.booklore.service.file.FileMoveService;
-import org.booklore.service.metadata.writer.MetadataWriter;
-import org.booklore.service.metadata.writer.MetadataWriterFactory;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import org.booklore.service.file.FileFingerprint;
-import org.mockito.MockedStatic;
-
-import java.nio.file.Path;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class MetadataManagementServiceTest {
 
-    @Mock private AppProperties appProperties;
     @Mock private AuthorRepository authorRepository;
     @Mock private CategoryRepository categoryRepository;
     @Mock private MoodRepository moodRepository;
     @Mock private TagRepository tagRepository;
     @Mock private BookMetadataRepository bookMetadataRepository;
-    @Mock private AppSettingService appSettingService;
-    @Mock private MetadataWriterFactory metadataWriterFactory;
-    @Mock private FileMoveService fileMoveService;
-    @Mock private BookRepository bookRepository;
 
     @InjectMocks
     private MetadataManagementService service;
-
-    @BeforeEach
-    void setUp() {
-        lenient().when(appProperties.isLocalStorage()).thenReturn(true);
-        lenient().when(appSettingService.getAppSettings()).thenReturn(
-                AppSettings.builder()
-                        .metadataPersistenceSettings(MetadataPersistenceSettings.builder()
-                                .moveFilesToLibraryPattern(false)
-                                .build())
-                        .build()
-        );
-    }
 
     @Test
     void consolidateAuthors_mergesOldIntoTargetAndDeletesOld() {
@@ -209,118 +177,6 @@ class MetadataManagementServiceTest {
     }
 
     @Test
-    void consolidateAuthors_writesMetadataToFileWhenWriterPresent() throws Exception {
-        AuthorEntity oldAuthor = AuthorEntity.builder().id(1L).name("Old").build();
-        AuthorEntity targetAuthor = AuthorEntity.builder().id(2L).name("Target").build();
-
-        when(authorRepository.findByNameIgnoreCase("Target")).thenReturn(Optional.of(targetAuthor));
-        when(authorRepository.save(targetAuthor)).thenReturn(targetAuthor);
-        when(authorRepository.findByNameIgnoreCase("Old")).thenReturn(Optional.of(oldAuthor));
-
-        java.nio.file.Path tempDir = java.nio.file.Files.createTempDirectory("test-metadata-");
-        java.nio.file.Path subDir = tempDir.resolve("sub");
-        java.nio.file.Files.createDirectories(subDir);
-        java.nio.file.Path tempFile = subDir.resolve("test.epub");
-        java.nio.file.Files.createFile(tempFile);
-
-        BookFileEntity bookFile = BookFileEntity.builder()
-                .fileName("test.epub")
-                .fileSubPath("sub")
-                .bookType(BookFileType.EPUB)
-                .isBookFormat(true)
-                .build();
-        LibraryPathEntity libraryPath = new LibraryPathEntity();
-        libraryPath.setPath(tempDir.toString());
-        BookEntity book = BookEntity.builder()
-                .id(1L)
-                .bookFiles(new ArrayList<>(List.of(bookFile)))
-                .libraryPath(libraryPath)
-                .build();
-        BookMetadataEntity metadata = BookMetadataEntity.builder()
-                .authors(new ArrayList<>(List.of(oldAuthor)))
-                .book(book)
-                .build();
-        book.setMetadata(metadata);
-
-        when(bookMetadataRepository.findAllByAuthorsContaining(oldAuthor)).thenReturn(List.of(metadata));
-
-        MetadataWriter writer = mock(MetadataWriter.class);
-        when(metadataWriterFactory.getWriter(BookFileType.EPUB)).thenReturn(Optional.of(writer));
-
-        try (MockedStatic<FileFingerprint> ffMock = mockStatic(FileFingerprint.class)) {
-            ffMock.when(() -> FileFingerprint.generateHash(any())).thenReturn("newhash");
-
-            service.consolidateMetadata(MergeMetadataType.authors, List.of("Target"), List.of("Old"));
-        }
-
-        verify(writer).saveMetadataToFile(any(), eq(metadata), isNull(), isNull());
-        verify(bookRepository).saveAndFlush(book);
-
-        java.nio.file.Files.deleteIfExists(tempFile);
-        java.nio.file.Files.deleteIfExists(subDir);
-        java.nio.file.Files.deleteIfExists(tempDir);
-    }
-
-    @Test
-    void consolidateAuthors_movesFileWhenEnabled() throws Exception {
-        when(appSettingService.getAppSettings()).thenReturn(
-                AppSettings.builder()
-                        .metadataPersistenceSettings(MetadataPersistenceSettings.builder()
-                                .moveFilesToLibraryPattern(true)
-                                .build())
-                        .build()
-        );
-
-        AuthorEntity oldAuthor = AuthorEntity.builder().id(1L).name("Old").build();
-        AuthorEntity targetAuthor = AuthorEntity.builder().id(2L).name("Target").build();
-
-        when(authorRepository.findByNameIgnoreCase("Target")).thenReturn(Optional.of(targetAuthor));
-        when(authorRepository.save(targetAuthor)).thenReturn(targetAuthor);
-        when(authorRepository.findByNameIgnoreCase("Old")).thenReturn(Optional.of(oldAuthor));
-
-        java.nio.file.Path tempDir = java.nio.file.Files.createTempDirectory("test-metadata-move-");
-        java.nio.file.Path subDir = tempDir.resolve("sub");
-        java.nio.file.Files.createDirectories(subDir);
-        java.nio.file.Path tempFile = subDir.resolve("test.epub");
-        java.nio.file.Files.createFile(tempFile);
-
-        BookFileEntity bookFile = BookFileEntity.builder()
-                .fileName("test.epub")
-                .fileSubPath("sub")
-                .bookType(BookFileType.EPUB)
-                .isBookFormat(true)
-                .build();
-        LibraryPathEntity libraryPath = new LibraryPathEntity();
-        libraryPath.setPath(tempDir.toString());
-        BookEntity book = BookEntity.builder()
-                .id(1L)
-                .bookFiles(new ArrayList<>(List.of(bookFile)))
-                .libraryPath(libraryPath)
-                .build();
-        BookMetadataEntity metadata = BookMetadataEntity.builder()
-                .authors(new ArrayList<>(List.of(oldAuthor)))
-                .book(book)
-                .build();
-        book.setMetadata(metadata);
-
-        when(bookMetadataRepository.findAllByAuthorsContaining(oldAuthor)).thenReturn(List.of(metadata));
-        when(metadataWriterFactory.getWriter(BookFileType.EPUB)).thenReturn(Optional.empty());
-        when(fileMoveService.moveSingleFile(book)).thenReturn(
-                FileMoveResult.builder().moved(true).newFileName("new.epub").newFileSubPath("new/sub").build()
-        );
-
-        service.consolidateMetadata(MergeMetadataType.authors, List.of("Target"), List.of("Old"));
-
-        assertThat(bookFile.getFileName()).isEqualTo("new.epub");
-        assertThat(bookFile.getFileSubPath()).isEqualTo("new/sub");
-        verify(bookRepository).saveAndFlush(book);
-
-        java.nio.file.Files.deleteIfExists(tempFile);
-        java.nio.file.Files.deleteIfExists(subDir);
-        java.nio.file.Files.deleteIfExists(tempDir);
-    }
-
-    @Test
     void deleteAuthors_removesFromBooksAndDeletesEntity() {
         AuthorEntity author = AuthorEntity.builder().id(1L).name("Author1").build();
         when(authorRepository.findByName("Author1")).thenReturn(Optional.of(author));
@@ -447,149 +303,4 @@ class MetadataManagementServiceTest {
         verify(authorRepository, never()).delete(any());
     }
 
-    @Test
-    void writeMetadataToFile_skipsWhenBookIsNull() {
-        BookMetadataEntity metadata = BookMetadataEntity.builder().book(null).build();
-        when(bookMetadataRepository.findAllBySeriesNameIgnoreCase("Old")).thenReturn(List.of(metadata));
-
-        service.consolidateMetadata(MergeMetadataType.series, List.of("New"), List.of("Old"));
-
-        verify(metadataWriterFactory, never()).getWriter(any());
-        verify(bookRepository, never()).saveAndFlush(any());
-    }
-
-    @Test
-    void writeMetadataToFile_skipsWriterWhenNoneAvailable() throws Exception {
-        java.nio.file.Path tempDir = java.nio.file.Files.createTempDirectory("test-metadata-skip-");
-        java.nio.file.Path subDir = tempDir.resolve("sub");
-        java.nio.file.Files.createDirectories(subDir);
-        java.nio.file.Path tempFile = subDir.resolve("test.epub");
-        java.nio.file.Files.createFile(tempFile);
-
-        BookFileEntity bookFile = BookFileEntity.builder()
-                .fileName("test.epub")
-                .fileSubPath("sub")
-                .bookType(BookFileType.EPUB)
-                .isBookFormat(true)
-                .build();
-        LibraryPathEntity libraryPath = new LibraryPathEntity();
-        libraryPath.setPath(tempDir.toString());
-        BookEntity book = BookEntity.builder()
-                .id(1L)
-                .bookFiles(new ArrayList<>(List.of(bookFile)))
-                .libraryPath(libraryPath)
-                .build();
-        BookMetadataEntity metadata = BookMetadataEntity.builder()
-                .seriesName("Old")
-                .book(book)
-                .build();
-        book.setMetadata(metadata);
-
-        when(bookMetadataRepository.findAllBySeriesNameIgnoreCase("Old")).thenReturn(List.of(metadata));
-        when(metadataWriterFactory.getWriter(BookFileType.EPUB)).thenReturn(Optional.empty());
-
-        service.consolidateMetadata(MergeMetadataType.series, List.of("New"), List.of("Old"));
-
-        verify(bookRepository, never()).saveAndFlush(any());
-
-        java.nio.file.Files.deleteIfExists(tempFile);
-        java.nio.file.Files.deleteIfExists(subDir);
-        java.nio.file.Files.deleteIfExists(tempDir);
-    }
-
-    @Test
-    void consolidateAuthors_fileMoveNotMovedDoesNotUpdateFileName() throws Exception {
-        when(appSettingService.getAppSettings()).thenReturn(
-                AppSettings.builder()
-                        .metadataPersistenceSettings(MetadataPersistenceSettings.builder()
-                                .moveFilesToLibraryPattern(true)
-                                .build())
-                        .build()
-        );
-
-        AuthorEntity oldAuthor = AuthorEntity.builder().id(1L).name("Old").build();
-        AuthorEntity targetAuthor = AuthorEntity.builder().id(2L).name("Target").build();
-
-        when(authorRepository.findByNameIgnoreCase("Target")).thenReturn(Optional.of(targetAuthor));
-        when(authorRepository.save(targetAuthor)).thenReturn(targetAuthor);
-        when(authorRepository.findByNameIgnoreCase("Old")).thenReturn(Optional.of(oldAuthor));
-
-        java.nio.file.Path tempDir = java.nio.file.Files.createTempDirectory("test-metadata-nomove-");
-        java.nio.file.Path subDir = tempDir.resolve("sub");
-        java.nio.file.Files.createDirectories(subDir);
-        java.nio.file.Path tempFile = subDir.resolve("original.epub");
-        java.nio.file.Files.createFile(tempFile);
-
-        BookFileEntity bookFile = BookFileEntity.builder()
-                .fileName("original.epub")
-                .fileSubPath("sub")
-                .bookType(BookFileType.EPUB)
-                .isBookFormat(true)
-                .build();
-        LibraryPathEntity libraryPath = new LibraryPathEntity();
-        libraryPath.setPath(tempDir.toString());
-        BookEntity book = BookEntity.builder()
-                .id(1L)
-                .bookFiles(new ArrayList<>(List.of(bookFile)))
-                .libraryPath(libraryPath)
-                .build();
-        BookMetadataEntity metadata = BookMetadataEntity.builder()
-                .authors(new ArrayList<>(List.of(oldAuthor)))
-                .book(book)
-                .build();
-        book.setMetadata(metadata);
-
-        when(bookMetadataRepository.findAllByAuthorsContaining(oldAuthor)).thenReturn(List.of(metadata));
-        when(metadataWriterFactory.getWriter(BookFileType.EPUB)).thenReturn(Optional.empty());
-        when(fileMoveService.moveSingleFile(book)).thenReturn(
-                FileMoveResult.builder().moved(false).build()
-        );
-
-        service.consolidateMetadata(MergeMetadataType.authors, List.of("Target"), List.of("Old"));
-
-        assertThat(bookFile.getFileName()).isEqualTo("original.epub");
-        verify(bookRepository, never()).saveAndFlush(any());
-
-        java.nio.file.Files.deleteIfExists(tempFile);
-        java.nio.file.Files.deleteIfExists(subDir);
-        java.nio.file.Files.deleteIfExists(tempDir);
-    }
-
-    @Test
-    void consolidateAuthors_networkStorage_skipsFileWrite() {
-        when(appProperties.isLocalStorage()).thenReturn(false);
-
-        AuthorEntity oldAuthor = AuthorEntity.builder().id(1L).name("Old").build();
-        AuthorEntity targetAuthor = AuthorEntity.builder().id(2L).name("Target").build();
-
-        when(authorRepository.findByNameIgnoreCase("Target")).thenReturn(Optional.of(targetAuthor));
-        when(authorRepository.save(targetAuthor)).thenReturn(targetAuthor);
-        when(authorRepository.findByNameIgnoreCase("Old")).thenReturn(Optional.of(oldAuthor));
-
-        BookFileEntity bookFile = BookFileEntity.builder()
-                .fileName("test.epub")
-                .fileSubPath("sub")
-                .bookType(BookFileType.EPUB)
-                .isBookFormat(true)
-                .build();
-        LibraryPathEntity libraryPath = new LibraryPathEntity();
-        libraryPath.setPath("/fake/path");
-        BookEntity book = BookEntity.builder()
-                .id(1L)
-                .bookFiles(new ArrayList<>(List.of(bookFile)))
-                .libraryPath(libraryPath)
-                .build();
-        BookMetadataEntity metadata = BookMetadataEntity.builder()
-                .authors(new ArrayList<>(List.of(oldAuthor)))
-                .book(book)
-                .build();
-        book.setMetadata(metadata);
-
-        when(bookMetadataRepository.findAllByAuthorsContaining(oldAuthor)).thenReturn(List.of(metadata));
-
-        service.consolidateMetadata(MergeMetadataType.authors, List.of("Target"), List.of("Old"));
-
-        verify(metadataWriterFactory, never()).getWriter(any());
-        verify(authorRepository).delete(oldAuthor);
-    }
 }

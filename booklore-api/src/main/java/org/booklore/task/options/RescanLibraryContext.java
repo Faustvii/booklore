@@ -12,4 +12,6 @@ import lombok.NoArgsConstructor;
 public class RescanLibraryContext {
     private Long libraryId;
     private LibraryRescanOptions options;
+    @Builder.Default
+    private boolean force = false;
 }

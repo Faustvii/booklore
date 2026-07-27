@@ -2,16 +2,13 @@ package org.booklore.service.book;
 
 import org.booklore.config.security.service.AuthenticationService;
 import org.booklore.exception.APIException;
-import org.booklore.service.audit.AuditService;
 import org.booklore.mapper.BookMapper;
 import org.booklore.model.dto.*;
 import org.booklore.model.dto.request.ReadProgressRequest;
-import org.booklore.model.dto.response.BookDeletionResponse;
 import org.booklore.model.dto.response.BookStatusUpdateResponse;
 import org.booklore.model.entity.*;
 import org.booklore.model.enums.BookFileType;
 import org.booklore.repository.*;
-import org.booklore.service.monitoring.MonitoringRegistrationService;
 import org.booklore.service.progress.ReadingProgressService;
 import org.booklore.util.FileService;
 import org.booklore.util.FileUtils;
@@ -67,11 +64,7 @@ class BookServiceTest {
     @Mock
     private BookDownloadService bookDownloadService;
     @Mock
-    private MonitoringRegistrationService monitoringRegistrationService;
-    @Mock
     private BookUpdateService bookUpdateService;
-    @Mock
-    private AuditService auditService;
 
     @InjectMocks
     private BookService bookService;
@@ -351,81 +344,6 @@ class BookServiceTest {
             fileUtilsMock.when(() -> FileUtils.getBookFullPath(entity)).thenReturn("/tmp/nonexistentfile.txt");
             assertThrows(APIException.class, () -> bookService.getBookContent(12L));
         }
-    }
-
-    @Test
-    void deleteBooks_deletesFilesAndEntities() throws Exception {
-        BookEntity entity = new BookEntity();
-        entity.setId(11L);
-        LibraryEntity library = new LibraryEntity();
-        library.setId(42L);
-        LibraryPathEntity libPath = new LibraryPathEntity();
-        libPath.setPath("/tmp");
-        library.setLibraryPaths(List.of(libPath));
-        entity.setLibrary(library);
-        entity.setLibraryPath(libPath);
-        BookFileEntity primaryFile = new BookFileEntity();
-        primaryFile.setBook(entity);
-        primaryFile.setFileSubPath("");
-        primaryFile.setFileName("bookfile.txt");
-        entity.setBookFiles(List.of(primaryFile));
-
-        Path filePath = Paths.get("/tmp/bookfile.txt");
-        Files.createDirectories(filePath.getParent());
-        Files.write(filePath, "abc".getBytes());
-
-        doNothing().when(bookRepository).deleteAllInBatch(anyList());
-        when(bookQueryService.findAllWithMetadataByIds(Set.of(11L))).thenReturn(List.of(entity));
-        when(authenticationService.getAuthenticatedUser()).thenReturn(testUser);
-
-        BookDeletionResponse response = bookService.deleteBooks(Set.of(11L)).getBody();
-
-        assertNotNull(response);
-        assertTrue(response.getFailedFileDeletions().isEmpty());
-        assertEquals(Set.of(11L), response.getDeleted());
-        Files.deleteIfExists(filePath);
-    }
-
-    @Test
-    void deleteBooks_fileDoesNotExist_deletesEntityOnly() {
-        BookEntity entity = new BookEntity();
-        entity.setId(13L);
-        LibraryEntity library = new LibraryEntity();
-        library.setId(42L);
-        LibraryPathEntity libPath = new LibraryPathEntity();
-        libPath.setPath("/tmp");
-        library.setLibraryPaths(List.of(libPath));
-        entity.setLibrary(library);
-        entity.setLibraryPath(libPath);
-        BookFileEntity primaryFile = new BookFileEntity();
-        primaryFile.setBook(entity);
-        primaryFile.setFileSubPath("");
-        primaryFile.setFileName("nonexistentfile.txt");
-        entity.setBookFiles(List.of(primaryFile));
-
-        when(bookQueryService.findAllWithMetadataByIds(Set.of(13L))).thenReturn(List.of(entity));
-        when(authenticationService.getAuthenticatedUser()).thenReturn(testUser);
-        doNothing().when(bookRepository).deleteAllInBatch(anyList());
-
-        BookDeletionResponse response = bookService.deleteBooks(Set.of(13L)).getBody();
-
-        assertNotNull(response);
-        assertTrue(response.getFailedFileDeletions().isEmpty());
-        assertEquals(Set.of(13L), response.getDeleted());
-    }
-
-    @Test
-    void deleteEmptyParentDirsUpToLibraryFolders_deletesEmptyDirs() throws Exception {
-        Path root = Files.createTempDirectory("libroot");
-        Path subdir = Files.createDirectory(root.resolve("subdir"));
-        Path file = subdir.resolve(".DS_Store");
-        Files.createFile(file);
-
-        Set<Path> roots = Set.of(root);
-        bookService.deleteEmptyParentDirsUpToLibraryFolders(subdir, roots);
-
-        assertFalse(Files.exists(subdir));
-        Files.deleteIfExists(root);
     }
 
     @Test

@@ -18,6 +18,7 @@ import org.booklore.model.entity.LibraryEntity;
 import org.booklore.model.entity.LibraryPathEntity;
 import org.booklore.model.enums.AuditAction;
 import org.booklore.model.enums.BookFileType;
+import org.booklore.model.websocket.LogNotification;
 import org.booklore.model.websocket.Topic;
 import org.booklore.repository.BookRepository;
 import org.booklore.repository.LibraryPathRepository;
@@ -221,6 +222,10 @@ public class LibraryService {
     }
 
     public void rescanLibrary(long libraryId) {
+        rescanLibrary(libraryId, false);
+    }
+
+    public void rescanLibrary(long libraryId, boolean force) {
         LibraryEntity lib = libraryRepository.findById(libraryId).orElseThrow(() -> ApiError.LIBRARY_NOT_FOUND.createException(libraryId));
         auditService.log(AuditAction.LIBRARY_SCANNED, "Library", libraryId, "Scanned library: " + lib.getName());
 
@@ -232,12 +237,16 @@ public class LibraryService {
             try {
                 RescanLibraryContext context = RescanLibraryContext.builder()
                         .libraryId(libraryId)
+                        .force(force)
                         .build();
                 libraryProcessingService.rescanLibrary(context);
             } catch (InvalidDataAccessApiUsageException e) {
                 log.debug("InvalidDataAccessApiUsageException - Library id: {}", libraryId);
             } catch (IOException e) {
                 log.error("Error while parsing library books", e);
+            } catch (Exception e) {
+                log.error("Rescan failed for library {}: {}", libraryId, e.getMessage(), e);
+                notificationService.sendMessage(Topic.LOG, LogNotification.error("Library rescan failed: " + e.getMessage()));
             } finally {
                 scanningLibraries.remove(libraryId);
             }
@@ -276,6 +285,7 @@ public class LibraryService {
         Set<Long> bookIds = library.getBookEntities().stream().map(BookEntity::getId).collect(Collectors.toSet());
         fileService.deleteBookCovers(bookIds);
         String libraryName = library.getName();
+        libraryRepository.deleteUserLibraryMappingsByLibraryId(id);
         libraryRepository.deleteById(id);
         auditService.log(AuditAction.LIBRARY_DELETED, "Library", id, "Deleted library: " + libraryName);
         log.info("Library deleted successfully: {}", id);
@@ -291,14 +301,6 @@ public class LibraryService {
         libraryRepository.findById(libraryId).orElseThrow(() -> ApiError.LIBRARY_NOT_FOUND.createException(libraryId));
         List<BookEntity> bookEntities = bookRepository.findAllWithMetadataByLibraryId(libraryId);
         return bookEntities.stream().map(bookMapper::toBook).toList();
-    }
-
-    public Library setFileNamingPattern(long libraryId, String pattern) {
-        LibraryEntity library = libraryRepository.findById(libraryId).orElseThrow(() -> ApiError.LIBRARY_NOT_FOUND.createException(libraryId));
-        library.setFileNamingPattern(pattern);
-        Library result = libraryMapper.toLibrary(libraryRepository.save(library));
-        auditService.log(AuditAction.NAMING_PATTERN_CHANGED, "Library", libraryId, "Changed naming pattern for library: " + library.getName() + " to: " + pattern);
-        return result;
     }
 
     public Map<String, Long> getBookCountsByFormat(long libraryId) {

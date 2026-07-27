@@ -9,18 +9,14 @@ import org.booklore.model.MetadataUpdateContext;
 import org.booklore.model.MetadataUpdateWrapper;
 import org.booklore.model.dto.BookMetadata;
 import org.booklore.model.dto.ComicMetadata;
-import org.booklore.model.dto.FileMoveResult;
-import org.booklore.model.dto.settings.MetadataPersistenceSettings;
 import org.booklore.model.entity.*;
 import org.booklore.model.enums.BookFileType;
 import org.booklore.model.enums.ComicCreatorRole;
 import org.booklore.model.enums.MetadataReplaceMode;
 import org.booklore.repository.*;
 import org.booklore.service.appsettings.AppSettingService;
-import org.booklore.service.file.FileFingerprint;
-import org.booklore.service.file.FileMoveService;
-import org.booklore.service.metadata.sidecar.SidecarMetadataWriter;
-import org.booklore.service.metadata.writer.MetadataWriterFactory;
+import org.booklore.service.author.AuthorAutoFetchService;
+import org.booklore.service.author.NewAuthorTrackingContext;
 import org.booklore.util.BookCoverUtils;
 import org.booklore.util.FileService;
 import org.booklore.util.MetadataChangeDetector;
@@ -28,11 +24,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import java.io.File;
 import java.net.InetAddress;
 import java.net.URI;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.time.Instant;
 import java.util.*;
 import java.util.function.Consumer;
@@ -54,14 +47,11 @@ public class BookMetadataUpdater {
     private final ComicTeamRepository comicTeamRepository;
     private final ComicLocationRepository comicLocationRepository;
     private final ComicCreatorRepository comicCreatorRepository;
-    private final AppProperties appProperties;
     private final FileService fileService;
     private final MetadataMatchService metadataMatchService;
-    private final AppSettingService appSettingService;
-    private final MetadataWriterFactory metadataWriterFactory;
-    private final BookReviewUpdateService bookReviewUpdateService;
-    private final FileMoveService fileMoveService;
-    private final SidecarMetadataWriter sidecarMetadataWriter;
+    private final NewAuthorTrackingContext newAuthorTrackingContext;
+    private final AuthorAutoFetchService authorAutoFetchService;
+    private final RatingAggregationService ratingAggregationService;
 
     @Transactional
     public void setBookMetadata(MetadataUpdateContext context) {
@@ -98,19 +88,20 @@ public class BookMetadataUpdater {
             return;
         }
 
-        MetadataPersistenceSettings settings = appSettingService.getAppSettings().getMetadataPersistenceSettings();
-        MetadataPersistenceSettings.SaveToOriginalFile writeToFile = settings.getSaveToOriginalFile();
         var primaryFile = bookEntity.getPrimaryBookFile();
         BookFileType bookType = primaryFile != null ? primaryFile.getBookType() : null;
 
-        boolean hasValueChangesForFileWrite = MetadataChangeDetector.hasValueChangesForFileWrite(newMetadata, metadata, clearFlags);
-
         updateBasicFields(newMetadata, metadata, clearFlags, replaceMode);
-        updateAuthorsIfNeeded(newMetadata, metadata, clearFlags, mergeCategories, replaceMode);
+        updateUnifiedRatingIfNeeded(newMetadata, metadata);
+        boolean ownsAuthorTrackingSession = newAuthorTrackingContext.begin();
+        try {
+            updateAuthorsIfNeeded(newMetadata, metadata, clearFlags, mergeCategories, replaceMode);
+        } finally {
+            authorAutoFetchService.triggerIfEnabled(newAuthorTrackingContext.end(ownsAuthorTrackingSession));
+        }
         updateCategoriesIfNeeded(newMetadata, metadata, clearFlags, mergeCategories, replaceMode);
         updateMoodsIfNeeded(newMetadata, metadata, clearFlags, mergeMoods, replaceMode);
         updateTagsIfNeeded(newMetadata, metadata, clearFlags, mergeTags, replaceMode);
-        bookReviewUpdateService.updateBookReviews(newMetadata, metadata, clearFlags, mergeCategories);
         updateThumbnailIfNeeded(bookId, bookEntity, newMetadata, metadata, updateThumbnail, bookType);
         updateAudiobookMetadataIfNeeded(bookEntity, newMetadata, metadata, clearFlags, replaceMode);
         updateComicMetadataIfNeeded(newMetadata, metadata, replaceMode);
@@ -125,53 +116,6 @@ public class BookMetadataUpdater {
             log.warn("Failed to calculate metadata match score for book ID {}: {}", bookId, e.getMessage());
         }
 
-        if (appProperties.isLocalStorage() && primaryFile != null && bookType != null && ((writeToFile.isAnyFormatEnabled() && hasValueChangesForFileWrite) || thumbnailRequiresUpdate)) {
-            metadataWriterFactory.getWriter(bookType).ifPresent(writer -> {
-                try {
-                    String thumbnailUrl = updateThumbnail ? newMetadata.getThumbnailUrl() : null;
-                    if ((StringUtils.hasText(thumbnailUrl) && isLocalOrPrivateUrl(thumbnailUrl) || Boolean.TRUE.equals(metadata.getCoverLocked()))) {
-                        log.debug("Blocked local/private thumbnail URL: {}", thumbnailUrl);
-                        thumbnailUrl = null;
-                    }
-                    File file = new File(bookEntity.getFullFilePath().toUri());
-                    writer.saveMetadataToFile(file, metadata, thumbnailUrl, clearFlags);
-                    updateFileNameIfConverted(primaryFile, file.toPath());
-                    String newHash = file.isDirectory()
-                            ? FileFingerprint.generateFolderHash(bookEntity.getFullFilePath())
-                            : FileFingerprint.generateHash(bookEntity.getFullFilePath());
-                    bookEntity.setMetadataForWriteUpdatedAt(Instant.now());
-                    primaryFile.setCurrentHash(newHash);
-                    bookRepository.save(bookEntity);
-                } catch (Exception e) {
-                    log.warn("Failed to write metadata for book ID {}: {}", bookId, e.getMessage());
-                }
-            });
-        }
-
-        if (sidecarMetadataWriter.isWriteOnUpdateEnabled()) {
-            try {
-                sidecarMetadataWriter.writeSidecarMetadata(bookEntity);
-            } catch (Exception e) {
-                log.warn("Failed to write sidecar metadata for book ID {}: {}", bookId, e.getMessage());
-            }
-        }
-
-        boolean moveFilesToLibraryPattern = settings.isMoveFilesToLibraryPattern();
-        if (moveFilesToLibraryPattern && primaryFile != null) {
-            try {
-                BookEntity book = metadata.getBook();
-                FileMoveResult result = fileMoveService.moveSingleFile(book);
-                if (result.isMoved()) {
-                    var bookPrimaryFile = book.getPrimaryBookFile();
-                    if (bookPrimaryFile != null) {
-                        bookPrimaryFile.setFileName(result.getNewFileName());
-                        bookPrimaryFile.setFileSubPath(result.getNewFileSubPath());
-                    }
-                }
-            } catch (Exception e) {
-                log.warn("Failed to move files for book ID {} after metadata update: {}", bookId, e.getMessage());
-            }
-        }
     }
 
     private void updateBasicFields(BookMetadata m, BookMetadataEntity e, MetadataClearFlags clear, MetadataReplaceMode replaceMode) {
@@ -211,6 +155,22 @@ public class BookMetadataUpdater {
         handleFieldUpdate(e.getAudibleReviewCountLocked(), clear.isAudibleReviewCount(), m.getAudibleReviewCount(), e::setAudibleReviewCount, e::getAudibleReviewCount, replaceMode);
         handleFieldUpdate(e.getAgeRatingLocked(), clear.isAgeRating(), m.getAgeRating(), e::setAgeRating, e::getAgeRating, replaceMode);
         handleFieldUpdate(e.getContentRatingLocked(), clear.isContentRating(), m.getContentRating(), v -> e.setContentRating(nullIfBlank(v)), e::getContentRating, replaceMode);
+    }
+
+    private void updateUnifiedRatingIfNeeded(BookMetadata m, BookMetadataEntity e) {
+        if (m.getRating() != null) {
+            // Embedded/explicit rating (e.g. a PDF's booklore:rating tag, or a direct edit)
+            // always wins over the computed aggregate; it isn't provider-based, so any
+            // "based on N reviews" review count no longer applies.
+            e.setRating(m.getRating());
+            e.setReviewCount(m.getReviewCount());
+            return;
+        }
+        RatingAggregationService.RatingAggregate aggregate = ratingAggregationService.computeAggregateRating(e);
+        if (aggregate != null) {
+            e.setRating(aggregate.rating());
+            e.setReviewCount(aggregate.reviewCount());
+        }
     }
 
     private <T> void handleFieldUpdate(Boolean locked, boolean shouldClear, T newValue, Consumer<T> setter, Supplier<T> getter, MetadataReplaceMode mode) {
@@ -259,7 +219,11 @@ public class BookMetadataUpdater {
         List<AuthorEntity> newAuthors = authorNames.stream()
                 .filter(name -> name != null && !name.isBlank())
                 .map(name -> authorRepository.findByName(name)
-                        .orElseGet(() -> authorRepository.save(AuthorEntity.builder().name(name).build())))
+                        .orElseGet(() -> {
+                            AuthorEntity created = authorRepository.save(AuthorEntity.builder().name(name).build());
+                            newAuthorTrackingContext.track(created.getId());
+                            return created;
+                        }))
                 .toList();
 
         if (newAuthors.isEmpty()) return;
@@ -715,7 +679,6 @@ public class BookMetadataUpdater {
                 Pair.of(m.getCategoriesLocked(), e::setCategoriesLocked),
                 Pair.of(m.getMoodsLocked(), e::setMoodsLocked),
                 Pair.of(m.getTagsLocked(), e::setTagsLocked),
-                Pair.of(m.getReviewsLocked(), e::setReviewsLocked),
                 Pair.of(m.getNarratorLocked(), e::setNarratorLocked),
                 Pair.of(m.getAbridgedLocked(), e::setAbridgedLocked),
                 Pair.of(m.getAgeRatingLocked(), e::setAgeRatingLocked),
@@ -728,20 +691,6 @@ public class BookMetadataUpdater {
 
     private String nullIfBlank(String value) {
         return StringUtils.hasText(value) ? value : null;
-    }
-
-    void updateFileNameIfConverted(BookFileEntity bookFile, Path originalPath) {
-        if (Files.exists(originalPath)) {
-            return;
-        }
-        String fileName = bookFile.getFileName();
-        String baseName = fileName.contains(".") ? fileName.substring(0, fileName.lastIndexOf('.')) : fileName;
-        String cbzFileName = baseName + ".cbz";
-        Path cbzPath = originalPath.resolveSibling(cbzFileName);
-        if (Files.exists(cbzPath)) {
-            log.info("File converted from {} to {}, updating book file record", fileName, cbzFileName);
-            bookFile.setFileName(cbzFileName);
-        }
     }
 
     private boolean isLocalOrPrivateUrl(String url) {

@@ -73,6 +73,7 @@ export class BookTableComponent implements OnInit, OnDestroy, OnChanges {
     {field: 'language', header: this.t.translate('book.columnPref.columns.language')},
     {field: 'isbn', header: this.t.translate('book.columnPref.columns.isbn')},
     {field: 'pageCount', header: this.t.translate('book.columnPref.columns.pageCount')},
+    {field: 'rating', header: this.t.translate('book.columnPref.columns.rating')},
     {field: 'amazonRating', header: this.t.translate('book.columnPref.columns.amazonRating')},
     {field: 'amazonReviewCount', header: this.t.translate('book.columnPref.columns.amazonReviewCount')},
     {field: 'goodreadsRating', header: this.t.translate('book.columnPref.columns.goodreadsRating')},
@@ -302,6 +303,7 @@ export class BookTableComponent implements OnInit, OnDestroy, OnChanges {
       case 'pageCount':
         return metadata.pageCount ?? '';
 
+      case 'rating':
       case 'amazonRating':
       case 'goodreadsRating':
       case 'hardcoverRating':

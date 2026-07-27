@@ -18,14 +18,6 @@ public enum UserPermission {
             UserPermissionsEntity::isPermissionAdmin,
             UserPermissionsEntity::setPermissionAdmin
     ),
-    CAN_UPLOAD(
-            "Upload books",
-            BookLoreUser.UserPermissions::isCanUpload,
-            BookLoreUser.UserPermissions::setCanUpload,
-            UserUpdateRequest.Permissions::isCanUpload,
-            UserPermissionsEntity::isPermissionUpload,
-            UserPermissionsEntity::setPermissionUpload
-    ),
     CAN_DOWNLOAD(
             "Download books",
             BookLoreUser.UserPermissions::isCanDownload,
@@ -74,14 +66,6 @@ public enum UserPermission {
             UserPermissionsEntity::isPermissionEmailBook,
             UserPermissionsEntity::setPermissionEmailBook
     ),
-    CAN_DELETE_BOOK(
-            "Delete books",
-            BookLoreUser.UserPermissions::isCanDeleteBook,
-            BookLoreUser.UserPermissions::setCanDeleteBook,
-            UserUpdateRequest.Permissions::isCanDeleteBook,
-            UserPermissionsEntity::isPermissionDeleteBook,
-            UserPermissionsEntity::setPermissionDeleteBook
-    ),
     CAN_ACCESS_OPDS(
             "Access OPDS",
             BookLoreUser.UserPermissions::isCanAccessOpds,
@@ -97,14 +81,6 @@ public enum UserPermission {
             UserUpdateRequest.Permissions::isCanManageMetadataConfig,
             UserPermissionsEntity::isPermissionManageMetadataConfig,
             UserPermissionsEntity::setPermissionManageMetadataConfig
-    ),
-    CAN_ACCESS_BOOKDROP(
-            "Access bookdrop",
-            BookLoreUser.UserPermissions::isCanAccessBookdrop,
-            BookLoreUser.UserPermissions::setCanAccessBookdrop,
-            UserUpdateRequest.Permissions::isCanAccessBookdrop,
-            UserPermissionsEntity::isPermissionAccessBookdrop,
-            UserPermissionsEntity::setPermissionAccessBookdrop
     ),
     CAN_ACCESS_LIBRARY_STATS(
             "Access library stats",
@@ -185,14 +161,6 @@ public enum UserPermission {
             UserUpdateRequest.Permissions::isCanBulkRegenerateCover,
             UserPermissionsEntity::isPermissionBulkRegenerateCover,
             UserPermissionsEntity::setPermissionBulkRegenerateCover
-    ),
-    CAN_MOVE_ORGANIZE_FILES(
-            "Move/organize files",
-            BookLoreUser.UserPermissions::isCanMoveOrganizeFiles,
-            BookLoreUser.UserPermissions::setCanMoveOrganizeFiles,
-            UserUpdateRequest.Permissions::isCanMoveOrganizeFiles,
-            UserPermissionsEntity::isPermissionMoveOrganizeFiles,
-            UserPermissionsEntity::setPermissionMoveOrganizeFiles
     ),
     CAN_BULK_LOCK_UNLOCK_METADATA(
             "Bulk lock/unlock metadata",

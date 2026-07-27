@@ -1,0 +1,15 @@
+ALTER TABLE metadata_fetch_proposals DROP CONSTRAINT IF EXISTS fk_metadata_fetch_proposals_job;
+DROP TABLE IF EXISTS metadata_fetch_proposals;
+DROP TABLE IF EXISTS metadata_fetch_jobs;
+
+ALTER TABLE task_cron_configuration DROP CONSTRAINT IF EXISTS task_cron_configuration_task_type_check;
+UPDATE task_cron_configuration SET task_type = 'LIBRARY_RESCAN' WHERE task_type = 'REFRESH_LIBRARY_METADATA';
+DELETE FROM task_cron_configuration WHERE task_type IN ('CLEANUP_TEMP_METADATA', 'REFRESH_METADATA_MANUAL');
+ALTER TABLE task_cron_configuration ADD CONSTRAINT task_cron_configuration_task_type_check CHECK (task_type IN ('LIBRARY_RESCAN','UPDATE_BOOK_RECOMMENDATIONS','CLEANUP_DELETED_BOOKS','SYNC_LIBRARY_FILES','BOOKDROP_PERIODIC_SCANNING'));
+
+ALTER TABLE tasks DROP CONSTRAINT IF EXISTS tasks_type_check;
+UPDATE tasks SET type = 'LIBRARY_RESCAN' WHERE type = 'REFRESH_LIBRARY_METADATA';
+DELETE FROM tasks WHERE type IN ('CLEANUP_TEMP_METADATA', 'REFRESH_METADATA_MANUAL');
+ALTER TABLE tasks ADD CONSTRAINT tasks_type_check CHECK (type IN ('LIBRARY_RESCAN','UPDATE_BOOK_RECOMMENDATIONS','CLEANUP_DELETED_BOOKS','SYNC_LIBRARY_FILES','BOOKDROP_PERIODIC_SCANNING'));
+
+ALTER TABLE public_book_review DROP COLUMN IF EXISTS metadata_provider;

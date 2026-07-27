@@ -45,6 +45,8 @@ public enum RuleField {
     HARDCOVER_RATING,
     @JsonProperty("hardcoverReviewCount")
     HARDCOVER_REVIEW_COUNT,
+    @JsonProperty("rating")
+    RATING,
     @JsonProperty("ranobedbRating")
     RANOBEDB_RATING,
     @JsonProperty("personalRating")

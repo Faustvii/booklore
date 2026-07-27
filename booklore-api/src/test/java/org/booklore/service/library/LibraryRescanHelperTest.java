@@ -15,6 +15,8 @@ import org.booklore.model.websocket.Topic;
 import org.booklore.repository.BookRepository;
 import org.booklore.repository.LibraryRepository;
 import org.booklore.service.NotificationService;
+import org.booklore.service.author.AuthorAutoFetchService;
+import org.booklore.service.author.NewAuthorTrackingContext;
 import org.booklore.service.fileprocessor.AudiobookProcessor;
 import org.booklore.service.metadata.BookMetadataUpdater;
 import org.booklore.service.metadata.extractor.MetadataExtractorFactory;
@@ -49,6 +51,8 @@ class LibraryRescanHelperTest {
     @Mock private TaskCancellationManager cancellationManager;
     @Mock private BookRepository bookRepository;
     @Mock private AudiobookProcessor audiobookProcessor;
+    @Mock private NewAuthorTrackingContext newAuthorTrackingContext;
+    @Mock private AuthorAutoFetchService authorAutoFetchService;
     @InjectMocks private LibraryRescanHelper libraryRescanHelper;
 
     @Captor private ArgumentCaptor<TaskProgressPayload> payloadCaptor;
@@ -229,7 +233,7 @@ class LibraryRescanHelperTest {
         assertEquals(3, payloads.size());
         assertEquals(0, payloads.getFirst().getProgress());
         assertEquals(TaskStatus.IN_PROGRESS, payloads.get(0).getTaskStatus());
-        assertEquals(TaskType.REFRESH_LIBRARY_METADATA, payloads.get(0).getTaskType());
+        assertEquals(TaskType.LIBRARY_RESCAN, payloads.get(0).getTaskType());
         assertEquals(TaskStatus.IN_PROGRESS, payloads.get(1).getTaskStatus());
         assertEquals(100, payloads.get(2).getProgress());
         assertEquals(TaskStatus.COMPLETED, payloads.get(2).getTaskStatus());

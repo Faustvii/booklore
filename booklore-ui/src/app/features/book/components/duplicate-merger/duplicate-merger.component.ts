@@ -8,21 +8,18 @@ import {SelectButton} from 'primeng/selectbutton';
 import {ProgressBar} from 'primeng/progressbar';
 import {Tag} from 'primeng/tag';
 import {Paginator} from 'primeng/paginator';
-import {filter, Subject, take, takeUntil} from 'rxjs';
+import {Subject, takeUntil} from 'rxjs';
 import {BookFileService} from '../../service/book-file.service';
-import {BookService} from '../../service/book.service';
 import {Book, DuplicateDetectionRequest, DuplicateGroup} from '../../model/book.model';
-import {ConfirmationService, MessageService} from 'primeng/api';
+import {MessageService} from 'primeng/api';
 import {TranslocoDirective, TranslocoPipe, TranslocoService} from '@jsverse/transloco';
 import {UrlHelperService} from '../../../../shared/service/url-helper.service';
-import {AppSettingsService} from '../../../../shared/service/app-settings.service';
 
 type PresetMode = 'strict' | 'balanced' | 'aggressive' | 'custom';
 
 interface DisplayGroup extends DuplicateGroup {
   selectedTargetBookId: number;
   dismissed: boolean;
-  selectedForDeletion: Set<number>;
 }
 
 @Component({
@@ -69,25 +66,14 @@ export class DuplicateMergerComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
   private readonly bookFileService = inject(BookFileService);
-  private readonly bookService = inject(BookService);
   private readonly messageService = inject(MessageService);
-  private readonly confirmationService = inject(ConfirmationService);
   private readonly dialogRef = inject(DynamicDialogRef);
   private readonly config = inject(DynamicDialogConfig);
   private readonly t = inject(TranslocoService);
   readonly urlHelper = inject(UrlHelperService);
-  private readonly appSettingsService = inject(AppSettingsService);
 
   ngOnInit(): void {
     this.libraryId = this.config.data.libraryId;
-
-    this.appSettingsService.appSettings$.pipe(
-      filter(settings => !!settings),
-      take(1),
-      takeUntil(this.destroy$)
-    ).subscribe(settings => {
-      this.moveFiles = settings!.metadataPersistenceSettings?.moveFilesToLibraryPattern ?? false;
-    });
 
     this.presetOptions = [
       {label: this.t.translate('book.duplicateMerger.presetStrict'), value: 'strict'},
@@ -162,7 +148,6 @@ export class DuplicateMergerComponent implements OnInit, OnDestroy {
           ...g,
           selectedTargetBookId: g.suggestedTargetBookId,
           dismissed: false,
-          selectedForDeletion: new Set<number>(),
         }));
         this.isScanning = false;
         this.hasScanned = true;
@@ -265,22 +250,6 @@ export class DuplicateMergerComponent implements OnInit, OnDestroy {
     }
   }
 
-  onTargetChange(group: DisplayGroup): void {
-    group.selectedForDeletion.delete(group.selectedTargetBookId);
-  }
-
-  toggleDeleteSelection(group: DisplayGroup, bookId: number): void {
-    if (group.selectedForDeletion.has(bookId)) {
-      group.selectedForDeletion.delete(bookId);
-    } else {
-      group.selectedForDeletion.add(bookId);
-    }
-  }
-
-  getDeleteSelectedCount(group: DisplayGroup): number {
-    return group.selectedForDeletion.size;
-  }
-
   dismissGroup(group: DisplayGroup): void {
     group.dismissed = true;
     if (this.pagedGroups.length === 0 && this.pageFirst > 0) {
@@ -362,33 +331,6 @@ export class DuplicateMergerComponent implements OnInit, OnDestroy {
         detail: this.t.translate('book.duplicateMerger.toast.mergePartialDetail', {success: successCount, failed: failCount}),
       });
     }
-  }
-
-  deleteGroup(group: DisplayGroup): void {
-    const idsToDelete = Array.from(group.selectedForDeletion);
-    if (idsToDelete.length === 0) return;
-
-    this.confirmationService.confirm({
-      message: this.t.translate('book.duplicateMerger.confirm.deleteMessage', {count: idsToDelete.length}),
-      header: this.t.translate('book.duplicateMerger.confirm.deleteHeader'),
-      icon: 'pi pi-exclamation-triangle',
-      acceptLabel: this.t.translate('common.yes'),
-      rejectLabel: this.t.translate('common.no'),
-      acceptButtonProps: {severity: 'danger'},
-      accept: () => {
-        this.bookService.deleteBooks(new Set(idsToDelete)).pipe(
-          takeUntil(this.destroy$)
-        ).subscribe({
-          next: () => {
-            group.books = group.books.filter(b => !group.selectedForDeletion.has(b.id));
-            group.selectedForDeletion.clear();
-            if (group.books.length <= 1) {
-              group.dismissed = true;
-            }
-          }
-        });
-      }
-    });
   }
 
   closeDialog(): void {

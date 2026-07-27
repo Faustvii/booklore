@@ -19,7 +19,7 @@ import org.booklore.model.enums.AuthorMetadataSource;
 import org.booklore.repository.AuthorRepository;
 import org.booklore.service.audit.AuditService;
 import org.booklore.service.metadata.DuckDuckGoCoverService;
-import org.booklore.service.metadata.parser.AuthorParser;
+import org.booklore.service.author.AuthorParser;
 import org.booklore.util.FileService;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;

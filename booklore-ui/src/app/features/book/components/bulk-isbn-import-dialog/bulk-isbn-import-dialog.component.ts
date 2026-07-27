@@ -8,7 +8,6 @@ import {Tooltip} from 'primeng/tooltip';
 import {ProgressBar} from 'primeng/progressbar';
 import {FileUpload, FileSelectEvent} from 'primeng/fileupload';
 import {BookService} from '../../service/book.service';
-import {BookMetadataService} from '../../service/book-metadata.service';
 import {LibraryService} from '../../service/library.service';
 import {Library} from '../../model/library.model';
 import {Book, CreatePhysicalBookRequest} from '../../model/book.model';
@@ -19,7 +18,6 @@ import {Tabs, TabList, Tab, TabPanels, TabPanel} from 'primeng/tabs';
 const MAX_ISBN_COUNT = 500;
 const MAX_FILE_SIZE_BYTES = 1_048_576; // 1 MB
 const DELAY_BETWEEN_REQUESTS_MS = 300;
-const RETRY_DELAY_MS = 2000;
 
 export type IsbnEntryStatus = 'pending' | 'looking-up' | 'created' | 'created-no-metadata' | 'failed';
 
@@ -62,7 +60,6 @@ export class BulkIsbnImportDialogComponent implements OnInit {
   private dynamicDialogRef = inject(DynamicDialogRef);
   private dialogConfig = inject(DynamicDialogConfig);
   private bookService = inject(BookService);
-  private bookMetadataService = inject(BookMetadataService);
   private libraryService = inject(LibraryService);
   private destroyRef = inject(DestroyRef);
 
@@ -333,24 +330,8 @@ export class BulkIsbnImportDialogComponent implements OnInit {
   }
 
   private lookupIsbn(isbn: string): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.bookMetadataService.lookupByIsbn(isbn).subscribe({
-        next: metadata => resolve(metadata),
-        error: err => {
-          // Retry once on potential rate limiting
-          if (err?.status === 429) {
-            setTimeout(() => {
-              this.bookMetadataService.lookupByIsbn(isbn).subscribe({
-                next: metadata => resolve(metadata),
-                error: () => resolve(null), // Still create with ISBN only
-              });
-            }, RETRY_DELAY_MS);
-          } else {
-            resolve(null); // No metadata found, still create with ISBN
-          }
-        },
-      });
-    });
+    // Metadata provider lookup has been removed; books are created with the ISBN only.
+    return Promise.resolve(null);
   }
 
   private createBook(request: CreatePhysicalBookRequest): Promise<void> {

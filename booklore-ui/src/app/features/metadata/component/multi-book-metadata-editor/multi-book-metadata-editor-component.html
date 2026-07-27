@@ -23,9 +23,6 @@
         @if (admin || canEditMetadata) {
           <p-tab value="edit">Edit Metadata</p-tab>
         }
-        @if (admin || canEditMetadata) {
-          <p-tab value="match">Search Metadata</p-tab>
-        }
       </p-tablist>
       <p-tabpanels>
         @if (admin || canEditMetadata) {
@@ -39,11 +36,6 @@
               (closeDialogButtonClicked)="handleCloseDialogButton()"
               [showNavigationButtons]="true"
             ></app-metadata-editor>
-          </p-tabpanel>
-        }
-        @if (admin || canEditMetadata) {
-          <p-tabpanel value="match">
-            <app-metadata-searcher [book$]="book$"></app-metadata-searcher>
           </p-tabpanel>
         }
       </p-tabpanels>

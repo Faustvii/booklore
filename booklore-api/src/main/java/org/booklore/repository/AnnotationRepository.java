@@ -2,15 +2,21 @@ package org.booklore.repository;
 
 import org.booklore.model.entity.AnnotationEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
 public interface AnnotationRepository extends JpaRepository<AnnotationEntity, Long> {
 
     Optional<AnnotationEntity> findByIdAndUserId(Long id, Long userId);
+
+    @Modifying
+    @Query("DELETE FROM AnnotationEntity a WHERE a.bookId IN :bookIds")
+    void deleteByBookIdIn(@Param("bookIds") Collection<Long> bookIds);
 
     @Query("SELECT a FROM AnnotationEntity a WHERE a.bookId = :bookId AND a.userId = :userId ORDER BY a.createdAt DESC")
     List<AnnotationEntity> findByBookIdAndUserIdOrderByCreatedAtDesc(

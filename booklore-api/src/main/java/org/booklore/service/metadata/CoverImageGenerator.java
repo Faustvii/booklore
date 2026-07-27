@@ -98,6 +98,10 @@ public class CoverImageGenerator {
      * Generates a square cover image suitable for audiobooks.
      */
     public byte[] generateSquareCover(String title, String author) {
+        return generateSquareCover(title, author, null);
+    }
+
+    public byte[] generateSquareCover(String title, String author, String seriesText) {
         BufferedImage render = null;
         BufferedImage result = null;
         Graphics2D g = null;
@@ -105,6 +109,7 @@ public class CoverImageGenerator {
         try {
             String safeTitle = sanitize(title, MAX_TITLE_LEN, "Unknown Title");
             String safeAuthor = sanitize(author, MAX_AUTHOR_LEN, "Unknown Author");
+            String safeSeriesText = sanitize(seriesText, MAX_TITLE_LEN, "");
 
             int size = SQUARE_SIZE * SCALE;
 
@@ -123,6 +128,9 @@ public class CoverImageGenerator {
                 renderTexture(g, size, size);
                 renderSquareFrame(g, p, size);
                 renderSquareTitle(g, safeTitle, p, size, margin);
+                if (safeSeriesText != null && !safeSeriesText.isEmpty()) {
+                    renderSquareSeriesText(g, safeSeriesText, p, size, margin);
+                }
                 renderSquareAuthor(g, safeAuthor, p, size, margin);
                 renderVignette(g, size, size);
                 renderEdges(g, size, size);
@@ -796,6 +804,25 @@ public class CoverImageGenerator {
             int y = startY + i * lineH;
             if (y + fm.getDescent() > topZone) break;
             renderText(g, line, x, y, tracking, p.textMain, true);
+        }
+    }
+
+    private void renderSquareSeriesText(Graphics2D g, String seriesText, Palette p, int size, int margin) {
+        int maxW = size - margin * 2;
+        int zoneTop = (int) (size * 0.55);
+        int zoneBottom = (int) (size * 0.65);
+
+        Font font = resolveFont(g, seriesText, maxW, subtitleSize(seriesText.length()), 1, false);
+        g.setFont(font);
+        FontMetrics fm = g.getFontMetrics();
+
+        float tracking = 0.06f;
+        int y = zoneTop + (zoneBottom - zoneTop - fm.getHeight()) / 2 + fm.getAscent();
+        int lw = trackedWidth(fm, seriesText, tracking);
+        int x = (size - lw) / 2;
+
+        if (y + fm.getDescent() <= zoneBottom) {
+            renderText(g, seriesText, x, y, tracking, p.textSub, false);
         }
     }
 

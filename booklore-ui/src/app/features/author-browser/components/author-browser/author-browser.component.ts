@@ -271,9 +271,9 @@ export class AuthorBrowserComponent implements OnInit, OnDestroy {
     return !!user?.permissions?.admin || !!user?.permissions?.canEditMetadata;
   }
 
-  get canDeleteBook(): boolean {
+  get canDeleteAuthor(): boolean {
     const user = this.userService.getCurrentUser();
-    return !!user?.permissions?.admin || !!user?.permissions?.canDeleteBook;
+    return !!user?.permissions?.admin;
   }
 
   isAuthorSelected(authorId: number): boolean {

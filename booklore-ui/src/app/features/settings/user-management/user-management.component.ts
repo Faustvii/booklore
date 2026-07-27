@@ -235,9 +235,7 @@ export class UserManagementComponent implements OnInit, OnDestroy {
   getBookManagementPermissionsCount(user: User): number {
     const permissions = user.permissions;
     let count = 0;
-    if (permissions.canUpload) count++;
     if (permissions.canDownload) count++;
-    if (permissions.canDeleteBook) count++;
     if (permissions.canManageLibrary) count++;
     if (permissions.canEmailBook) count++;
     return count;
@@ -255,7 +253,6 @@ export class UserManagementComponent implements OnInit, OnDestroy {
   getSystemAccessPermissionsCount(user: User): number {
     const permissions = user.permissions;
     let count = 0;
-    if (permissions.canAccessBookdrop) count++;
     if (permissions.canAccessLibraryStats) count++;
     if (permissions.canAccessUserStats) count++;
     return count;
@@ -280,7 +277,6 @@ export class UserManagementComponent implements OnInit, OnDestroy {
     if (permissions.canBulkCustomFetchMetadata) count++;
     if (permissions.canBulkEditMetadata) count++;
     if (permissions.canBulkRegenerateCover) count++;
-    if (permissions.canMoveOrganizeFiles) count++;
     if (permissions.canBulkLockUnlockMetadata) count++;
     return count;
   }
@@ -316,16 +312,13 @@ export class UserManagementComponent implements OnInit, OnDestroy {
 
   onAdminCheckboxChange(user: User) {
     if (user.permissions.admin) {
-      user.permissions.canUpload = true;
       user.permissions.canDownload = true;
-      user.permissions.canDeleteBook = true;
       user.permissions.canEditMetadata = true;
       user.permissions.canManageLibrary = true;
       user.permissions.canEmailBook = true;
       user.permissions.canSyncKoReader = true;
       user.permissions.canSyncKobo = true;
       user.permissions.canAccessOpds = true;
-      user.permissions.canAccessBookdrop = true;
       user.permissions.canAccessLibraryStats = true;
       user.permissions.canAccessUserStats = true;
       user.permissions.canManageMetadataConfig = true;
@@ -338,7 +331,6 @@ export class UserManagementComponent implements OnInit, OnDestroy {
       user.permissions.canBulkCustomFetchMetadata = true;
       user.permissions.canBulkEditMetadata = true;
       user.permissions.canBulkRegenerateCover = true;
-      user.permissions.canMoveOrganizeFiles = true;
       user.permissions.canBulkLockUnlockMetadata = true;
       user.permissions.canBulkResetBookloreReadProgress = true;
       user.permissions.canBulkResetKoReaderReadProgress = true;

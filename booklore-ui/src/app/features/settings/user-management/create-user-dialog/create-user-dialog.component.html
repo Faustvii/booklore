@@ -170,32 +170,12 @@
             </h4>
             <div class="permission-group-items">
               <div class="permission-item">
-                <p-checkbox formControlName="permissionUpload" [binary]="true" inputId="perm-upload"></p-checkbox>
-                <label for="perm-upload" class="permission-label">
-                  <div class="permission-icon-wrapper">
-                    <i class="pi pi-upload permission-icon"></i>
-                  </div>
-                  <span class="permission-name">{{ t('perms.uploadBooks') }}</span>
-                </label>
-              </div>
-
-              <div class="permission-item">
                 <p-checkbox formControlName="permissionDownload" [binary]="true" inputId="perm-download"></p-checkbox>
                 <label for="perm-download" class="permission-label">
                   <div class="permission-icon-wrapper">
                     <i class="pi pi-download permission-icon"></i>
                   </div>
                   <span class="permission-name">{{ t('perms.downloadBooks') }}</span>
-                </label>
-              </div>
-
-              <div class="permission-item">
-                <p-checkbox formControlName="permissionDeleteBook" [binary]="true" inputId="perm-delete"></p-checkbox>
-                <label for="perm-delete" class="permission-label">
-                  <div class="permission-icon-wrapper">
-                    <i class="pi pi-trash permission-icon"></i>
-                  </div>
-                  <span class="permission-name">{{ t('perms.deleteBooks') }}</span>
                 </label>
               </div>
 
@@ -275,16 +255,6 @@
               {{ t('permGroups.systemAccess') }}
             </h4>
             <div class="permission-group-items">
-              <div class="permission-item">
-                <p-checkbox formControlName="permissionAccessBookdrop" [binary]="true" inputId="perm-bookdrop"></p-checkbox>
-                <label for="perm-bookdrop" class="permission-label">
-                  <div class="permission-icon-wrapper">
-                    <i class="pi pi-cloud-upload permission-icon"></i>
-                  </div>
-                  <span class="permission-name">{{ t('perms.accessBookdrop') }}</span>
-                </label>
-              </div>
-
               <div class="permission-item">
                 <p-checkbox formControlName="permissionAccessLibraryStats" [binary]="true" inputId="perm-library-stats"></p-checkbox>
                 <label for="perm-library-stats" class="permission-label">
@@ -404,15 +374,6 @@
                     <i class="pi pi-image permission-icon"></i>
                   </div>
                   <span class="permission-name">{{ t('perms.bulkRegenerateCover') }}</span>
-                </label>
-              </div>
-              <div class="permission-item">
-                <p-checkbox formControlName="permissionMoveOrganizeFiles" [binary]="true" inputId="perm-move-organize-files"></p-checkbox>
-                <label for="perm-move-organize-files" class="permission-label">
-                  <div class="permission-icon-wrapper">
-                    <i class="pi pi-folder-open permission-icon"></i>
-                  </div>
-                  <span class="permission-name">{{ t('perms.moveOrganize') }}</span>
                 </label>
               </div>
               <div class="permission-item">

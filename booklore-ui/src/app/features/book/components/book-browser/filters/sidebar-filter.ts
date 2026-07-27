@@ -81,6 +81,8 @@ export function doesBookMatchFilter(
       return doesBookMatchReadStatus(book, filterValues);
     case 'personalRating':
       return filterValues.some(range => isRatingInRange10(book.personalRating, range as string | number));
+    case 'rating':
+      return filterValues.some(range => isRatingInRange(book.metadata?.rating, range as string | number));
     case 'publisher':
       return effectiveMode === 'or'
         ? filterValues.some(val => book.metadata?.publisher === val)

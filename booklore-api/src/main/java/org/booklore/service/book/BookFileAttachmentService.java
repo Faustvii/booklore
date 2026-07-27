@@ -16,7 +16,6 @@ import org.booklore.repository.UserBookProgressRepository;
 import org.booklore.service.file.FileMoveHelper;
 import org.booklore.service.monitoring.MonitoringRegistrationService;
 import org.booklore.service.progress.ReadingProgressService;
-import org.booklore.util.PathPatternResolver;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -160,16 +159,15 @@ public class BookFileAttachmentService {
 
     private List<Long> attachWithFileMove(BookEntity targetBook, List<BookEntity> sourceBooks,
                                           BookFileEntity targetPrimaryFile) {
-        String fileNamingPattern = fileMoveHelper.getFileNamingPattern(targetBook.getLibrary());
-        String patternResolvedPath = PathPatternResolver.resolvePattern(targetBook, targetPrimaryFile, fileNamingPattern);
-        Path libraryRootPath = Paths.get(targetBook.getLibraryPath().getPath());
-        Path patternFullPath = libraryRootPath.resolve(patternResolvedPath);
-
         Path actualPrimaryFilePath = targetPrimaryFile.getFullFilePath();
-        boolean primaryFileAtPatternLocation = Files.exists(patternFullPath) &&
-                patternFullPath.normalize().equals(actualPrimaryFilePath.normalize());
+        if (!Files.exists(actualPrimaryFilePath)) {
+            throw ApiError.GENERIC_BAD_REQUEST.createException(
+                    "Target book's primary file not found at expected location: " + actualPrimaryFilePath +
+                    ". Please ensure the target book's files exist before attaching files.");
+        }
 
-        Path targetDirectory = patternFullPath.getParent();
+        Path libraryRootPath = Paths.get(targetBook.getLibraryPath().getPath());
+        Path targetDirectory = actualPrimaryFilePath.getParent();
         if (targetDirectory == null) {
             targetDirectory = libraryRootPath;
         }
@@ -177,15 +175,9 @@ public class BookFileAttachmentService {
                 ? ""
                 : libraryRootPath.relativize(targetDirectory).toString();
 
-        String patternFileName = Paths.get(patternResolvedPath).getFileName().toString();
-        int lastDot = patternFileName.lastIndexOf('.');
-        String baseFileName = lastDot > 0 ? patternFileName.substring(0, lastDot) : patternFileName;
-
-        if (!primaryFileAtPatternLocation && !Files.exists(actualPrimaryFilePath)) {
-            throw ApiError.GENERIC_BAD_REQUEST.createException(
-                    "Target book's primary file not found at expected location: " + actualPrimaryFilePath +
-                    ". Please ensure the target book's files exist before attaching files.");
-        }
+        String primaryFileName = targetPrimaryFile.getFileName();
+        int lastDot = primaryFileName.lastIndexOf('.');
+        String baseFileName = lastDot > 0 ? primaryFileName.substring(0, lastDot) : primaryFileName;
 
         Long libraryId = targetBook.getLibrary().getId();
         List<BookEntity> sourceBooksToDelete = new ArrayList<>();
@@ -199,57 +191,6 @@ public class BookFileAttachmentService {
                 log.warn("Failed to unregister target directory from monitoring: {}", targetDirectory, ex);
             }
             pathsToReregister.add(targetDirectory);
-
-            if (!primaryFileAtPatternLocation) {
-                log.info("Primary file not at pattern location, organizing target book files first");
-
-                for (BookFileEntity existingFile : targetBook.getBookFiles()) {
-                    Path currentPath = existingFile.getFullFilePath();
-                    if (Files.exists(currentPath)) {
-                        Path sourceDir = currentPath.getParent();
-                        if (sourceDir != null) {
-                            try {
-                                monitoringRegistrationService.unregisterSpecificPath(sourceDir);
-                            } catch (Exception ex) {
-                                log.warn("Failed to unregister source directory from monitoring: {}", sourceDir, ex);
-                            }
-                            pathsToReregister.add(sourceDir);
-                            sourceDirectoriesToCleanup.add(sourceDir);
-                        }
-                    }
-                }
-
-                try {
-                    Files.createDirectories(targetDirectory);
-                } catch (IOException e) {
-                    throw ApiError.INTERNAL_SERVER_ERROR.createException("Failed to create target directory: " + e.getMessage());
-                }
-
-                for (BookFileEntity existingFile : targetBook.getBookFiles()) {
-                    Path currentPath = existingFile.getFullFilePath();
-                    if (!Files.exists(currentPath)) {
-                        log.warn("Skipping missing file during organization: {}", currentPath);
-                        continue;
-                    }
-
-                    String resolvedPath = PathPatternResolver.resolvePattern(targetBook, existingFile, fileNamingPattern);
-                    String newFileName = Paths.get(resolvedPath).getFileName().toString();
-                    newFileName = resolveFilenameConflict(targetDirectory, newFileName);
-                    Path destinationPath = targetDirectory.resolve(newFileName);
-
-                    if (!currentPath.normalize().equals(destinationPath.normalize())) {
-                        try {
-                            Files.move(currentPath, destinationPath);
-                            log.info("Organized file from {} to {}", currentPath, destinationPath);
-                            existingFile.setFileSubPath(targetFileSubPath);
-                            existingFile.setFileName(newFileName);
-                        } catch (IOException e) {
-                            throw ApiError.INTERNAL_SERVER_ERROR.createException(
-                                    "Failed to organize file " + currentPath + ": " + e.getMessage());
-                        }
-                    }
-                }
-            }
 
             Map<String, Integer> extensionCounts = new HashMap<>();
             for (BookFileEntity existingFile : targetBook.getBookFiles()) {
@@ -337,7 +278,7 @@ public class BookFileAttachmentService {
                     .collect(Collectors.toSet());
 
             for (Path sourceDir : sourceDirectoriesToCleanup) {
-                bookService.deleteEmptyParentDirsUpToLibraryFolders(sourceDir, libraryRoots);
+                fileMoveHelper.deleteEmptyParentDirsUpToLibraryFolders(sourceDir, libraryRoots);
             }
 
             return deletedSourceBookIds;

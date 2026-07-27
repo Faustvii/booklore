@@ -2,7 +2,7 @@ import {FormsModule} from "@angular/forms";
 import {Button} from "primeng/button";
 import {ActivatedRoute, Router} from "@angular/router";
 import {AsyncPipe, DecimalPipe, KeyValuePipe, NgClass, NgStyle} from "@angular/common";
-import {filter, finalize, map, switchMap, tap} from "rxjs/operators";
+import {filter, map, switchMap, tap} from "rxjs/operators";
 import {combineLatest, Observable, Subscription} from "rxjs";
 import {Book, BookType, ReadStatus} from "../../model/book.model";
 import {BookService} from "../../service/book.service";
@@ -19,10 +19,7 @@ import {UserService} from "../../../settings/user-management/user.service";
 import {BookMenuService} from "../../service/book-menu.service";
 import {LoadingService} from "../../../../core/services/loading.service";
 import {BookDialogHelperService} from "../book-browser/book-dialog-helper.service";
-import {TaskHelperService} from "../../../settings/task-management/task-helper.service";
-import {MetadataRefreshType} from "../../../metadata/model/request/metadata-refresh-type.enum";
 import {TieredMenu} from "primeng/tieredmenu";
-import {AppSettingsService} from "../../../../shared/service/app-settings.service";
 import {TranslocoDirective, TranslocoService} from '@jsverse/transloco';
 import {Tooltip} from "primeng/tooltip";
 import {Divider} from "primeng/divider";
@@ -117,10 +114,8 @@ export class SeriesPageComponent implements OnDestroy, AfterViewChecked {
   protected confirmationService = inject(ConfirmationService);
   private loadingService = inject(LoadingService);
   private dialogHelperService = inject(BookDialogHelperService);
-  protected taskHelperService = inject(TaskHelperService);
   private messageService = inject(MessageService);
   protected bookCardOverlayPreferenceService = inject(BookCardOverlayPreferenceService);
-  protected appSettingsService = inject(AppSettingsService);
   private readonly t = inject(TranslocoService);
   protected urlHelper = inject(UrlHelperService);
 
@@ -413,8 +408,6 @@ export class SeriesPageComponent implements OnDestroy, AfterViewChecked {
     this.userSub = this.userService.userState$.pipe(filter(u => !!u?.user && u.loaded))
       .subscribe(userState => {
         this.metadataMenuItems = this.bookMenuService.getMetadataMenuItems(
-          () => this.autoFetchMetadata(),
-          () => this.fetchMetadata(),
           () => this.bulkEditMetadata(),
           () => this.multiBookEditMetadata(),
           () => this.regenerateCoversForSelected(),
@@ -634,31 +627,6 @@ export class SeriesPageComponent implements OnDestroy, AfterViewChecked {
     this.moreActionsMenuItems = this.bookMenuService.getMoreActionsMenu(this.selectedBooks, this.user());
   }
 
-  confirmDeleteBooks(): void {
-    this.confirmationService.confirm({
-      message: this.t.translate('book.browser.confirm.deleteMessage', {count: this.selectedBooks.size}),
-      header: this.t.translate('book.browser.confirm.deleteHeader'),
-      icon: 'pi pi-exclamation-triangle',
-      acceptIcon: 'pi pi-trash',
-      rejectIcon: 'pi pi-times',
-      acceptLabel: this.t.translate('common.delete'),
-      rejectLabel: this.t.translate('common.cancel'),
-      acceptButtonStyleClass: 'p-button-danger',
-      rejectButtonStyleClass: 'p-button-outlined',
-      accept: () => {
-        const count = this.selectedBooks.size;
-        const loader = this.loadingService.show(this.t.translate('book.browser.loading.deleting', {count}));
-
-        this.bookService.deleteBooks(this.selectedBooks)
-          .pipe(finalize(() => this.loadingService.hide(loader)))
-          .subscribe(() => {
-            this.selectedBooks.clear();
-          });
-      },
-      reject: () => {
-      }
-    });
-  }
 
   openShelfAssigner(): void {
     this.dialogRef = this.dialogHelperService.openShelfAssignerDialog(null, this.selectedBooks);
@@ -678,18 +646,6 @@ export class SeriesPageComponent implements OnDestroy, AfterViewChecked {
         this.deselectAllBooks();
       });
     }
-  }
-
-  autoFetchMetadata(): void {
-    if (!this.selectedBooks || this.selectedBooks.size === 0) return;
-    this.taskHelperService.refreshMetadataTask({
-      refreshType: MetadataRefreshType.BOOKS,
-      bookIds: Array.from(this.selectedBooks),
-    }).subscribe();
-  }
-
-  fetchMetadata(): void {
-    this.dialogHelperService.openMetadataRefreshDialog(this.selectedBooks);
   }
 
   bulkEditMetadata(): void {
@@ -788,10 +744,6 @@ export class SeriesPageComponent implements OnDestroy, AfterViewChecked {
         });
       }
     });
-  }
-
-  moveFiles() {
-    this.dialogHelperService.openFileMoverDialog(this.selectedBooks);
   }
 
   user() {

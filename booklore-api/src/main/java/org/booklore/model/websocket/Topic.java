@@ -12,8 +12,6 @@ public enum Topic {
     BOOKS_REMOVE("/queue/books-remove"),
     BOOK_METADATA_UPDATE("/queue/book-metadata-update"),
     BOOK_METADATA_BATCH_UPDATE("/queue/book-metadata-batch-update"),
-    BOOK_METADATA_BATCH_PROGRESS("/queue/book-metadata-batch-progress"),
-    BOOKDROP_FILE("/queue/bookdrop-file"),
     LOG("/queue/log"),
     TASK_PROGRESS("/queue/task-progress"),
     LIBRARY_HEALTH("/topic/library-health"),

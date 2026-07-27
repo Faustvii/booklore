@@ -120,7 +120,7 @@ class UserProvisioningServiceTest {
     @Test
     void provisionOidcUser_appliesPermissionsFromDefaultPermissionsList() {
         provisionDetails.setDefaultPermissions(List.of(
-                "permissionUpload", "permissionDownload", "permissionEditMetadata"));
+                "permissionManageLibrary", "permissionDownload", "permissionEditMetadata"));
 
         userProvisioningService.provisionOidcUser(
                 "jdoe", "jdoe@example.com", "John Doe",
@@ -130,14 +130,14 @@ class UserProvisioningServiceTest {
         verify(userRepository).save(userCaptor.capture());
         UserPermissionsEntity perms = userCaptor.getValue().getPermissions();
 
-        assertThat(perms.isPermissionUpload()).isTrue();
+        assertThat(perms.isPermissionManageLibrary()).isTrue();
         assertThat(perms.isPermissionDownload()).isTrue();
         assertThat(perms.isPermissionEditMetadata()).isTrue();
     }
 
     @Test
     void provisionOidcUser_doesNotSetUnspecifiedPermissions() {
-        provisionDetails.setDefaultPermissions(List.of("permissionUpload"));
+        provisionDetails.setDefaultPermissions(List.of("permissionManageLibrary"));
 
         userProvisioningService.provisionOidcUser(
                 "jdoe", "jdoe@example.com", "John Doe",
@@ -147,17 +147,14 @@ class UserProvisioningServiceTest {
         verify(userRepository).save(userCaptor.capture());
         UserPermissionsEntity perms = userCaptor.getValue().getPermissions();
 
-        assertThat(perms.isPermissionUpload()).isTrue();
+        assertThat(perms.isPermissionManageLibrary()).isTrue();
         assertThat(perms.isPermissionDownload()).isFalse();
         assertThat(perms.isPermissionEditMetadata()).isFalse();
-        assertThat(perms.isPermissionManageLibrary()).isFalse();
         assertThat(perms.isPermissionEmailBook()).isFalse();
-        assertThat(perms.isPermissionDeleteBook()).isFalse();
         assertThat(perms.isPermissionAccessOpds()).isFalse();
         assertThat(perms.isPermissionSyncKoreader()).isFalse();
         assertThat(perms.isPermissionSyncKobo()).isFalse();
         assertThat(perms.isPermissionManageMetadataConfig()).isFalse();
-        assertThat(perms.isPermissionAccessBookdrop()).isFalse();
         assertThat(perms.isPermissionAdmin()).isFalse();
     }
 
@@ -196,7 +193,6 @@ class UserProvisioningServiceTest {
         UserPermissionsEntity perms = userCaptor.getValue().getPermissions();
 
         assertThat(perms).isNotNull();
-        assertThat(perms.isPermissionUpload()).isFalse();
         assertThat(perms.isPermissionDownload()).isFalse();
     }
 

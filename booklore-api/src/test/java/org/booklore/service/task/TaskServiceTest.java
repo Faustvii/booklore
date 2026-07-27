@@ -48,7 +48,7 @@ class TaskServiceTest {
         taskScheduler = mock(TaskScheduler.class);
 
         mockTask = mock(Task.class);
-        when(mockTask.getTaskType()).thenReturn(TaskType.CLEANUP_TEMP_METADATA);
+        when(mockTask.getTaskType()).thenReturn(TaskType.SYNC_LIBRARY_FILES);
 
         taskService = new TaskService(
                 authenticationService,
@@ -79,13 +79,13 @@ class TaskServiceTest {
     @Disabled
     void testGetAvailableTasksReturnsNonNull() {
         CronConfig cronConfig = CronConfig.builder()
-                .taskType(TaskType.CLEANUP_TEMP_METADATA)
+                .taskType(TaskType.SYNC_LIBRARY_FILES)
                 .enabled(false)
                 .build();
         when(taskCronService.getCronConfigOrDefault(any())).thenReturn(cronConfig);
         List<TaskInfo> tasks = taskService.getAvailableTasks();
         assertNotNull(tasks);
-        assertTrue(tasks.stream().anyMatch(t -> t.getTaskType() == TaskType.CLEANUP_TEMP_METADATA));
+        assertTrue(tasks.stream().anyMatch(t -> t.getTaskType() == TaskType.SYNC_LIBRARY_FILES));
     }
 
     @Test
@@ -94,10 +94,10 @@ class TaskServiceTest {
         user.setId(1L);
         user.setUsername("user1");
         when(authenticationService.getAuthenticatedUser()).thenReturn(user);
-        when(mockTask.execute(any())).thenReturn(TaskCreateResponse.builder().taskType(TaskType.CLEANUP_TEMP_METADATA).build());
-        TaskCreateRequest req = TaskCreateRequest.builder().taskType(TaskType.CLEANUP_TEMP_METADATA).triggeredByCron(false).build();
+        when(mockTask.execute(any())).thenReturn(TaskCreateResponse.builder().taskType(TaskType.SYNC_LIBRARY_FILES).build());
+        TaskCreateRequest req = TaskCreateRequest.builder().taskType(TaskType.SYNC_LIBRARY_FILES).triggeredByCron(false).build();
         TaskCreateResponse resp = taskService.runAsUser(req);
-        assertEquals(TaskType.CLEANUP_TEMP_METADATA, resp.getTaskType());
+        assertEquals(TaskType.SYNC_LIBRARY_FILES, resp.getTaskType());
     }
 
     @Test
@@ -112,7 +112,7 @@ class TaskServiceTest {
 
     @Test
     void testParallelTaskAllowsMultipleRuns() {
-        TaskType parallelType = TaskType.CLEANUP_TEMP_METADATA;
+        TaskType parallelType = TaskType.SYNC_LIBRARY_FILES;
         when(mockTask.getTaskType()).thenReturn(parallelType);
         when(mockTask.execute(any())).thenReturn(TaskCreateResponse.builder().taskType(parallelType).build());
         BookLoreUser user = new BookLoreUser();
@@ -132,7 +132,7 @@ class TaskServiceTest {
 
     @Test
     void testNonParallelTaskBlocksSecondRunAsUser() {
-        TaskType nonParallelType = TaskType.REFRESH_LIBRARY_METADATA;
+        TaskType nonParallelType = TaskType.LIBRARY_RESCAN;
         Task nonParallelTask = mock(Task.class);
         when(nonParallelTask.getTaskType()).thenReturn(nonParallelType);
         when(nonParallelTask.execute(any())).thenReturn(TaskCreateResponse.builder().taskType(nonParallelType).build());
@@ -203,7 +203,7 @@ class TaskServiceTest {
 
     @Test
     void testNullOptionsHandledGracefully() {
-        TaskType type = TaskType.CLEANUP_TEMP_METADATA;
+        TaskType type = TaskType.SYNC_LIBRARY_FILES;
         when(mockTask.getTaskType()).thenReturn(type);
         when(mockTask.execute(any())).thenReturn(TaskCreateResponse.builder().taskType(type).build());
         BookLoreUser user = new BookLoreUser();
@@ -218,7 +218,7 @@ class TaskServiceTest {
 
     @Test
     void testExceptionInTaskExecutionPropagates() {
-        TaskType type = TaskType.CLEANUP_TEMP_METADATA;
+        TaskType type = TaskType.SYNC_LIBRARY_FILES;
         when(mockTask.getTaskType()).thenReturn(type);
         when(mockTask.execute(any())).thenThrow(new RuntimeException("Task failed"));
         BookLoreUser user = new BookLoreUser();
@@ -233,7 +233,7 @@ class TaskServiceTest {
     @Test
     void testRunAsUserThrowsExceptionForNullUser() {
         when(authenticationService.getAuthenticatedUser()).thenReturn(null);
-        TaskCreateRequest req = TaskCreateRequest.builder().taskType(TaskType.CLEANUP_TEMP_METADATA).triggeredByCron(false).build();
+        TaskCreateRequest req = TaskCreateRequest.builder().taskType(TaskType.SYNC_LIBRARY_FILES).triggeredByCron(false).build();
         assertThrows(NullPointerException.class, () -> taskService.runAsUser(req));
     }
 
@@ -254,10 +254,10 @@ class TaskServiceTest {
         user.setUsername("invalidOptionsUser");
         when(authenticationService.getAuthenticatedUser()).thenReturn(user);
         when(objectMapper.convertValue(any(), eq(Map.class))).thenThrow(new IllegalArgumentException("Conversion failed"));
-        TaskCreateRequest req = TaskCreateRequest.builder().taskType(TaskType.CLEANUP_TEMP_METADATA).options(new Object()).triggeredByCron(false).build();
-        when(mockTask.execute(any())).thenReturn(TaskCreateResponse.builder().taskType(TaskType.CLEANUP_TEMP_METADATA).build());
+        TaskCreateRequest req = TaskCreateRequest.builder().taskType(TaskType.SYNC_LIBRARY_FILES).options(new Object()).triggeredByCron(false).build();
+        when(mockTask.execute(any())).thenReturn(TaskCreateResponse.builder().taskType(TaskType.SYNC_LIBRARY_FILES).build());
         TaskCreateResponse resp = taskService.runAsUser(req);
-        assertEquals(TaskType.CLEANUP_TEMP_METADATA, resp.getTaskType());
+        assertEquals(TaskType.SYNC_LIBRARY_FILES, resp.getTaskType());
     }
 
     @Test
@@ -269,11 +269,11 @@ class TaskServiceTest {
     @Test
     void testRescheduleTaskDoesNotThrowWhenEnabled() {
         CronConfig cronConfig = CronConfig.builder()
-                .taskType(TaskType.CLEANUP_TEMP_METADATA)
+                .taskType(TaskType.SYNC_LIBRARY_FILES)
                 .enabled(true)
                 .cronExpression("0 0 0 1 1 0")
                 .build();
-        when(taskCronService.getCronConfigOrDefault(TaskType.CLEANUP_TEMP_METADATA)).thenReturn(cronConfig);
-        assertDoesNotThrow(() -> taskService.rescheduleTask(TaskType.CLEANUP_TEMP_METADATA));
+        when(taskCronService.getCronConfigOrDefault(TaskType.SYNC_LIBRARY_FILES)).thenReturn(cronConfig);
+        assertDoesNotThrow(() -> taskService.rescheduleTask(TaskType.SYNC_LIBRARY_FILES));
     }
 }

@@ -414,10 +414,6 @@ class BookFileAttachmentServiceTest {
         }
     }
 
-    private void setupFileMoveStubs(BookEntity target, String pattern) {
-        lenient().when(fileMoveHelper.getFileNamingPattern(target.getLibrary())).thenReturn(pattern);
-    }
-
     @Nested
     @DisplayName("Attach With File Move")
     class AttachWithFileMove {
@@ -435,7 +431,6 @@ class BookFileAttachmentServiceTest {
             when(bookRepository.findByIdWithBookFiles(1L)).thenReturn(Optional.of(target));
             when(bookRepository.findByIdWithBookFiles(2L)).thenReturn(Optional.of(source));
             setupGetUpdatedBookMocks(1L, target);
-            setupFileMoveStubs(target, "target_dir/{title}");
 
             service.attachBookFiles(1L, List.of(2L), true);
 
@@ -456,59 +451,11 @@ class BookFileAttachmentServiceTest {
             when(bookRepository.findByIdWithBookFiles(1L)).thenReturn(Optional.of(target));
             when(bookRepository.findByIdWithBookFiles(2L)).thenReturn(Optional.of(source));
             setupGetUpdatedBookMocks(1L, target);
-            setupFileMoveStubs(target, "target_dir/{title}");
 
             service.attachBookFiles(1L, List.of(2L), true);
 
             Path movedFile = tempDir.resolve("target_dir/target_1.epub");
             assertTrue(Files.exists(movedFile), "Source file should be moved with _1 suffix");
-        }
-
-        @Test
-        @DisplayName("Organizes target files when primary not at pattern location")
-        void attachWithFileMove_primaryNotAtPattern_organizesFirst() throws IOException {
-            BookEntity target = createBook(1L);
-            target.setMetadata(BookMetadataEntity.builder().bookId(1L).title("new_name").build());
-            createBookFile(10L, target, "old_name.epub", "old_dir", true, false);
-
-            BookEntity source = createBook(2L);
-            createBookFile(20L, source, "source.pdf", "source_dir", true, false);
-            source.getBookFiles().getFirst().setBookType(BookFileType.PDF);
-
-            when(bookRepository.findByIdWithBookFiles(1L)).thenReturn(Optional.of(target));
-            when(bookRepository.findByIdWithBookFiles(2L)).thenReturn(Optional.of(source));
-            setupGetUpdatedBookMocks(1L, target);
-            setupFileMoveStubs(target, "new_dir/{title}");
-
-            service.attachBookFiles(1L, List.of(2L), true);
-
-            assertTrue(Files.exists(tempDir.resolve("new_dir/new_name.epub")),
-                    "Target file should be organized to pattern location");
-            assertTrue(Files.exists(tempDir.resolve("new_dir/new_name.pdf")),
-                    "Source file should be moved to new target directory");
-        }
-
-        @Test
-        @DisplayName("Skips organizing if primary file is already at pattern location")
-        void attachWithFileMove_primaryAtPattern_skipsOrganization() throws IOException {
-            BookEntity target = createBook(1L);
-            createBookFile(10L, target, "target.epub", "target_dir", true, false);
-
-            BookEntity source = createBook(2L);
-            createBookFile(20L, source, "source.pdf", "source_dir", true, false);
-            source.getBookFiles().getFirst().setBookType(BookFileType.PDF);
-
-            when(bookRepository.findByIdWithBookFiles(1L)).thenReturn(Optional.of(target));
-            when(bookRepository.findByIdWithBookFiles(2L)).thenReturn(Optional.of(source));
-            setupGetUpdatedBookMocks(1L, target);
-            setupFileMoveStubs(target, "target_dir/{title}");
-
-            service.attachBookFiles(1L, List.of(2L), true);
-
-            assertTrue(Files.exists(tempDir.resolve("target_dir/target.epub")),
-                    "Target file should remain at pattern location");
-            assertTrue(Files.exists(tempDir.resolve("target_dir/target.pdf")),
-                    "Source file should be moved to target directory");
         }
 
         @Test
@@ -524,7 +471,6 @@ class BookFileAttachmentServiceTest {
             when(bookRepository.findByIdWithBookFiles(1L)).thenReturn(Optional.of(target));
             when(bookRepository.findByIdWithBookFiles(2L)).thenReturn(Optional.of(source));
             setupGetUpdatedBookMocks(1L, target);
-            setupFileMoveStubs(target, "target_dir/{title}");
 
             service.attachBookFiles(1L, List.of(2L), true);
 
@@ -532,10 +478,9 @@ class BookFileAttachmentServiceTest {
         }
 
         @Test
-        @DisplayName("Throws when target primary file missing and not at pattern")
+        @DisplayName("Throws when target primary file missing")
         void attachWithFileMove_targetPrimaryMissing_throws() throws IOException {
             BookEntity target = createBook(1L);
-            target.setMetadata(BookMetadataEntity.builder().bookId(1L).title("other").build());
             createBookFileNoPhysicalFile(10L, target, "missing.epub", "sub", true);
 
             BookEntity source = createBook(2L);
@@ -543,7 +488,6 @@ class BookFileAttachmentServiceTest {
 
             when(bookRepository.findByIdWithBookFiles(1L)).thenReturn(Optional.of(target));
             when(bookRepository.findByIdWithBookFiles(2L)).thenReturn(Optional.of(source));
-            setupFileMoveStubs(target, "other_dir/{title}");
 
             APIException ex = assertThrows(APIException.class,
                     () -> service.attachBookFiles(1L, List.of(2L), true));
@@ -563,7 +507,6 @@ class BookFileAttachmentServiceTest {
             when(bookRepository.findByIdWithBookFiles(1L)).thenReturn(Optional.of(target));
             when(bookRepository.findByIdWithBookFiles(2L)).thenReturn(Optional.of(source));
             setupGetUpdatedBookMocks(1L, target);
-            setupFileMoveStubs(target, "target_dir/{title}");
 
             service.attachBookFiles(1L, List.of(2L), true);
 
@@ -583,7 +526,6 @@ class BookFileAttachmentServiceTest {
             when(bookRepository.findByIdWithBookFiles(1L)).thenReturn(Optional.of(target));
             when(bookRepository.findByIdWithBookFiles(2L)).thenReturn(Optional.of(source));
             setupGetUpdatedBookMocks(1L, target);
-            setupFileMoveStubs(target, "target_dir/{title}");
 
             doThrow(new RuntimeException("monitoring error"))
                     .when(monitoringRegistrationService).unregisterSpecificPath(any(Path.class));
@@ -604,11 +546,10 @@ class BookFileAttachmentServiceTest {
             when(bookRepository.findByIdWithBookFiles(1L)).thenReturn(Optional.of(target));
             when(bookRepository.findByIdWithBookFiles(2L)).thenReturn(Optional.of(source));
             setupGetUpdatedBookMocks(1L, target);
-            setupFileMoveStubs(target, "target_dir/{title}");
 
             service.attachBookFiles(1L, List.of(2L), true);
 
-            verify(bookService, atLeastOnce()).deleteEmptyParentDirsUpToLibraryFolders(any(Path.class), anySet());
+            verify(fileMoveHelper, atLeastOnce()).deleteEmptyParentDirsUpToLibraryFolders(any(Path.class), anySet());
         }
 
         @Test
@@ -629,7 +570,6 @@ class BookFileAttachmentServiceTest {
             when(bookRepository.findByIdWithBookFiles(2L)).thenReturn(Optional.of(source1));
             when(bookRepository.findByIdWithBookFiles(3L)).thenReturn(Optional.of(source2));
             setupGetUpdatedBookMocks(1L, target);
-            setupFileMoveStubs(target, "target_dir/{title}");
 
             service.attachBookFiles(1L, List.of(2L, 3L), true);
 
@@ -653,7 +593,6 @@ class BookFileAttachmentServiceTest {
             when(bookRepository.findByIdWithBookFiles(2L)).thenReturn(Optional.of(source1));
             when(bookRepository.findByIdWithBookFiles(3L)).thenReturn(Optional.of(source2));
             setupGetUpdatedBookMocks(1L, target);
-            setupFileMoveStubs(target, "target_dir/{title}");
 
             service.attachBookFiles(1L, List.of(2L, 3L), true);
 
@@ -777,8 +716,8 @@ class BookFileAttachmentServiceTest {
         }
 
         @Test
-        @DisplayName("Pattern resolves to file at library root (no subdirectory)")
-        void attachWithFileMove_patternAtLibraryRoot() throws IOException {
+        @DisplayName("Target file at library root (no subdirectory)")
+        void attachWithFileMove_targetAtLibraryRoot() throws IOException {
             BookEntity target = createBook(1L);
             createBookFile(10L, target, "target.epub", "", true, false);
 
@@ -789,7 +728,6 @@ class BookFileAttachmentServiceTest {
             when(bookRepository.findByIdWithBookFiles(1L)).thenReturn(Optional.of(target));
             when(bookRepository.findByIdWithBookFiles(2L)).thenReturn(Optional.of(source));
             setupGetUpdatedBookMocks(1L, target);
-            setupFileMoveStubs(target, "{title}");
 
             service.attachBookFiles(1L, List.of(2L), true);
 
@@ -869,7 +807,6 @@ class BookFileAttachmentServiceTest {
             when(bookRepository.findByIdWithBookFiles(1L)).thenReturn(Optional.of(target));
             when(bookRepository.findByIdWithBookFiles(2L)).thenReturn(Optional.of(source));
             setupGetUpdatedBookMocks(1L, target);
-            setupFileMoveStubs(target, "target_dir/{title}");
 
             service.attachBookFiles(1L, List.of(2L), true);
 

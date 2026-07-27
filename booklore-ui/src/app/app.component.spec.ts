@@ -7,8 +7,6 @@ import {RxStompService} from './shared/websocket/rx-stomp.service';
 import {BookService} from './features/book/service/book.service';
 import {NotificationEventService} from './shared/websocket/notification-event.service';
 import {AppConfigService} from './shared/service/app-config.service';
-import {MetadataProgressService} from './shared/service/metadata-progress.service';
-import {BookdropFileService} from './features/bookdrop/service/bookdrop-file.service';
 import {TaskService} from './features/settings/task-management/task.service';
 import {LibraryService} from './features/book/service/library.service';
 import {LibraryHealthService} from './features/book/service/library-health.service';
@@ -31,8 +29,6 @@ describe('AppComponent offline detection', () => {
         {provide: BookService, useValue: {}},
         {provide: NotificationEventService, useValue: {}},
         {provide: AppConfigService, useValue: {}},
-        {provide: MetadataProgressService, useValue: {}},
-        {provide: BookdropFileService, useValue: {}},
         {provide: TaskService, useValue: {}},
         {provide: LibraryService, useValue: {largeLibraryLoading$: of({isLoading: false, expectedCount: 0})}},
         {provide: LibraryHealthService, useValue: {initialize: vi.fn()}},

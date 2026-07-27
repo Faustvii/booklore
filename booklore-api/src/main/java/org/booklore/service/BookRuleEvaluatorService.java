@@ -780,6 +780,7 @@ public class BookRuleEvaluatorService {
             case GOODREADS_REVIEW_COUNT -> root.get("metadata").get("goodreadsReviewCount");
             case HARDCOVER_RATING -> root.get("metadata").get("hardcoverRating");
             case HARDCOVER_REVIEW_COUNT -> root.get("metadata").get("hardcoverReviewCount");
+            case RATING -> root.get("metadata").get("rating");
             case RANOBEDB_RATING -> root.get("metadata").get("ranobedbRating");
             case AGE_RATING -> root.get("metadata").get("ageRating");
             case CONTENT_RATING -> root.get("metadata").get("contentRating");
@@ -950,6 +951,7 @@ public class BookRuleEvaluatorService {
             RuleField.AMAZON_RATING, RuleField.AMAZON_REVIEW_COUNT,
             RuleField.GOODREADS_RATING, RuleField.GOODREADS_REVIEW_COUNT,
             RuleField.HARDCOVER_RATING, RuleField.HARDCOVER_REVIEW_COUNT,
+            RuleField.RATING,
             RuleField.LUBIMYCZYTAC_RATING, RuleField.RANOBEDB_RATING,
             RuleField.AUDIBLE_RATING, RuleField.AUDIBLE_REVIEW_COUNT,
             RuleField.AUDIOBOOK_CHAPTER_COUNT, RuleField.AUDIOBOOK_BITRATE

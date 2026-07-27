@@ -1,7 +1,6 @@
 import {Component, inject, OnInit} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {Observable} from 'rxjs';
-import {Button} from 'primeng/button';
 import {ToggleSwitch} from 'primeng/toggleswitch';
 import {MenuItem, MessageService} from 'primeng/api';
 import {SplitButton} from 'primeng/splitbutton';
@@ -10,26 +9,18 @@ import {AppSettingsService} from '../../../shared/service/app-settings.service';
 import {BookMetadataManageService} from '../../book/service/book-metadata-manage.service';
 import {AppSettingKey, AppSettings, CoverCroppingSettings} from '../../../shared/model/app-settings.model';
 import {filter, take} from 'rxjs/operators';
-import {InputText} from 'primeng/inputtext';
 import {Slider} from 'primeng/slider';
-import {ExternalDocLinkComponent} from '../../../shared/components/external-doc-link/external-doc-link.component';
-import {TranslocoDirective, TranslocoPipe, TranslocoService} from '@jsverse/transloco';
-
-export const SUPPORT_ANIMATION_KEY = 'booklore-support-animation';
+import {TranslocoDirective, TranslocoService} from '@jsverse/transloco';
 
 @Component({
   selector: 'app-global-preferences',
   standalone: true,
   imports: [
-    Button,
     ToggleSwitch,
     FormsModule,
-    InputText,
     Slider,
     SplitButton,
-    ExternalDocLinkComponent,
     TranslocoDirective,
-    TranslocoPipe
   ],
   templateUrl: './global-preferences.component.html',
   styleUrl: './global-preferences.component.scss'
@@ -39,10 +30,8 @@ export class GlobalPreferencesComponent implements OnInit {
   toggles = {
     autoBookSearch: false,
     similarBookRecommendation: false,
-    enableTelemetry: true,
+    autoFetchAuthorMetadata: false,
   };
-
-  supportButtonAnimation = localStorage.getItem(SUPPORT_ANIMATION_KEY) !== 'false';
 
   coverCroppingSettings: CoverCroppingSettings = {
     verticalCroppingEnabled: false,
@@ -57,7 +46,6 @@ export class GlobalPreferencesComponent implements OnInit {
   private t = inject(TranslocoService);
 
   appSettings$: Observable<AppSettings | null> = this.appSettingsService.appSettings$;
-  maxFileUploadSizeInMb?: number;
   regenerateCoverMenuItems: MenuItem[] = [];
 
   ngOnInit(): void {
@@ -73,15 +61,12 @@ export class GlobalPreferencesComponent implements OnInit {
       filter(settings => !!settings),
       take(1)
     ).subscribe(settings => {
-      if (settings?.maxFileUploadSizeInMb) {
-        this.maxFileUploadSizeInMb = settings.maxFileUploadSizeInMb;
-      }
       if (settings?.coverCroppingSettings) {
         this.coverCroppingSettings = {...settings.coverCroppingSettings};
       }
       this.toggles.autoBookSearch = settings.autoBookSearch ?? false;
       this.toggles.similarBookRecommendation = settings.similarBookRecommendation ?? false;
-      this.toggles.enableTelemetry = settings?.telemetryEnabled ?? true;
+      this.toggles.autoFetchAuthorMetadata = settings.autoFetchAuthorMetadata ?? false;
     });
   }
 
@@ -90,7 +75,7 @@ export class GlobalPreferencesComponent implements OnInit {
     const toggleKeyMap: Record<string, AppSettingKey> = {
       autoBookSearch: AppSettingKey.AUTO_BOOK_SEARCH,
       similarBookRecommendation: AppSettingKey.SIMILAR_BOOK_RECOMMENDATION,
-      enableTelemetry: AppSettingKey.TELEMETRY_ENABLED,
+      autoFetchAuthorMetadata: AppSettingKey.AUTO_FETCH_AUTHOR_METADATA,
     };
     const keyToSend = toggleKeyMap[settingKey];
     if (keyToSend) {
@@ -100,22 +85,8 @@ export class GlobalPreferencesComponent implements OnInit {
     }
   }
 
-  onSupportAnimationChange(checked: boolean): void {
-    this.supportButtonAnimation = checked;
-    localStorage.setItem(SUPPORT_ANIMATION_KEY, String(checked));
-    window.dispatchEvent(new StorageEvent('storage', {key: SUPPORT_ANIMATION_KEY, newValue: String(checked)}));
-  }
-
   onCoverCroppingChange(): void {
     this.saveSetting(AppSettingKey.COVER_CROPPING_SETTINGS, this.coverCroppingSettings);
-  }
-
-  saveFileSize() {
-    if (!this.maxFileUploadSizeInMb || this.maxFileUploadSizeInMb <= 0) {
-      this.showMessage('error', this.t.translate('settingsApp.fileManagement.invalidInput'), this.t.translate('settingsApp.fileManagement.invalidInputDetail'));
-      return;
-    }
-    this.saveSetting(AppSettingKey.MAX_FILE_UPLOAD_SIZE_IN_MB, this.maxFileUploadSizeInMb);
   }
 
   regenerateCovers(missingOnly = false): void {

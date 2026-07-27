@@ -1,5 +1,3 @@
-import { MetadataProviderSpecificFields } from '../model/app-settings.model';
-
 export type FieldType = 'string' | 'number' | 'array' | 'textarea' | 'boolean';
 
 export interface MetadataFieldConfig {
@@ -8,7 +6,6 @@ export interface MetadataFieldConfig {
   lockedKey: string;
   fetchedKey: string;
   type: FieldType;
-  providerKey?: keyof MetadataProviderSpecificFields;
 }
 
 export const ALL_METADATA_FIELDS: MetadataFieldConfig[] = [
@@ -28,34 +25,14 @@ export const ALL_METADATA_FIELDS: MetadataFieldConfig[] = [
   { label: 'ISBN-10', controlName: 'isbn10', lockedKey: 'isbn10Locked', fetchedKey: 'isbn10', type: 'string' },
   { label: 'ISBN-13', controlName: 'isbn13', lockedKey: 'isbn13Locked', fetchedKey: 'isbn13', type: 'string' },
   { label: 'Pages', controlName: 'pageCount', lockedKey: 'pageCountLocked', fetchedKey: 'pageCount', type: 'number' },
-  { label: 'Google ID', controlName: 'googleId', lockedKey: 'googleIdLocked', fetchedKey: 'googleId', type: 'string', providerKey: 'googleId' },
-  { label: 'ASIN', controlName: 'asin', lockedKey: 'asinLocked', fetchedKey: 'asin', type: 'string', providerKey: 'asin' },
-  { label: 'Amazon #', controlName: 'amazonReviewCount', lockedKey: 'amazonReviewCountLocked', fetchedKey: 'amazonReviewCount', type: 'number', providerKey: 'amazonReviewCount' },
-  { label: 'Amazon ★', controlName: 'amazonRating', lockedKey: 'amazonRatingLocked', fetchedKey: 'amazonRating', type: 'number', providerKey: 'amazonRating' },
-  { label: 'Goodreads ID', controlName: 'goodreadsId', lockedKey: 'goodreadsIdLocked', fetchedKey: 'goodreadsId', type: 'string', providerKey: 'goodreadsId' },
-  { label: 'Goodreads #', controlName: 'goodreadsReviewCount', lockedKey: 'goodreadsReviewCountLocked', fetchedKey: 'goodreadsReviewCount', type: 'number', providerKey: 'goodreadsReviewCount' },
-  { label: 'Goodreads ★', controlName: 'goodreadsRating', lockedKey: 'goodreadsRatingLocked', fetchedKey: 'goodreadsRating', type: 'number', providerKey: 'goodreadsRating' },
-  { label: 'HC Book ID', controlName: 'hardcoverBookId', lockedKey: 'hardcoverBookIdLocked', fetchedKey: 'hardcoverBookId', type: 'number', providerKey: 'hardcoverBookId' },
-  { label: 'Hardcover ID', controlName: 'hardcoverId', lockedKey: 'hardcoverIdLocked', fetchedKey: 'hardcoverId', type: 'string', providerKey: 'hardcoverId' },
-  { label: 'Hardcover #', controlName: 'hardcoverReviewCount', lockedKey: 'hardcoverReviewCountLocked', fetchedKey: 'hardcoverReviewCount', type: 'number', providerKey: 'hardcoverReviewCount' },
-  { label: 'Hardcover ★', controlName: 'hardcoverRating', lockedKey: 'hardcoverRatingLocked', fetchedKey: 'hardcoverRating', type: 'number', providerKey: 'hardcoverRating' },
-  { label: 'Comicvine ID', controlName: 'comicvineId', lockedKey: 'comicvineIdLocked', fetchedKey: 'comicvineId', type: 'string', providerKey: 'comicvineId' },
-  { label: 'LB ID', controlName: 'lubimyczytacId', lockedKey: 'lubimyczytacIdLocked', fetchedKey: 'lubimyczytacId', type: 'string', providerKey: 'lubimyczytacId' },
-  { label: 'LB ★', controlName: 'lubimyczytacRating', lockedKey: 'lubimyczytacRatingLocked', fetchedKey: 'lubimyczytacRating', type: 'number', providerKey: 'lubimyczytacRating' },
-  { label: 'Ranobedb ID', controlName: 'ranobedbId', lockedKey: 'ranobedbIdLocked', fetchedKey: 'ranobedbId', type: 'string', providerKey: 'ranobedbId' },
-  { label: 'Ranobedb ★', controlName: 'ranobedbRating', lockedKey: 'ranobedbRatingLocked', fetchedKey: 'ranobedbRating', type: 'number', providerKey: 'ranobedbRating' },
-  { label: 'Audible ID', controlName: 'audibleId', lockedKey: 'audibleIdLocked', fetchedKey: 'audibleId', type: 'string', providerKey: 'audibleId' },
-  { label: 'Audible ★', controlName: 'audibleRating', lockedKey: 'audibleRatingLocked', fetchedKey: 'audibleRating', type: 'number', providerKey: 'audibleRating' },
-  { label: 'Audible #', controlName: 'audibleReviewCount', lockedKey: 'audibleReviewCountLocked', fetchedKey: 'audibleReviewCount', type: 'number', providerKey: 'audibleReviewCount' }
+  { label: 'External URL', controlName: 'externalUrl', lockedKey: 'externalUrlLocked', fetchedKey: 'externalUrl', type: 'string' },
 ];
 
-// Audiobook content metadata fields (narrator/abridged) - now stored at top level of BookMetadata
 export const AUDIOBOOK_METADATA_FIELDS: MetadataFieldConfig[] = [
   { label: 'Narrator', controlName: 'narrator', lockedKey: 'narratorLocked', fetchedKey: 'narrator', type: 'string' },
   { label: 'Abridged', controlName: 'abridged', lockedKey: 'abridgedLocked', fetchedKey: 'abridged', type: 'boolean' }
 ];
 
-// Comic book metadata fields - stored nested under BookMetadata.comicMetadata
 export const COMIC_TEXT_METADATA_FIELDS: MetadataFieldConfig[] = [
   { label: 'Issue #', controlName: 'comicIssueNumber', lockedKey: 'comicIssueNumberLocked', fetchedKey: 'issueNumber', type: 'string' },
   { label: 'Volume', controlName: 'comicVolumeName', lockedKey: 'comicVolumeNameLocked', fetchedKey: 'volumeName', type: 'string' },
@@ -94,7 +71,6 @@ export const ALL_COMIC_METADATA_FIELDS: MetadataFieldConfig[] = [
   ...COMIC_TEXTAREA_METADATA_FIELDS,
 ];
 
-// Maps form lockedKey → ComicMetadata lock property name (1:1 per-field locks).
 export const COMIC_FORM_TO_MODEL_LOCK: Record<string, string> = {
   'comicIssueNumberLocked': 'issueNumberLocked',
   'comicVolumeNameLocked': 'volumeNameLocked',
@@ -147,30 +123,10 @@ export function getBookDetailsFields(): MetadataFieldConfig[] {
   return ALL_METADATA_FIELDS.filter(f => BOOK_DETAILS_FIELD_NAMES.includes(f.controlName));
 }
 
-export function getProviderFields(enabledProviderFields?: MetadataProviderSpecificFields | null): MetadataFieldConfig[] {
-  const providerFields = ALL_METADATA_FIELDS.filter(f => !!f.providerKey);
-
-  if (enabledProviderFields) {
-    return providerFields.filter(field =>
-      !field.providerKey || enabledProviderFields[field.providerKey]
-    );
-  }
-
-  return providerFields;
-}
-
-export function getBottomFields(enabledProviderFields?: MetadataProviderSpecificFields | null): MetadataFieldConfig[] {
-  const bottomFields = ALL_METADATA_FIELDS.filter(f =>
+export function getBottomFields(): MetadataFieldConfig[] {
+  return ALL_METADATA_FIELDS.filter(f =>
     !TOP_FIELD_NAMES.includes(f.controlName) &&
     !ARRAY_FIELD_NAMES.includes(f.controlName) &&
     !TEXTAREA_FIELD_NAMES.includes(f.controlName)
   );
-
-  if (enabledProviderFields) {
-    return bottomFields.filter(field =>
-      !field.providerKey || enabledProviderFields[field.providerKey]
-    );
-  }
-
-  return bottomFields;
 }

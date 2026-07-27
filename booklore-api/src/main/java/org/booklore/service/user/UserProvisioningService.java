@@ -52,17 +52,14 @@ public class UserProvisioningService {
         UserPermissionsEntity perms = new UserPermissionsEntity();
         perms.setUser(user);
         perms.setPermissionAdmin(true);
-        perms.setPermissionUpload(true);
         perms.setPermissionDownload(true);
         perms.setPermissionEditMetadata(true);
         perms.setPermissionManageLibrary(true);
         perms.setPermissionEmailBook(true);
-        perms.setPermissionDeleteBook(true);
         perms.setPermissionAccessOpds(true);
         perms.setPermissionSyncKoreader(true);
         perms.setPermissionSyncKobo(true);
         perms.setPermissionManageMetadataConfig(true);
-        perms.setPermissionAccessBookdrop(true);
         perms.setPermissionAccessLibraryStats(true);
         perms.setPermissionAccessUserStats(true);
         perms.setPermissionAccessTaskManager(true);
@@ -73,7 +70,6 @@ public class UserProvisioningService {
         perms.setPermissionBulkCustomFetchMetadata(true);
         perms.setPermissionBulkEditMetadata(true);
         perms.setPermissionBulkRegenerateCover(true);
-        perms.setPermissionMoveOrganizeFiles(true);
         perms.setPermissionBulkLockUnlockMetadata(true);
         perms.setPermissionBulkResetBookloreReadProgress(true);
         perms.setPermissionBulkResetKoReaderReadProgress(true);
@@ -100,18 +96,15 @@ public class UserProvisioningService {
 
         UserPermissionsEntity permissions = new UserPermissionsEntity();
         permissions.setUser(user);
-        permissions.setPermissionUpload(request.isPermissionUpload());
         permissions.setPermissionDownload(request.isPermissionDownload());
         permissions.setPermissionEditMetadata(request.isPermissionEditMetadata());
         permissions.setPermissionManageLibrary(request.isPermissionManageLibrary());
         permissions.setPermissionEmailBook(request.isPermissionEmailBook());
-        permissions.setPermissionDeleteBook(request.isPermissionDeleteBook());
         permissions.setPermissionAccessOpds(request.isPermissionAccessOpds());
         permissions.setPermissionSyncKoreader(request.isPermissionSyncKoreader());
         permissions.setPermissionSyncKobo(request.isPermissionSyncKobo());
         permissions.setPermissionAdmin(request.isPermissionAdmin());
         permissions.setPermissionManageMetadataConfig(request.isPermissionManageMetadataConfig());
-        permissions.setPermissionAccessBookdrop(request.isPermissionAccessBookdrop());
         permissions.setPermissionAccessLibraryStats(request.isPermissionAccessLibraryStats());
         permissions.setPermissionAccessUserStats(request.isPermissionAccessUserStats());
         permissions.setPermissionAccessTaskManager(request.isPermissionAccessTaskManager());
@@ -122,7 +115,6 @@ public class UserProvisioningService {
         permissions.setPermissionBulkCustomFetchMetadata(request.isPermissionBulkCustomFetchMetadata());
         permissions.setPermissionBulkEditMetadata(request.isPermissionBulkEditMetadata());
         permissions.setPermissionBulkRegenerateCover(request.isPermissionBulkRegenerateCover());
-        permissions.setPermissionMoveOrganizeFiles(request.isPermissionMoveOrganizeFiles());
         permissions.setPermissionBulkLockUnlockMetadata(request.isPermissionBulkLockUnlockMetadata());
         permissions.setPermissionBulkResetBookloreReadProgress(request.isPermissionBulkResetBookloreReadProgress());
         permissions.setPermissionBulkResetKoReaderReadProgress(request.isPermissionBulkResetKoReaderReadProgress());
@@ -156,17 +148,14 @@ public class UserProvisioningService {
         perms.setUser(user);
         List<String> defaultPermissions = oidcAutoProvisionDetails.getDefaultPermissions();
         if (defaultPermissions != null) {
-            perms.setPermissionUpload(defaultPermissions.contains("permissionUpload"));
             perms.setPermissionDownload(defaultPermissions.contains("permissionDownload"));
             perms.setPermissionEditMetadata(defaultPermissions.contains("permissionEditMetadata"));
             perms.setPermissionManageLibrary(defaultPermissions.contains("permissionManageLibrary"));
             perms.setPermissionEmailBook(defaultPermissions.contains("permissionEmailBook"));
-            perms.setPermissionDeleteBook(defaultPermissions.contains("permissionDeleteBook"));
             perms.setPermissionAccessOpds(defaultPermissions.contains("permissionAccessOpds"));
             perms.setPermissionSyncKoreader(defaultPermissions.contains("permissionSyncKoreader"));
             perms.setPermissionSyncKobo(defaultPermissions.contains("permissionSyncKobo"));
             perms.setPermissionManageMetadataConfig(defaultPermissions.contains("permissionManageMetadataConfig"));
-            perms.setPermissionAccessBookdrop(defaultPermissions.contains("permissionAccessBookdrop"));
             perms.setPermissionAccessLibraryStats(defaultPermissions.contains("permissionAccessLibraryStats"));
             perms.setPermissionAccessUserStats(defaultPermissions.contains("permissionAccessUserStats"));
             perms.setPermissionAccessTaskManager(defaultPermissions.contains("permissionAccessTaskManager"));
@@ -219,17 +208,14 @@ public class UserProvisioningService {
 
         if (oidcAutoProvisionDetails != null && oidcAutoProvisionDetails.getDefaultPermissions() != null) {
             List<String> defaultPermissions = oidcAutoProvisionDetails.getDefaultPermissions();
-            permissions.setPermissionUpload(defaultPermissions.contains("permissionUpload"));
             permissions.setPermissionDownload(defaultPermissions.contains("permissionDownload"));
             permissions.setPermissionEditMetadata(defaultPermissions.contains("permissionEditMetadata"));
             permissions.setPermissionManageLibrary(defaultPermissions.contains("permissionManageLibrary"));
             permissions.setPermissionEmailBook(defaultPermissions.contains("permissionEmailBook"));
-            permissions.setPermissionDeleteBook(defaultPermissions.contains("permissionDeleteBook"));
             permissions.setPermissionAccessOpds(defaultPermissions.contains("permissionAccessOpds"));
             permissions.setPermissionSyncKoreader(defaultPermissions.contains("permissionSyncKoreader"));
             permissions.setPermissionSyncKobo(defaultPermissions.contains("permissionSyncKobo"));
             permissions.setPermissionManageMetadataConfig(defaultPermissions.contains("permissionManageMetadataConfig"));
-            permissions.setPermissionAccessBookdrop(defaultPermissions.contains("permissionAccessBookdrop"));
             permissions.setPermissionAccessLibraryStats(defaultPermissions.contains("permissionAccessLibraryStats"));
             permissions.setPermissionAccessUserStats(defaultPermissions.contains("permissionAccessUserStats"));
             permissions.setPermissionAccessTaskManager(defaultPermissions.contains("permissionAccessTaskManager"));
@@ -237,17 +223,14 @@ public class UserProvisioningService {
             permissions.setPermissionManageIcons(defaultPermissions.contains("permissionManageIcons"));
             permissions.setPermissionManageFonts(defaultPermissions.contains("permissionManageFonts"));
         } else {
-            permissions.setPermissionUpload(false);
             permissions.setPermissionDownload(false);
             permissions.setPermissionEditMetadata(false);
             permissions.setPermissionManageLibrary(false);
             permissions.setPermissionEmailBook(false);
             permissions.setPermissionAccessOpds(false);
-            permissions.setPermissionDeleteBook(false);
             permissions.setPermissionSyncKoreader(false);
             permissions.setPermissionSyncKobo(false);
             permissions.setPermissionManageMetadataConfig(false);
-            permissions.setPermissionAccessBookdrop(false);
             permissions.setPermissionAccessLibraryStats(false);
             permissions.setPermissionAccessUserStats(false);
             permissions.setPermissionAccessTaskManager(false);

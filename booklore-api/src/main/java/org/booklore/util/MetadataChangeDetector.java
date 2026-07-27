@@ -22,8 +22,7 @@ public class MetadataChangeDetector {
             Function<BookMetadataEntity, T> entityValueGetter,
             Function<BookMetadata, Boolean> dtoLockGetter,
             Function<BookMetadataEntity, Boolean> entityLockGetter,
-            Predicate<MetadataClearFlags> clearFlagGetter,
-            boolean includedInFileWrite
+            Predicate<MetadataClearFlags> clearFlagGetter
     ) {
         boolean isUnlocked(BookMetadataEntity entity) {
             return !isTrue(entityLockGetter.apply(entity));
@@ -57,7 +56,6 @@ public class MetadataChangeDetector {
             Function<BookMetadata, Boolean> dtoLockGetter,
             Function<BookMetadataEntity, Boolean> entityLockGetter,
             Predicate<MetadataClearFlags> clearFlagGetter,
-            boolean includedInFileWrite,
             boolean orderSensitive
     ) {
         CollectionFieldDescriptor(
@@ -66,10 +64,9 @@ public class MetadataChangeDetector {
                 Function<BookMetadataEntity, ? extends Collection<?>> entityValueGetter,
                 Function<BookMetadata, Boolean> dtoLockGetter,
                 Function<BookMetadataEntity, Boolean> entityLockGetter,
-                Predicate<MetadataClearFlags> clearFlagGetter,
-                boolean includedInFileWrite
+                Predicate<MetadataClearFlags> clearFlagGetter
         ) {
-            this(name, dtoValueGetter, entityValueGetter, dtoLockGetter, entityLockGetter, clearFlagGetter, includedInFileWrite, false);
+            this(name, dtoValueGetter, entityValueGetter, dtoLockGetter, entityLockGetter, clearFlagGetter, false);
         }
 
         boolean isUnlocked(BookMetadataEntity entity) {
@@ -106,162 +103,162 @@ public class MetadataChangeDetector {
             new FieldDescriptor<>("title",
                     BookMetadata::getTitle, BookMetadataEntity::getTitle,
                     BookMetadata::getTitleLocked, BookMetadataEntity::getTitleLocked,
-                    MetadataClearFlags::isTitle, true),
+                    MetadataClearFlags::isTitle),
             new FieldDescriptor<>("subtitle",
                     BookMetadata::getSubtitle, BookMetadataEntity::getSubtitle,
                     BookMetadata::getSubtitleLocked, BookMetadataEntity::getSubtitleLocked,
-                    MetadataClearFlags::isSubtitle, true),
+                    MetadataClearFlags::isSubtitle),
             new FieldDescriptor<>("publisher",
                     BookMetadata::getPublisher, BookMetadataEntity::getPublisher,
                     BookMetadata::getPublisherLocked, BookMetadataEntity::getPublisherLocked,
-                    MetadataClearFlags::isPublisher, true),
+                    MetadataClearFlags::isPublisher),
             new FieldDescriptor<>("publishedDate",
                     BookMetadata::getPublishedDate, BookMetadataEntity::getPublishedDate,
                     BookMetadata::getPublishedDateLocked, BookMetadataEntity::getPublishedDateLocked,
-                    MetadataClearFlags::isPublishedDate, true),
+                    MetadataClearFlags::isPublishedDate),
             new FieldDescriptor<>("description",
                     BookMetadata::getDescription, BookMetadataEntity::getDescription,
                     BookMetadata::getDescriptionLocked, BookMetadataEntity::getDescriptionLocked,
-                    MetadataClearFlags::isDescription, true),
+                    MetadataClearFlags::isDescription),
             new FieldDescriptor<>("seriesName",
                     BookMetadata::getSeriesName, BookMetadataEntity::getSeriesName,
                     BookMetadata::getSeriesNameLocked, BookMetadataEntity::getSeriesNameLocked,
-                    MetadataClearFlags::isSeriesName, true),
+                    MetadataClearFlags::isSeriesName),
             new FieldDescriptor<>("seriesNumber",
                     BookMetadata::getSeriesNumber, BookMetadataEntity::getSeriesNumber,
                     BookMetadata::getSeriesNumberLocked, BookMetadataEntity::getSeriesNumberLocked,
-                    MetadataClearFlags::isSeriesNumber, true),
+                    MetadataClearFlags::isSeriesNumber),
             new FieldDescriptor<>("seriesTotal",
                     BookMetadata::getSeriesTotal, BookMetadataEntity::getSeriesTotal,
                     BookMetadata::getSeriesTotalLocked, BookMetadataEntity::getSeriesTotalLocked,
-                    MetadataClearFlags::isSeriesTotal, true),
+                    MetadataClearFlags::isSeriesTotal),
             new FieldDescriptor<>("isbn13",
                     BookMetadata::getIsbn13, BookMetadataEntity::getIsbn13,
                     BookMetadata::getIsbn13Locked, BookMetadataEntity::getIsbn13Locked,
-                    MetadataClearFlags::isIsbn13, true),
+                    MetadataClearFlags::isIsbn13),
             new FieldDescriptor<>("isbn10",
                     BookMetadata::getIsbn10, BookMetadataEntity::getIsbn10,
                     BookMetadata::getIsbn10Locked, BookMetadataEntity::getIsbn10Locked,
-                    MetadataClearFlags::isIsbn10, true),
+                    MetadataClearFlags::isIsbn10),
             new FieldDescriptor<>("asin",
                     BookMetadata::getAsin, BookMetadataEntity::getAsin,
                     BookMetadata::getAsinLocked, BookMetadataEntity::getAsinLocked,
-                    MetadataClearFlags::isAsin, true),
+                    MetadataClearFlags::isAsin),
             new FieldDescriptor<>("goodreadsId",
                     BookMetadata::getGoodreadsId, BookMetadataEntity::getGoodreadsId,
                     BookMetadata::getGoodreadsIdLocked, BookMetadataEntity::getGoodreadsIdLocked,
-                    MetadataClearFlags::isGoodreadsId, true),
+                    MetadataClearFlags::isGoodreadsId),
             new FieldDescriptor<>("comicvineId",
                     BookMetadata::getComicvineId, BookMetadataEntity::getComicvineId,
                     BookMetadata::getComicvineIdLocked, BookMetadataEntity::getComicvineIdLocked,
-                    MetadataClearFlags::isComicvineId, true),
+                    MetadataClearFlags::isComicvineId),
             new FieldDescriptor<>("hardcoverId",
                     BookMetadata::getHardcoverId, BookMetadataEntity::getHardcoverId,
                     BookMetadata::getHardcoverIdLocked, BookMetadataEntity::getHardcoverIdLocked,
-                    MetadataClearFlags::isHardcoverId, true),
+                    MetadataClearFlags::isHardcoverId),
             new FieldDescriptor<>("hardcoverBookId",
                     BookMetadata::getHardcoverBookId, BookMetadataEntity::getHardcoverBookId,
                     BookMetadata::getHardcoverBookIdLocked, BookMetadataEntity::getHardcoverBookIdLocked,
-                    MetadataClearFlags::isHardcoverBookId, true),
+                    MetadataClearFlags::isHardcoverBookId),
             new FieldDescriptor<>("googleId",
                     BookMetadata::getGoogleId, BookMetadataEntity::getGoogleId,
                     BookMetadata::getGoogleIdLocked, BookMetadataEntity::getGoogleIdLocked,
-                    MetadataClearFlags::isGoogleId, true),
+                    MetadataClearFlags::isGoogleId),
             new FieldDescriptor<>("lubimyczytacId",
                     BookMetadata::getLubimyczytacId, BookMetadataEntity::getLubimyczytacId,
                     BookMetadata::getLubimyczytacIdLocked, BookMetadataEntity::getLubimyczytacIdLocked,
-                    MetadataClearFlags::isLubimyczytacId, true),
+                    MetadataClearFlags::isLubimyczytacId),
             new FieldDescriptor<>("ranobedbId",
                     BookMetadata::getRanobedbId, BookMetadataEntity::getRanobedbId,
                     BookMetadata::getRanobedbIdLocked, BookMetadataEntity::getRanobedbIdLocked,
-                    MetadataClearFlags::isRanobedbId, true),
+                    MetadataClearFlags::isRanobedbId),
             new FieldDescriptor<>("language",
                     BookMetadata::getLanguage, BookMetadataEntity::getLanguage,
                     BookMetadata::getLanguageLocked, BookMetadataEntity::getLanguageLocked,
-                    MetadataClearFlags::isLanguage, true),
+                    MetadataClearFlags::isLanguage),
             new FieldDescriptor<>("pageCount",
                     BookMetadata::getPageCount, BookMetadataEntity::getPageCount,
                     BookMetadata::getPageCountLocked, BookMetadataEntity::getPageCountLocked,
-                    MetadataClearFlags::isPageCount, false),
+                    MetadataClearFlags::isPageCount),
             new FieldDescriptor<>("amazonRating",
                     BookMetadata::getAmazonRating, BookMetadataEntity::getAmazonRating,
                     BookMetadata::getAmazonRatingLocked, BookMetadataEntity::getAmazonRatingLocked,
-                    MetadataClearFlags::isAmazonRating, false),
+                    MetadataClearFlags::isAmazonRating),
             new FieldDescriptor<>("amazonReviewCount",
                     BookMetadata::getAmazonReviewCount, BookMetadataEntity::getAmazonReviewCount,
                     BookMetadata::getAmazonReviewCountLocked, BookMetadataEntity::getAmazonReviewCountLocked,
-                    MetadataClearFlags::isAmazonReviewCount, false),
+                    MetadataClearFlags::isAmazonReviewCount),
             new FieldDescriptor<>("goodreadsRating",
                     BookMetadata::getGoodreadsRating, BookMetadataEntity::getGoodreadsRating,
                     BookMetadata::getGoodreadsRatingLocked, BookMetadataEntity::getGoodreadsRatingLocked,
-                    MetadataClearFlags::isGoodreadsRating, false),
+                    MetadataClearFlags::isGoodreadsRating),
             new FieldDescriptor<>("goodreadsReviewCount",
                     BookMetadata::getGoodreadsReviewCount, BookMetadataEntity::getGoodreadsReviewCount,
                     BookMetadata::getGoodreadsReviewCountLocked, BookMetadataEntity::getGoodreadsReviewCountLocked,
-                    MetadataClearFlags::isGoodreadsReviewCount, false),
+                    MetadataClearFlags::isGoodreadsReviewCount),
             new FieldDescriptor<>("hardcoverRating",
                     BookMetadata::getHardcoverRating, BookMetadataEntity::getHardcoverRating,
                     BookMetadata::getHardcoverRatingLocked, BookMetadataEntity::getHardcoverRatingLocked,
-                    MetadataClearFlags::isHardcoverRating, false),
+                    MetadataClearFlags::isHardcoverRating),
             new FieldDescriptor<>("hardcoverReviewCount",
                     BookMetadata::getHardcoverReviewCount, BookMetadataEntity::getHardcoverReviewCount,
                     BookMetadata::getHardcoverReviewCountLocked, BookMetadataEntity::getHardcoverReviewCountLocked,
-                    MetadataClearFlags::isHardcoverReviewCount, false),
+                    MetadataClearFlags::isHardcoverReviewCount),
             new FieldDescriptor<>("lubimyczytacRating",
                     BookMetadata::getLubimyczytacRating, BookMetadataEntity::getLubimyczytacRating,
                     BookMetadata::getLubimyczytacRatingLocked, BookMetadataEntity::getLubimyczytacRatingLocked,
-                    MetadataClearFlags::isLubimyczytacRating, false),
+                    MetadataClearFlags::isLubimyczytacRating),
             new FieldDescriptor<>("ranobedbRating",
                     BookMetadata::getRanobedbRating, BookMetadataEntity::getRanobedbRating,
                     BookMetadata::getRanobedbRatingLocked, BookMetadataEntity::getRanobedbRatingLocked,
-                    MetadataClearFlags::isRanobedbRating, false),
+                    MetadataClearFlags::isRanobedbRating),
             new FieldDescriptor<>("audibleId",
                     BookMetadata::getAudibleId, BookMetadataEntity::getAudibleId,
                     BookMetadata::getAudibleIdLocked, BookMetadataEntity::getAudibleIdLocked,
-                    MetadataClearFlags::isAudibleId, false),
+                    MetadataClearFlags::isAudibleId),
             new FieldDescriptor<>("audibleRating",
                     BookMetadata::getAudibleRating, BookMetadataEntity::getAudibleRating,
                     BookMetadata::getAudibleRatingLocked, BookMetadataEntity::getAudibleRatingLocked,
-                    MetadataClearFlags::isAudibleRating, false),
+                    MetadataClearFlags::isAudibleRating),
             new FieldDescriptor<>("audibleReviewCount",
                     BookMetadata::getAudibleReviewCount, BookMetadataEntity::getAudibleReviewCount,
                     BookMetadata::getAudibleReviewCountLocked, BookMetadataEntity::getAudibleReviewCountLocked,
-                    MetadataClearFlags::isAudibleReviewCount, false),
+                    MetadataClearFlags::isAudibleReviewCount),
             new FieldDescriptor<>("narrator",
                     BookMetadata::getNarrator, BookMetadataEntity::getNarrator,
                     BookMetadata::getNarratorLocked, BookMetadataEntity::getNarratorLocked,
-                    MetadataClearFlags::isNarrator, false),
+                    MetadataClearFlags::isNarrator),
             new FieldDescriptor<>("abridged",
                     BookMetadata::getAbridged, BookMetadataEntity::getAbridged,
                     BookMetadata::getAbridgedLocked, BookMetadataEntity::getAbridgedLocked,
-                    MetadataClearFlags::isAbridged, false),
+                    MetadataClearFlags::isAbridged),
             new FieldDescriptor<>("ageRating",
                     BookMetadata::getAgeRating, BookMetadataEntity::getAgeRating,
                     BookMetadata::getAgeRatingLocked, BookMetadataEntity::getAgeRatingLocked,
-                    MetadataClearFlags::isAgeRating, true),
+                    MetadataClearFlags::isAgeRating),
             new FieldDescriptor<>("contentRating",
                     BookMetadata::getContentRating, BookMetadataEntity::getContentRating,
                     BookMetadata::getContentRatingLocked, BookMetadataEntity::getContentRatingLocked,
-                    MetadataClearFlags::isContentRating, true)
+                    MetadataClearFlags::isContentRating)
     );
 
     private static final List<CollectionFieldDescriptor> COLLECTION_FIELDS = List.of(
             new CollectionFieldDescriptor("authors",
                     BookMetadata::getAuthors, BookMetadataEntity::getAuthors,
                     BookMetadata::getAuthorsLocked, BookMetadataEntity::getAuthorsLocked,
-                    MetadataClearFlags::isAuthors, true, true),
+                    MetadataClearFlags::isAuthors, true),
             new CollectionFieldDescriptor("categories",
                     BookMetadata::getCategories, BookMetadataEntity::getCategories,
                     BookMetadata::getCategoriesLocked, BookMetadataEntity::getCategoriesLocked,
-                    MetadataClearFlags::isCategories, true),
+                    MetadataClearFlags::isCategories),
             new CollectionFieldDescriptor("moods",
                     BookMetadata::getMoods, BookMetadataEntity::getMoods,
                     BookMetadata::getMoodsLocked, BookMetadataEntity::getMoodsLocked,
-                    MetadataClearFlags::isMoods, false),
+                    MetadataClearFlags::isMoods),
             new CollectionFieldDescriptor("tags",
                     BookMetadata::getTags, BookMetadataEntity::getTags,
                     BookMetadata::getTagsLocked, BookMetadataEntity::getTagsLocked,
-                    MetadataClearFlags::isTags, false)
+                    MetadataClearFlags::isTags)
     );
 
     public static boolean isDifferent(BookMetadata newMeta, BookMetadataEntity existingMeta, MetadataClearFlags clear) {
@@ -298,20 +295,6 @@ public class MetadataChangeDetector {
         }
         if (hasComicMetadataChanges(newMeta, existingMeta)) {
             return true;
-        }
-        return false;
-    }
-
-    public static boolean hasValueChangesForFileWrite(BookMetadata newMeta, BookMetadataEntity existingMeta, MetadataClearFlags clear) {
-        for (FieldDescriptor<?> field : SIMPLE_FIELDS) {
-            if (field.includedInFileWrite() && hasValueDifference(field, newMeta, existingMeta, clear)) {
-                return true;
-            }
-        }
-        for (CollectionFieldDescriptor field : COLLECTION_FIELDS) {
-            if (field.includedInFileWrite() && hasCollectionValueDifference(field, newMeta, existingMeta, clear)) {
-                return true;
-            }
         }
         return false;
     }
@@ -504,7 +487,6 @@ public class MetadataChangeDetector {
         }
         if (differsLock(newMeta.getCoverLocked(), existingMeta.getCoverLocked())) return true;
         if (differsLock(newMeta.getAudiobookCoverLocked(), existingMeta.getAudiobookCoverLocked())) return true;
-        if (differsLock(newMeta.getReviewsLocked(), existingMeta.getReviewsLocked())) return true;
         return hasComicLockChanges(newMeta, existingMeta);
     }
 

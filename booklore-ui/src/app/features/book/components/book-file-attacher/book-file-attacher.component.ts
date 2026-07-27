@@ -11,7 +11,6 @@ import { BookFileService } from '../../service/book-file.service';
 import { Book } from '../../model/book.model';
 import {MessageService, PrimeTemplate} from 'primeng/api';
 import { TranslocoDirective, TranslocoPipe, TranslocoService } from '@jsverse/transloco';
-import { AppSettingsService } from '../../../../shared/service/app-settings.service';
 
 @Component({
   selector: 'app-book-file-attacher',
@@ -40,7 +39,6 @@ export class BookFileAttacherComponent implements OnInit, OnDestroy {
   private allBooks: Book[] = [];
 
   private readonly t = inject(TranslocoService);
-  private readonly appSettingsService = inject(AppSettingsService);
 
   constructor(
     private dialogRef: DynamicDialogRef,
@@ -62,14 +60,6 @@ export class BookFileAttacherComponent implements OnInit, OnDestroy {
       this.closeDialog();
       return;
     }
-
-    this.appSettingsService.appSettings$.pipe(
-      filter(settings => !!settings),
-      take(1),
-      takeUntil(this.destroy$)
-    ).subscribe(settings => {
-      this.moveFiles = settings!.metadataPersistenceSettings?.moveFilesToLibraryPattern ?? false;
-    });
 
     // Get the library ID from first source book (all should be same library)
     const libraryId = this.sourceBooks[0].libraryId;

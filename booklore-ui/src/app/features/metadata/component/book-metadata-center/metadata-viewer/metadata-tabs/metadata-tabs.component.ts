@@ -4,7 +4,6 @@ import {Book, BookRecommendation, BookType, FileInfo} from '../../../../../book/
 import {Tab, TabList, TabPanel, TabPanels, Tabs} from 'primeng/tabs';
 import {InfiniteScrollDirective} from 'ngx-infinite-scroll';
 import {BookCardLiteComponent} from '../../../../../book/components/book-card-lite/book-card-lite-component';
-import {BookReviewsComponent} from '../../../../../book/components/book-reviews/book-reviews.component';
 import {BookNotesComponent} from '../../../../../book/components/book-notes/book-notes-component';
 import {BookReadingSessionsComponent} from '../../book-reading-sessions/book-reading-sessions.component';
 import {Button} from 'primeng/button';
@@ -35,20 +34,6 @@ export interface DownloadAllFilesEvent {
   book: Book;
 }
 
-export interface DeleteBookFileEvent {
-  book: Book;
-  fileId: number;
-  fileName: string;
-  isPrimary: boolean;
-  isOnlyFormat: boolean;
-}
-
-export interface DeleteSupplementaryFileEvent {
-  bookId: number;
-  fileId: number;
-  fileName: string;
-}
-
 export interface DetachBookFileEvent {
   book: Book;
   fileId: number;
@@ -66,7 +51,6 @@ export interface DetachBookFileEvent {
     Tabs,
     InfiniteScrollDirective,
     BookCardLiteComponent,
-    BookReviewsComponent,
     BookNotesComponent,
     BookReadingSessionsComponent,
     Button,
@@ -95,8 +79,6 @@ export class MetadataTabsComponent {
   @Output() downloadBook = new EventEmitter<DownloadEvent>();
   @Output() downloadFile = new EventEmitter<DownloadAdditionalFileEvent>();
   @Output() downloadAllFiles = new EventEmitter<DownloadAllFilesEvent>();
-  @Output() deleteBookFile = new EventEmitter<DeleteBookFileEvent>();
-  @Output() deleteSupplementaryFile = new EventEmitter<DeleteSupplementaryFileEvent>();
   @Output() detachBookFile = new EventEmitter<DetachBookFileEvent>();
 
   get defaultTabValue(): string {
@@ -117,15 +99,6 @@ export class MetadataTabsComponent {
 
   downloadAll(book: Book): void {
     this.downloadAllFiles.emit({ book });
-  }
-
-  deleteFile(book: Book, fileId: number, fileName: string, isPrimary: boolean): void {
-    const isOnlyFormat = !book.alternativeFormats?.length;
-    this.deleteBookFile.emit({ book, fileId, fileName, isPrimary, isOnlyFormat });
-  }
-
-  deleteSupplementary(bookId: number, fileId: number, fileName: string): void {
-    this.deleteSupplementaryFile.emit({ bookId, fileId, fileName });
   }
 
   detachFile(book: Book, fileId: number, fileName: string): void {

@@ -190,14 +190,6 @@
     background: var(--p-highlight-background);
   }
 
-  &.marked-for-deletion {
-    background: color-mix(in srgb, var(--p-red-500) 8%, transparent);
-  }
-
-  .delete-checkbox {
-    flex-shrink: 0;
-  }
-
   .book-cover {
     width: 36px;
     height: 52px;
