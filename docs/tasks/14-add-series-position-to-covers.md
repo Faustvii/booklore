@@ -1,7 +1,7 @@
 # Task 14 — Add Series Position to Generated Covers
 
 **Priority:** P3
-**Status:** Not Started
+**Status:** Done
 **Scope:** Backend
 
 ---
@@ -64,18 +64,18 @@ ambiguity without requiring the user to open each book.
 
 ## Acceptance Criteria
 
-- [ ] `CoverImageGenerator.generateCover(title, author, seriesText)` renders
+- [x] `CoverImageGenerator.generateCover(title, author, seriesText)` renders
       `"Book N"` in the existing subtitle slot when `seriesText` is
       non-null/non-empty.
-- [ ] `CoverImageGenerator.generateSquareCover(...)` accepts and renders the
+- [x] `CoverImageGenerator.generateSquareCover(...)` accepts and renders the
       same optional series text.
-- [ ] `BookCoverService.generateCustomCover`,
+- [x] `BookCoverService.generateCustomCover`,
       `generateCustomAudiobookCover`, and
       `processBulkCustomCoverGeneration` all pass series position through
       when `seriesNumber` is present on the book's metadata.
-- [ ] Books with no `seriesNumber` render covers identical to current
+- [x] Books with no `seriesNumber` render covers identical to current
       behavior (no blank/empty subtitle artifact).
-- [ ] Fractional series numbers (e.g. `2.5`) render as `"Book 2.5"`, whole
+- [x] Fractional series numbers (e.g. `2.5`) render as `"Book 2.5"`, whole
       numbers (e.g. `3.0`) render as `"Book 3"` (no trailing `.0`).
-- [ ] No compile errors.
-- [ ] All existing tests pass.
+- [x] No compile errors.
+- [x] All existing tests pass.

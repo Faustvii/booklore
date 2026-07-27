@@ -296,12 +296,12 @@ class BookCoverServiceTest {
             book.getMetadata().setAuthors(List.of(author));
             book.setBookFiles(new ArrayList<>());
             when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
-            when(coverImageGenerator.generateCover("Test Book", "Jane Doe")).thenReturn(new byte[]{1, 2, 3});
+            when(coverImageGenerator.generateCover("Test Book", "Jane Doe", null)).thenReturn(new byte[]{1, 2, 3});
             when(bookRepository.findCoverUpdateInfoByIds(any())).thenReturn(List.of());
 
             service.generateCustomCover(1L);
 
-            verify(coverImageGenerator).generateCover("Test Book", "Jane Doe");
+            verify(coverImageGenerator).generateCover("Test Book", "Jane Doe", null);
             verify(fileService).createThumbnailFromBytes(eq(1L), any());
             verify(bookRepository).save(book);
         }
@@ -341,12 +341,12 @@ class BookCoverServiceTest {
             AuthorEntity author = AuthorEntity.builder().name("Author Name").build();
             book.getMetadata().setAuthors(List.of(author));
             when(bookRepository.findByIdWithBookFiles(1L)).thenReturn(Optional.of(book));
-            when(coverImageGenerator.generateSquareCover("Test Audiobook", "Author Name")).thenReturn(new byte[]{1, 2});
+            when(coverImageGenerator.generateSquareCover("Test Audiobook", "Author Name", null)).thenReturn(new byte[]{1, 2});
             when(bookRepository.findCoverUpdateInfoByIds(any())).thenReturn(List.of());
 
             service.generateCustomAudiobookCover(1L);
 
-            verify(coverImageGenerator).generateSquareCover("Test Audiobook", "Author Name");
+            verify(coverImageGenerator).generateSquareCover("Test Audiobook", "Author Name", null);
             verify(fileService).createAudiobookThumbnailFromBytes(eq(1L), any());
             verify(bookRepository).save(book);
             assertThat(book.getMetadata().getAudiobookCoverUpdatedOn()).isNotNull();
@@ -374,12 +374,12 @@ class BookCoverServiceTest {
             BookEntity book = buildBookWithAudiobookLock(1L, false);
             book.getMetadata().setAuthors(null);
             when(bookRepository.findByIdWithBookFiles(1L)).thenReturn(Optional.of(book));
-            when(coverImageGenerator.generateSquareCover("Test Audiobook", null)).thenReturn(new byte[]{1});
+            when(coverImageGenerator.generateSquareCover("Test Audiobook", null, null)).thenReturn(new byte[]{1});
             when(bookRepository.findCoverUpdateInfoByIds(any())).thenReturn(List.of());
 
             service.generateCustomAudiobookCover(1L);
 
-            verify(coverImageGenerator).generateSquareCover("Test Audiobook", null);
+            verify(coverImageGenerator).generateSquareCover("Test Audiobook", null, null);
         }
     }
 
@@ -432,6 +432,88 @@ class BookCoverServiceTest {
 
                 secMock.verify(() -> SecurityContextVirtualThread.runWithSecurityContext(any(Runnable.class)));
             }
+        }
+
+        @Test
+        void passesSeriesPositionThroughForBulkGeneration() {
+            BookEntity unlocked = buildBook(1L, false);
+            unlocked.getMetadata().setSeriesNumber(3.0f);
+
+            when(bookQueryService.findAllWithMetadataByIds(Set.of(1L))).thenReturn(List.of(unlocked));
+            when(bookRepository.findById(1L)).thenReturn(Optional.of(unlocked));
+            when(transactionTemplate.execute(any())).thenAnswer(inv -> {
+                var callback = inv.getArgument(0, org.springframework.transaction.support.TransactionCallback.class);
+                return callback.doInTransaction(null);
+            });
+            when(coverImageGenerator.generateCover("Test Book", null, "Book 3")).thenReturn(new byte[]{1});
+            when(bookRepository.findCoverUpdateInfoByIds(any())).thenReturn(List.of());
+
+            try (MockedStatic<SecurityContextVirtualThread> secMock = mockStatic(SecurityContextVirtualThread.class)) {
+                secMock.when(() -> SecurityContextVirtualThread.runWithSecurityContext(any(Runnable.class)))
+                        .thenAnswer(inv -> {
+                            inv.<Runnable>getArgument(0).run();
+                            return null;
+                        });
+
+                service.generateCustomCoversForBooks(Set.of(1L));
+
+                verify(coverImageGenerator).generateCover("Test Book", null, "Book 3");
+            }
+        }
+    }
+
+    @Nested
+    class SeriesPositionOnCovers {
+
+        @Test
+        void generateCustomCover_passesFormattedWholeNumberSeriesPosition() {
+            BookEntity book = buildBook(1L, false);
+            book.getMetadata().setSeriesNumber(3.0f);
+            when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
+            when(coverImageGenerator.generateCover("Test Book", null, "Book 3")).thenReturn(new byte[]{1});
+            when(bookRepository.findCoverUpdateInfoByIds(any())).thenReturn(List.of());
+
+            service.generateCustomCover(1L);
+
+            verify(coverImageGenerator).generateCover("Test Book", null, "Book 3");
+        }
+
+        @Test
+        void generateCustomCover_passesFormattedFractionalSeriesPosition() {
+            BookEntity book = buildBook(1L, false);
+            book.getMetadata().setSeriesNumber(2.5f);
+            when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
+            when(coverImageGenerator.generateCover("Test Book", null, "Book 2.5")).thenReturn(new byte[]{1});
+            when(bookRepository.findCoverUpdateInfoByIds(any())).thenReturn(List.of());
+
+            service.generateCustomCover(1L);
+
+            verify(coverImageGenerator).generateCover("Test Book", null, "Book 2.5");
+        }
+
+        @Test
+        void generateCustomCover_passesNullSeriesTextWhenSeriesNumberAbsent() {
+            BookEntity book = buildBook(1L, false);
+            when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
+            when(coverImageGenerator.generateCover("Test Book", null, null)).thenReturn(new byte[]{1});
+            when(bookRepository.findCoverUpdateInfoByIds(any())).thenReturn(List.of());
+
+            service.generateCustomCover(1L);
+
+            verify(coverImageGenerator).generateCover("Test Book", null, null);
+        }
+
+        @Test
+        void generateCustomAudiobookCover_passesFormattedSeriesPosition() {
+            BookEntity book = buildBookWithAudiobookLock(1L, false);
+            book.getMetadata().setSeriesNumber(1.0f);
+            when(bookRepository.findByIdWithBookFiles(1L)).thenReturn(Optional.of(book));
+            when(coverImageGenerator.generateSquareCover("Test Audiobook", null, "Book 1")).thenReturn(new byte[]{1});
+            when(bookRepository.findCoverUpdateInfoByIds(any())).thenReturn(List.of());
+
+            service.generateCustomAudiobookCover(1L);
+
+            verify(coverImageGenerator).generateSquareCover("Test Audiobook", null, "Book 1");
         }
     }
 
@@ -664,7 +746,7 @@ class BookCoverServiceTest {
         void sendsNotificationWhenUpdatesExist() {
             BookEntity book = buildBook(1L, false);
             when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
-            when(coverImageGenerator.generateCover(any(), any())).thenReturn(new byte[]{1});
+            when(coverImageGenerator.generateCover(any(), any(), any())).thenReturn(new byte[]{1});
 
             BookCoverUpdateProjection projection = mock(BookCoverUpdateProjection.class);
             when(bookRepository.findCoverUpdateInfoByIds(List.of(1L))).thenReturn(List.of(projection));
@@ -678,7 +760,7 @@ class BookCoverServiceTest {
         void doesNotSendNotificationWhenNoUpdates() {
             BookEntity book = buildBook(1L, false);
             when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
-            when(coverImageGenerator.generateCover(any(), any())).thenReturn(new byte[]{1});
+            when(coverImageGenerator.generateCover(any(), any(), any())).thenReturn(new byte[]{1});
             when(bookRepository.findCoverUpdateInfoByIds(any())).thenReturn(List.of());
 
             service.generateCustomCover(1L);
@@ -695,12 +777,12 @@ class BookCoverServiceTest {
             BookEntity book = buildBook(1L, false);
             book.getMetadata().setAuthors(new ArrayList<>());
             when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
-            when(coverImageGenerator.generateCover("Test Book", null)).thenReturn(new byte[]{1});
+            when(coverImageGenerator.generateCover("Test Book", null, null)).thenReturn(new byte[]{1});
             when(bookRepository.findCoverUpdateInfoByIds(any())).thenReturn(List.of());
 
             service.generateCustomCover(1L);
 
-            verify(coverImageGenerator).generateCover("Test Book", null);
+            verify(coverImageGenerator).generateCover("Test Book", null, null);
         }
 
         @Test
@@ -711,13 +793,13 @@ class BookCoverServiceTest {
             authors.add(AuthorEntity.builder().name("Bob").build());
             book.getMetadata().setAuthors(authors);
             when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
-            when(coverImageGenerator.generateCover(eq("Test Book"), argThat(s -> s.contains("Alice") && s.contains("Bob"))))
+            when(coverImageGenerator.generateCover(eq("Test Book"), argThat(s -> s.contains("Alice") && s.contains("Bob")), any()))
                     .thenReturn(new byte[]{1});
             when(bookRepository.findCoverUpdateInfoByIds(any())).thenReturn(List.of());
 
             service.generateCustomCover(1L);
 
-            verify(coverImageGenerator).generateCover(eq("Test Book"), argThat(s -> s.contains("Alice") && s.contains("Bob")));
+            verify(coverImageGenerator).generateCover(eq("Test Book"), argThat(s -> s.contains("Alice") && s.contains("Bob")), any());
         }
     }
 
