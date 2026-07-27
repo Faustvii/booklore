@@ -23,7 +23,6 @@ public class Library {
     private Sort sort;
     private String icon;
     private IconType iconType;
-    private String fileNamingPattern;
     private boolean watch;
     private List<LibraryPath> paths;
     private List<BookFileType> formatPriority;

@@ -112,19 +112,6 @@ public class LibraryController {
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary = "Set file naming pattern", description = "Set the file naming pattern for a library. Requires admin or manipulation permission.")
-    @ApiResponse(responseCode = "200", description = "File naming pattern updated successfully")
-    @PatchMapping("/{libraryId}/file-naming-pattern")
-    @CheckLibraryAccess(libraryIdParam = "libraryId")
-    @PreAuthorize("@securityUtil.canManageLibrary() or @securityUtil.isAdmin()")
-    public ResponseEntity<Library> setFileNamingPattern(
-            @Parameter(description = "ID of the library") @PathVariable long libraryId,
-            @Parameter(description = "File naming pattern body") @RequestBody Map<String, String> body) {
-        String pattern = body.get("fileNamingPattern");
-        Library updated = libraryService.setFileNamingPattern(libraryId, pattern);
-        return ResponseEntity.ok(updated);
-    }
-
     @Operation(summary = "Scan library paths", description = "Scan the provided library paths and return a count of processable files. Requires admin or manipulation permission.")
     @ApiResponse(responseCode = "200", description = "Processable files count returned successfully")
     @PostMapping("/scan")

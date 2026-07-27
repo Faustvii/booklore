@@ -1,12 +1,7 @@
 package org.booklore.service.file;
 
-import org.booklore.model.entity.BookEntity;
-import org.booklore.model.entity.BookFileEntity;
-import org.booklore.model.entity.LibraryEntity;
 import org.booklore.model.entity.LibraryPathEntity;
-import org.booklore.service.appsettings.AppSettingService;
 import org.booklore.service.monitoring.MonitoringRegistrationService;
-import org.booklore.util.PathPatternResolver;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -30,7 +25,6 @@ import java.util.Set;
 public class FileMoveHelper {
 
     private final MonitoringRegistrationService monitoringRegistrationService;
-    private final AppSettingService appSettingService;
 
     private static final int MAX_ATTEMPTS = 3;
     private static final long RETRY_DELAY_MS = 100;
@@ -136,44 +130,6 @@ public class FileMoveHelper {
     public void registerLibraryPaths(Long libraryId, Path libraryRoot) {
         log.debug("Registering library paths for library {} with root {}", libraryId, libraryRoot);
         monitoringRegistrationService.registerLibraryPaths(libraryId, libraryRoot);
-    }
-
-    public String getFileNamingPattern(LibraryEntity library) {
-        String pattern = library.getFileNamingPattern();
-        if (pattern == null || pattern.trim().isEmpty()) {
-            try {
-                pattern = appSettingService.getAppSettings().getUploadPattern();
-                log.debug("Using default pattern for library {} as no custom pattern is set", library.getName());
-            } catch (Exception e) {
-                log.warn("Failed to get default upload pattern for library {}: {}", library.getName(), e.getMessage());
-            }
-        }
-        if (pattern == null || pattern.trim().isEmpty()) {
-            pattern = "{currentFilename}";
-            log.info("No file naming pattern available for library {}. Using fallback pattern: {currentFilename}", library.getName());
-        }
-        if (pattern.endsWith("/") || pattern.endsWith("\\")) {
-            pattern += "{currentFilename}";
-        }
-        return pattern;
-    }
-
-    public Path generateNewFilePath(BookEntity book, LibraryPathEntity libraryPathEntity, String pattern) {
-        String newRelativePathStr = PathPatternResolver.resolvePattern(book, pattern);
-        if (newRelativePathStr.startsWith("/") || newRelativePathStr.startsWith("\\")) {
-            newRelativePathStr = newRelativePathStr.substring(1);
-        }
-        String path = libraryPathEntity.getPath();
-        return Paths.get(path, newRelativePathStr);
-    }
-
-    public Path generateNewFilePath(BookEntity book, BookFileEntity bookFile, LibraryPathEntity libraryPathEntity, String pattern) {
-        String newRelativePathStr = PathPatternResolver.resolvePattern(book, bookFile, pattern, bookFile.isFolderBased());
-        if (newRelativePathStr.startsWith("/") || newRelativePathStr.startsWith("\\")) {
-            newRelativePathStr = newRelativePathStr.substring(1);
-        }
-        String path = libraryPathEntity.getPath();
-        return Paths.get(path, newRelativePathStr);
     }
 
     public void deleteEmptyParentDirsUpToLibraryFolders(Path currentDir, Set<Path> libraryRoots) {

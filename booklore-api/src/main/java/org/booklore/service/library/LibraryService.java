@@ -294,14 +294,6 @@ public class LibraryService {
         return bookEntities.stream().map(bookMapper::toBook).toList();
     }
 
-    public Library setFileNamingPattern(long libraryId, String pattern) {
-        LibraryEntity library = libraryRepository.findById(libraryId).orElseThrow(() -> ApiError.LIBRARY_NOT_FOUND.createException(libraryId));
-        library.setFileNamingPattern(pattern);
-        Library result = libraryMapper.toLibrary(libraryRepository.save(library));
-        auditService.log(AuditAction.NAMING_PATTERN_CHANGED, "Library", libraryId, "Changed naming pattern for library: " + library.getName() + " to: " + pattern);
-        return result;
-    }
-
     public Map<String, Long> getBookCountsByFormat(long libraryId) {
         libraryRepository.findById(libraryId).orElseThrow(() -> ApiError.LIBRARY_NOT_FOUND.createException(libraryId));
         Map<String, Long> counts = new HashMap<>();

@@ -28,11 +28,6 @@
             <p-tab [value]="SettingsTab.EmailSettingsV2">
               <i class="pi pi-envelope"></i> {{ t('email') }}
             </p-tab>
-            @if (userState.user.permissions.admin || userState.user.permissions.canManageMetadataConfig) {
-              <p-tab [value]="SettingsTab.NamingPattern">
-                <i class="pi pi-sitemap"></i> {{ t('patterns') }}
-              </p-tab>
-            }
             @if (userState.user.permissions.admin) {
               <p-tab [value]="SettingsTab.AuthenticationSettings">
                 <i class="pi pi-lock"></i> {{ t('authentication') }}
@@ -92,13 +87,6 @@
                 <app-email-v2></app-email-v2>
               </ng-template>
             </p-tabpanel>
-            @if (userState.user.permissions.admin || userState.user.permissions.canManageMetadataConfig) {
-              <p-tabpanel [value]="SettingsTab.NamingPattern">
-                <ng-template #content>
-                  <app-file-naming-pattern></app-file-naming-pattern>
-                </ng-template>
-              </p-tabpanel>
-            }
             @if (userState.user.permissions.admin) {
               <p-tabpanel [value]="SettingsTab.AuthenticationSettings">
                 <ng-template #content>
