@@ -237,7 +237,7 @@
       "optionsLabel": "Options",
       "addPhysicalBook": "Ajouter un livre physique",
       "editLibrary": "Modifier la bibliothèque",
-      "rescanLibrary": "Rebalayer la bibliothèque",
+      "rescanLibrary": "Synchroniser les fichiers de la bibliothèque",
       "customFetchMetadata": "Récupération personnalisée des métadonnées",
       "autoFetchMetadata": "Récupération automatique des métadonnées",
       "findDuplicates": "Rechercher les doublons",
@@ -256,16 +256,16 @@
       "deleteMagicShelf": "Supprimer l'étagère magique"
     },
     "confirm": {
-      "rescanLibraryMessage": "Êtes-vous sûr de vouloir rafraîchir la bibliothèque : {{ name }} ?",
+      "rescanLibraryMessage": "Voulez-vous vraiment synchroniser les fichiers de la bibliothèque : {{ name }} ?",
       "deleteLibraryMessage": "Êtes-vous sûr de vouloir supprimer la bibliothèque : {{ name }} ?",
       "deleteShelfMessage": "Êtes-vous sûr de vouloir supprimer l'étagère : {{ name }} ?",
       "deleteMagicShelfMessage": "Êtes-vous sûr de vouloir supprimer l'étagère magique : {{ name }} ?",
       "header": "Confirmation",
-      "rescanLabel": "Rebalayer"
+      "rescanLabel": "Synchroniser"
     },
     "toast": {
-      "libraryRefreshSuccessDetail": "Rafraîchissement de la bibliothèque planifié",
-      "libraryRefreshFailedDetail": "Échec du rafraîchissement de la bibliothèque",
+      "libraryRefreshSuccessDetail": "Synchronisation des fichiers de la bibliothèque planifiée",
+      "libraryRefreshFailedDetail": "Échec de la synchronisation des fichiers de la bibliothèque",
       "libraryDeletedDetail": "La bibliothèque a été supprimée",
       "libraryDeleteFailedDetail": "Échec de la suppression de la bibliothèque",
       "shelfDeletedDetail": "L'étagère a été supprimée",

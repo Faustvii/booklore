@@ -238,7 +238,7 @@
       "optionsLabel": "Opcije",
       "addPhysicalBook": "Dodaj fizičku knjigu",
       "editLibrary": "Uredi knjižnicu",
-      "rescanLibrary": "Ponovo skeniraj knjižnicu",
+      "rescanLibrary": "Sinkroniziraj datoteke knjižnice",
       "customFetchMetadata": "Prilagođeni dohvat metapodataka",
       "autoFetchMetadata": "Automatski dohvat metapodataka",
       "findDuplicates": "Pronađi duplikate",
@@ -258,16 +258,16 @@
       "exportJson": "Kopiraj JSON"
     },
     "confirm": {
-      "rescanLibraryMessage": "Jeste li sigurni da želite osvježiti knjižnicu: {{ name }}?",
+      "rescanLibraryMessage": "Jeste li sigurni da želite sinkronizirati datoteke knjižnice: {{ name }}?",
       "deleteLibraryMessage": "Jeste li sigurni da želite obrisati knjižnicu: {{ name }}?",
       "deleteShelfMessage": "Jeste li sigurni da želite obrisati policu: {{ name }}?",
       "deleteMagicShelfMessage": "Jeste li sigurni da želite obrisati čarobnu policu: {{ name }}?",
       "header": "Potvrda",
-      "rescanLabel": "Ponovo skeniraj"
+      "rescanLabel": "Sinkroniziraj"
     },
     "toast": {
-      "libraryRefreshSuccessDetail": "Osvježavanje zbirke zakazano",
-      "libraryRefreshFailedDetail": "Osvježavanje zbirke nije uspjelo",
+      "libraryRefreshSuccessDetail": "Sinkronizacija datoteka knjižnice zakazana",
+      "libraryRefreshFailedDetail": "Sinkronizacija datoteka knjižnice nije uspjela",
       "libraryDeletedDetail": "Zbirka je obrisana",
       "libraryDeleteFailedDetail": "Brisanje zbirke nije uspjelo",
       "shelfDeletedDetail": "Polica je obrisana",

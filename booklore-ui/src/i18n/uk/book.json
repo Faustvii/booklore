@@ -238,7 +238,7 @@
       "optionsLabel": "Опції",
       "addPhysicalBook": "Додати паперову книгу",
       "editLibrary": "Редагувати бібліотеку",
-      "rescanLibrary": "Повторно сканувати бібліотеку",
+      "rescanLibrary": "Синхронізувати файли бібліотеки",
       "customFetchMetadata": "Налаштовуване отримання метаданих",
       "autoFetchMetadata": "Автозавантаження метаданих",
       "findDuplicates": "Знайти дублікати",
@@ -259,16 +259,16 @@
       "exportJson": "Скопіювати JSON"
     },
     "confirm": {
-      "rescanLibraryMessage": "Ви впевнені, що хочете оновити бібліотеку: {{ name }}?",
+      "rescanLibraryMessage": "Ви впевнені, що хочете синхронізувати файли бібліотеки: {{ name }}?",
       "deleteLibraryMessage": "Ви впевнені, що хочете видалити бібліотеку: {{ name }}?",
       "deleteShelfMessage": "Ви впевнені, що хочете видалити полицю: {{ name }}?",
       "deleteMagicShelfMessage": "Ви впевнені, що хочете видалити магічну полицю: {{ name }}?",
       "header": "Підтвердження",
-      "rescanLabel": "Пересканувати"
+      "rescanLabel": "Синхронізувати"
     },
     "toast": {
-      "libraryRefreshSuccessDetail": "Оновлення бібліотеки заплановано",
-      "libraryRefreshFailedDetail": "Не вдалося оновити бібліотеку",
+      "libraryRefreshSuccessDetail": "Синхронізацію файлів бібліотеки заплановано",
+      "libraryRefreshFailedDetail": "Не вдалося синхронізувати файли бібліотеки",
       "libraryDeletedDetail": "Бібліотеку видалено",
       "libraryDeleteFailedDetail": "Не вдалося видалити бібліотеку",
       "shelfDeletedDetail": "Полицю видалено",

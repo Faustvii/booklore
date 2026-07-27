@@ -233,7 +233,7 @@
       "optionsLabel": "Opcje",
       "addPhysicalBook": "Dodaj książkę fizyczną",
       "editLibrary": "Edytuj bibliotekę",
-      "rescanLibrary": "Przeskanuj bibliotekę",
+      "rescanLibrary": "Synchronizuj pliki biblioteki",
       "customFetchMetadata": "Niestandardowe pobieranie metadanych",
       "autoFetchMetadata": "Automatyczne pobieranie metadanych",
       "findDuplicates": "Znajdź duplikaty",
@@ -252,16 +252,16 @@
       "deleteMagicShelf": "Usuń inteligentną półkę"
     },
     "confirm": {
-      "rescanLibraryMessage": "Czy na pewno chcesz odświeżyć bibliotekę: {{ name }}?",
+      "rescanLibraryMessage": "Czy na pewno chcesz zsynchronizować pliki biblioteki: {{ name }}?",
       "deleteLibraryMessage": "Czy na pewno chcesz usunąć bibliotekę: {{ name }}?",
       "deleteShelfMessage": "Czy na pewno chcesz usunąć półkę: {{ name }}?",
       "deleteMagicShelfMessage": "Czy na pewno chcesz usunąć inteligentną półkę: {{ name }}?",
       "header": "Potwierdzenie",
-      "rescanLabel": "Przeskanuj"
+      "rescanLabel": "Synchronizuj"
     },
     "toast": {
-      "libraryRefreshSuccessDetail": "Zaplanowano odświeżanie biblioteki",
-      "libraryRefreshFailedDetail": "Nie udało się odświeżyć biblioteki",
+      "libraryRefreshSuccessDetail": "Zaplanowano synchronizację plików biblioteki",
+      "libraryRefreshFailedDetail": "Nie udało się zsynchronizować plików biblioteki",
       "libraryDeletedDetail": "Biblioteka została usunięta",
       "libraryDeleteFailedDetail": "Nie udało się usunąć biblioteki",
       "shelfDeletedDetail": "Półka została usunięta",

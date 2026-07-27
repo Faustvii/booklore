@@ -233,7 +233,7 @@
       "optionsLabel": "オプション",
       "addPhysicalBook": "物理本を追加",
       "editLibrary": "ライブラリを編集",
-      "rescanLibrary": "ライブラリを再スキャン",
+      "rescanLibrary": "ライブラリファイルを同期",
       "customFetchMetadata": "メタデータをカスタム取得",
       "autoFetchMetadata": "メタデータを自動取得",
       "findDuplicates": "重複を検索",
@@ -252,16 +252,16 @@
       "deleteMagicShelf": "マジックシェルフを削除"
     },
     "confirm": {
-      "rescanLibraryMessage": "ライブラリ「{{ name }}」を更新してもよろしいですか？",
+      "rescanLibraryMessage": "ライブラリ「{{ name }}」のファイルを同期してもよろしいですか？",
       "deleteLibraryMessage": "ライブラリ「{{ name }}」を削除してもよろしいですか？",
       "deleteShelfMessage": "シェルフ「{{ name }}」を削除してもよろしいですか？",
       "deleteMagicShelfMessage": "マジックシェルフ「{{ name }}」を削除してもよろしいですか？",
       "header": "確認",
-      "rescanLabel": "再スキャン"
+      "rescanLabel": "同期"
     },
     "toast": {
-      "libraryRefreshSuccessDetail": "ライブラリの更新がスケジュールされました",
-      "libraryRefreshFailedDetail": "ライブラリの更新に失敗しました",
+      "libraryRefreshSuccessDetail": "ライブラリファイルの同期をスケジュールしました",
+      "libraryRefreshFailedDetail": "ライブラリファイルの同期に失敗しました",
       "libraryDeletedDetail": "ライブラリが削除されました",
       "libraryDeleteFailedDetail": "ライブラリの削除に失敗しました",
       "shelfDeletedDetail": "シェルフが削除されました",

@@ -239,7 +239,7 @@
       "addPhysicalBook": "Añadir libro físico",
       "bulkIsbnImport": "Importar ISBNs desde archivo",
       "editLibrary": "Editar biblioteca",
-      "rescanLibrary": "Re-escanear biblioteca",
+      "rescanLibrary": "Sincronizar archivos de la biblioteca",
       "customFetchMetadata": "Obtención personalizada de metadatos",
       "autoFetchMetadata": "Obtener metadatos automáticamente",
       "findDuplicates": "Buscar duplicados",
@@ -259,16 +259,16 @@
       "deleteMagicShelf": "Eliminar estante mágico"
     },
     "confirm": {
-      "rescanLibraryMessage": "¿Estás seguro de que deseas actualizar la biblioteca: {{ name }}?",
+      "rescanLibraryMessage": "¿Seguro que deseas sincronizar los archivos de la biblioteca: {{ name }}?",
       "deleteLibraryMessage": "¿Estás seguro de que deseas eliminar la biblioteca: {{ name }}?",
       "deleteShelfMessage": "¿Estás seguro de que deseas eliminar el estante: {{ name }}?",
       "deleteMagicShelfMessage": "¿Estás seguro de que deseas eliminar el estante mágico: {{ name }}?",
       "header": "Confirmación",
-      "rescanLabel": "Re-escanear"
+      "rescanLabel": "Sincronizar"
     },
     "toast": {
-      "libraryRefreshSuccessDetail": "Actualización de biblioteca programada",
-      "libraryRefreshFailedDetail": "Error al actualizar la biblioteca",
+      "libraryRefreshSuccessDetail": "Sincronización de archivos de la biblioteca programada",
+      "libraryRefreshFailedDetail": "Error al sincronizar los archivos de la biblioteca",
       "libraryDeletedDetail": "Biblioteca eliminada",
       "libraryDeleteFailedDetail": "Error al eliminar la biblioteca",
       "shelfDeletedDetail": "Estante eliminado",
