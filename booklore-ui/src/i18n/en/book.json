@@ -74,7 +74,6 @@
       "assignShelf": "Assign Shelf",
       "viewDetails": "View Details",
       "download": "Download",
-      "delete": "Delete",
       "emailBook": "Email Book",
       "quickSend": "Quick Send",
       "customSend": "Custom Send",
@@ -91,8 +90,6 @@
       "loading": "Loading..."
     },
     "confirm": {
-      "deleteFileMessage": "Are you sure you want to delete the additional file \"{{ fileName }}\"?",
-      "deleteFileHeader": "Confirm File Deletion",
       "largeFileMessage": "This file exceeds 25MB. Some email providers may reject large attachments.\n\nDo you want to send it anyway?",
       "largeFileHeader": "Large File Warning",
       "sendAnyway": "Send Anyway"
@@ -100,8 +97,6 @@
     "toast": {
       "quickSendSuccessDetail": "The book sending has been scheduled.",
       "quickSendErrorDetail": "An error occurred while sending the book.",
-      "deleteFileSuccessDetail": "Additional file \"{{ fileName }}\" deleted successfully",
-      "deleteFileErrorDetail": "Failed to delete additional file: {{ error }}",
       "readStatusUpdatedSummary": "Read Status Updated",
       "readStatusUpdatedDetail": "Marked as \"{{ label }}\"",
       "readStatusFailedSummary": "Update Failed",
@@ -155,11 +150,6 @@
       "physicalBookCreatedDetail": "\"{{ title }}\" has been added to your library.",
       "creationFailedSummary": "Creation Failed",
       "creationFailedDetail": "An error occurred while creating the physical book.",
-      "fileDeletedSummary": "File Deleted",
-      "additionalFileDeletedDetail": "Additional file deleted successfully.",
-      "bookFileDeletedDetail": "Book file deleted successfully.",
-      "fileDeleteFailedSummary": "Delete Failed",
-      "fileDeleteFailedDetail": "An error occurred while deleting the file.",
       "fileUploadedSummary": "File Uploaded",
       "fileUploadedDetail": "Additional file uploaded successfully.",
       "uploadFailedSummary": "Upload Failed",

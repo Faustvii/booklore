@@ -74,7 +74,6 @@
       "assignShelf": "Dodijeli policu",
       "viewDetails": "Prikaži detalje",
       "download": "Preuzmi",
-      "delete": "Obriši",
       "emailBook": "Pošalji e-poštom",
       "quickSend": "Brzo slanje",
       "customSend": "Prilagođeno slanje",
@@ -91,8 +90,6 @@
       "loading": "Učitavanje..."
     },
     "confirm": {
-      "deleteFileMessage": "Jeste li sigurni da želite obrisati dodatnu datoteku \"{{ fileName }}\"?",
-      "deleteFileHeader": "Potvrdi brisanje datoteke",
       "largeFileMessage": "Ova datoteka prelazi 25 MB. Neki pružatelji usluga e-pošte mogu odbiti velike priloge.\n\nŽelite li je ipak poslati?",
       "largeFileHeader": "Upozorenje o velikoj datoteci",
       "sendAnyway": "Svejedno pošalji"
@@ -100,8 +97,6 @@
     "toast": {
       "quickSendSuccessDetail": "Slanje knjige je zakazano.",
       "quickSendErrorDetail": "Došlo je do pogreške prilikom slanja knjige.",
-      "deleteFileSuccessDetail": "Dodatna datoteka \"{{ fileName }}\" uspješno obrisana",
-      "deleteFileErrorDetail": "Brisanje dodatne datoteke nije uspjelo: {{ error }}",
       "readStatusUpdatedSummary": "Status čitanja ažuriran",
       "readStatusUpdatedDetail": "Označeno kao \"{{ label }}\"",
       "readStatusFailedSummary": "Ažuriranje nije uspjelo",
@@ -155,11 +150,6 @@
       "physicalBookCreatedDetail": "\"{{ title }}\" je dodana u vašu knjižnicu.",
       "creationFailedSummary": "Kreiranje nije uspjelo",
       "creationFailedDetail": "Došlo je do pogreške prilikom kreiranja fizičke knjige.",
-      "fileDeletedSummary": "Datoteka obrisana",
-      "additionalFileDeletedDetail": "Dodatna datoteka uspješno obrisana.",
-      "bookFileDeletedDetail": "Datoteka knjige uspješno obrisana.",
-      "fileDeleteFailedSummary": "Brisanje nije uspjelo",
-      "fileDeleteFailedDetail": "Došlo je do pogreške prilikom brisanja datoteke.",
       "fileUploadedSummary": "Datoteka učitana",
       "fileUploadedDetail": "Dodatna datoteka uspješno učitana.",
       "uploadFailedSummary": "Učitavanje nije uspjelo",

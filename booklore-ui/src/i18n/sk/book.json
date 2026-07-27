@@ -74,7 +74,6 @@
       "assignShelf": "",
       "viewDetails": "",
       "download": "",
-      "delete": "",
       "emailBook": "",
       "quickSend": "",
       "customSend": "",
@@ -90,15 +89,10 @@
       "resetKOReaderProgress": "",
       "loading": ""
     },
-    "confirm": {
-      "deleteFileMessage": "",
-      "deleteFileHeader": ""
-    },
+    "confirm": {},
     "toast": {
       "quickSendSuccessDetail": "",
       "quickSendErrorDetail": "",
-      "deleteFileSuccessDetail": "",
-      "deleteFileErrorDetail": "",
       "readStatusUpdatedSummary": "",
       "readStatusUpdatedDetail": "",
       "readStatusFailedSummary": "",
@@ -151,11 +145,6 @@
       "physicalBookCreatedDetail": "",
       "creationFailedSummary": "",
       "creationFailedDetail": "",
-      "fileDeletedSummary": "",
-      "additionalFileDeletedDetail": "",
-      "bookFileDeletedDetail": "",
-      "fileDeleteFailedSummary": "",
-      "fileDeleteFailedDetail": "",
       "fileUploadedSummary": "",
       "fileUploadedDetail": "",
       "uploadFailedSummary": "",

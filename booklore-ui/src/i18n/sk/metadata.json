@@ -217,7 +217,6 @@
     "streamingReaderTooltip": "",
     "playTooltip": "",
     "downloadTooltip": "",
-    "deleteTooltip": "",
     "downloadAllTooltip": "",
     "physicalBookHint": ""
   },
@@ -313,8 +312,6 @@
     "menuQuickSend": "",
     "menuCustomSend": "",
     "menuAttachToAnotherBook": "",
-    "menuDeleteFileFormats": "",
-    "menuDeleteSupplementaryFiles": "",
     "navigationPosition": "",
     "channelMono": "",
     "channelStereo": "",
@@ -340,14 +337,6 @@
       "quickSendSuccessDetail": "",
       "quickSendErrorSummary": "",
       "quickSendErrorDetail": "",
-      "deleteSupplementarySuccessSummary": "",
-      "deleteSupplementarySuccessDetail": "",
-      "deleteSupplementaryErrorSummary": "",
-      "deleteSupplementaryErrorDetail": "",
-      "deleteFormatSuccessSummary": "",
-      "deleteFormatSuccessDetail": "",
-      "deleteFormatErrorSummary": "",
-      "deleteFormatErrorDetail": "",
       "dateUpdatedSummary": "",
       "dateUpdatedDetail": "",
       "dateUpdateFailedSummary": "",
@@ -355,16 +344,7 @@
     },
     "confirm": {
       "resetProgressMessage": "",
-      "resetProgressHeader": "",
-      "deleteSupplementaryMessage": "",
-      "deleteSupplementaryHeader": "",
-      "deleteOnlyFormatMessage": "",
-      "deleteOnlyFormatHeader": "",
-      "deletePrimaryFormatMessage": "",
-      "deletePrimaryFormatHeader": "",
-      "deleteAltFormatMessage": "",
-      "deleteAltFormatHeader": "",
-      "deleteFileBtn": ""
+      "resetProgressHeader": ""
     }
   },
   "sidecar": {

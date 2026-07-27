@@ -74,7 +74,6 @@
       "assignShelf": "Tilldela hylla",
       "viewDetails": "Visa detaljer",
       "download": "Ladda ner",
-      "delete": "Radera",
       "emailBook": "Skicka bok via e-post",
       "quickSend": "Snabbskicka",
       "customSend": "Anpassat skickande",
@@ -91,8 +90,6 @@
       "loading": "Laddar..."
     },
     "confirm": {
-      "deleteFileMessage": "Är du säker på att du vill radera den extra filen \"{{ fileName }}\"?",
-      "deleteFileHeader": "Bekräfta filradering",
       "largeFileMessage": "Den här filen överstiger 25 MB. Vissa e-postleverantörer kan avvisa stora bilagor.\n\nVill du skicka den ändå?",
       "largeFileHeader": "Varning för stor fil",
       "sendAnyway": "Skicka ändå"
@@ -100,8 +97,6 @@
     "toast": {
       "quickSendSuccessDetail": "Bokskickandet har schemalagts.",
       "quickSendErrorDetail": "Ett fel uppstod vid skickande av boken.",
-      "deleteFileSuccessDetail": "Extra fil \"{{ fileName }}\" raderades",
-      "deleteFileErrorDetail": "Kunde inte radera extra fil: {{ error }}",
       "readStatusUpdatedSummary": "Lässtatus uppdaterad",
       "readStatusUpdatedDetail": "Markerad som \"{{ label }}\"",
       "readStatusFailedSummary": "Uppdatering misslyckades",
@@ -155,11 +150,6 @@
       "physicalBookCreatedDetail": "\"{{ title }}\" har lagts till i ditt bibliotek.",
       "creationFailedSummary": "Skapande misslyckades",
       "creationFailedDetail": "Ett fel uppstod vid skapande av den fysiska boken.",
-      "fileDeletedSummary": "Fil raderad",
-      "additionalFileDeletedDetail": "Extra fil raderades.",
-      "bookFileDeletedDetail": "Bokfil raderades.",
-      "fileDeleteFailedSummary": "Radering misslyckades",
-      "fileDeleteFailedDetail": "Ett fel uppstod vid radering av filen.",
       "fileUploadedSummary": "Fil uppladdad",
       "fileUploadedDetail": "Extra fil laddades upp.",
       "uploadFailedSummary": "Uppladdning misslyckades",

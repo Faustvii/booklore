@@ -98,21 +98,25 @@ handle it as part of this task.
   `UserProvisioningService` provisioning paths, plus the admin permissions
   UI checkbox and create-user dialog — and a new Flyway migration
   (`V7__Remove_book_file_deletion.sql`) dropping `permission_delete_book`.
-- Two other endpoints reused `@securityUtil.canDeleteBook()` for unrelated
-  file-deleting actions outside this task's scope
-  (`AuthorController.deleteAuthors`, which deletes cached author images, and
-  `AdditionalFileController.deleteAdditionalFile`, which deletes individual
-  book format/supplementary files — used by the metadata viewer's "Delete
-  File Formats"/"Delete Supplementary Files" menus). Since the permission
-  they checked no longer exists, both were re-gated to `isAdmin()` only
-  rather than left broken or silently removed; the corresponding frontend
-  gates (`author-browser.component.ts`'s `canDeleteBook` getter, renamed to
-  `canDeleteAuthor`; `book-card.component.ts`; `metadata-viewer.component.ts`)
-  were updated to check `permissions.admin` instead. The whole-book "Delete
-  Book" / "Delete Book & All Files" menu item in the metadata viewer (which
-  called the now-removed `bookService.deleteBooks`) was deleted; the
-  per-format and per-supplementary-file delete actions in that same menu
-  were kept since they don't go through the removed endpoint.
+- Two other endpoints reused `@securityUtil.canDeleteBook()`:
+  `AuthorController.deleteAuthors` (deletes cached author images — a
+  different domain, kept, re-gated to `isAdmin()`) and
+  `AdditionalFileController.deleteAdditionalFile` (deletes individual book
+  format/supplementary files from disk). The latter is still book/file
+  deletion, so per the PRD's "never deletes files" principle it was **removed
+  entirely** rather than just re-gated: `AdditionalFileController.deleteAdditionalFile`,
+  `AdditionalFileService.deleteAdditionalFile`/`deleteDirectoryRecursively`,
+  the frontend `bookFileService.deleteAdditionalFile()`/`deleteBookFile()`,
+  and all three UI entry points that called them — the metadata viewer's
+  "Delete File Formats"/"Delete Supplementary Files" submenus, the book
+  card's per-format/per-supplementary-file "Delete" submenu, and the book
+  detail page's "Files" tab trash-icon buttons (`metadata-tabs.component.ts`/
+  `.html` — `deleteFile()`, `deleteSupplementary()`, and the
+  `DeleteBookFileEvent`/`DeleteSupplementaryFileEvent` outputs). The whole-book
+  "Delete Book" / "Delete Book & All Files" menu item in the metadata viewer
+  (which called the now-removed `bookService.deleteBooks`) was also deleted.
+  `author-browser.component.ts`'s `canDeleteBook` getter was renamed to
+  `canDeleteAuthor` and checks `permissions.admin` instead.
 - Duplicate Merger: removed `deleteGroup()`, `toggleDeleteSelection()`,
   `getDeleteSelectedCount()`, the `selectedForDeletion` field, and the
   corresponding checkbox/button in the template. "Merge" (via
@@ -120,9 +124,20 @@ handle it as part of this task.
   group, so the feature keeps a working, non-destructive resolution path.
 - Removed unused i18n keys (delete confirmation dialogs/toasts for
   book-browser, book-card, series-page, `bookService`, the duplicate-merger
-  "Delete Selected" action, and the metadata-viewer whole-book delete menu)
-  across all 19 locale files, and corrected now-stale wording in
-  `duplicateMerger.helpText` and `metadata.viewer.confirm.deleteOnlyFormatMessage`
-  that referenced the removed "Delete Book & All Files" action.
+  "Delete Selected" action, the metadata-viewer whole-book delete menu, and —
+  after the correction below — the individual file-format/supplementary-file
+  delete menus and the "Files" tab delete tooltip) across all 19 locale
+  files, and corrected now-stale wording in `duplicateMerger.helpText` and
+  `metadata.viewer.confirm.deleteOnlyFormatMessage` that referenced the
+  removed "Delete Book & All Files" action.
+- **Correction after initial review:** the first pass re-gated (rather than
+  removed) `AdditionalFileController.deleteAdditionalFile` and its three UI
+  call sites, treating individual file-format deletion as a separate,
+  pre-existing feature out of scope. That was wrong — it's still a code path
+  that deletes a book's file from disk, which is exactly what the PRD
+  principle and this task's title rule out, regardless of who's allowed to
+  trigger it. It was fully removed in a follow-up pass (see above). Author
+  image deletion was confirmed out of scope (different entity, not
+  mentioned in this task) and stays admin-gated.
 - Verified with the full backend test suite (3050 tests, 0 failures) and a
   clean Angular production build.

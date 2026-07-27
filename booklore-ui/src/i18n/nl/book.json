@@ -74,7 +74,6 @@
       "assignShelf": "Toewijzen aan plank",
       "viewDetails": "Bekijk details",
       "download": "Downloaden",
-      "delete": "Verwijderen",
       "emailBook": "E-mail boek",
       "quickSend": "Snel verzenden",
       "customSend": "Aangepast verzenden",
@@ -91,8 +90,6 @@
       "loading": "Laden..."
     },
     "confirm": {
-      "deleteFileMessage": "Weet u zeker dat u het extra bestand “{{ fileName }}” wilt verwijderen?",
-      "deleteFileHeader": "Bestandsverwijdering bevestigen",
       "largeFileMessage": "Dit bestand is groter dan 25 MB. Sommige e-mailproviders kunnen grote bijlagen weigeren.\n\nWilt u het toch verzenden?",
       "largeFileHeader": "Waarschuwing voor grote bestanden",
       "sendAnyway": "Toch verzenden"
@@ -100,8 +97,6 @@
     "toast": {
       "quickSendSuccessDetail": "Het verzenden van het boek is gepland.",
       "quickSendErrorDetail": "Er is een fout opgetreden tijdens het verzenden van het boek.",
-      "deleteFileSuccessDetail": "Extra bestand “{{ fileName }}” succesvol verwijderd",
-      "deleteFileErrorDetail": "Kan extra bestand niet verwijderen: {{ error }}",
       "readStatusUpdatedSummary": "Lees Status Bijgewerkt",
       "readStatusUpdatedDetail": "Markeren als \"{{ label }}\"",
       "readStatusFailedSummary": "Update mislukt",
@@ -154,11 +149,6 @@
       "physicalBookCreatedDetail": "",
       "creationFailedSummary": "",
       "creationFailedDetail": "",
-      "fileDeletedSummary": "",
-      "additionalFileDeletedDetail": "",
-      "bookFileDeletedDetail": "",
-      "fileDeleteFailedSummary": "",
-      "fileDeleteFailedDetail": "",
       "fileUploadedSummary": "",
       "fileUploadedDetail": "",
       "uploadFailedSummary": "",

@@ -74,7 +74,6 @@
       "assignShelf": "Regal zuweisen",
       "viewDetails": "Details anzeigen",
       "download": "Herunterladen",
-      "delete": "Löschen",
       "emailBook": "Buch per E-Mail senden",
       "quickSend": "Schnellversand",
       "customSend": "Benutzerdefinierter Versand",
@@ -91,8 +90,6 @@
       "loading": "Laden..."
     },
     "confirm": {
-      "deleteFileMessage": "Sind Sie sicher, dass Sie die zusätzliche Datei \"{{ fileName }}\" löschen möchten?",
-      "deleteFileHeader": "Dateilöschung bestätigen",
       "largeFileMessage": "Diese Datei überschreitet 25 MB. Einige E-Mail-Anbieter lehnen möglicherweise große Anhänge ab..\n\nMöchten Sie es dennoch versenden?",
       "largeFileHeader": "Warnung vor großen Dateien",
       "sendAnyway": "Trotzdem senden"
@@ -100,8 +97,6 @@
     "toast": {
       "quickSendSuccessDetail": "Der Buchversand wurde geplant.",
       "quickSendErrorDetail": "Beim Senden des Buches ist ein Fehler aufgetreten.",
-      "deleteFileSuccessDetail": "Zusätzliche Datei \"{{ fileName }}\" erfolgreich gelöscht",
-      "deleteFileErrorDetail": "Zusätzliche Datei konnte nicht gelöscht werden: {{ error }}",
       "readStatusUpdatedSummary": "Lesestatus aktualisiert",
       "readStatusUpdatedDetail": "Als \"{{ label }}\" markiert",
       "readStatusFailedSummary": "Aktualisierung fehlgeschlagen",
@@ -155,11 +150,6 @@
       "physicalBookCreatedDetail": "\"{{ title }}\" wurde Ihrer Bibliothek hinzugefügt.",
       "creationFailedSummary": "Erstellung fehlgeschlagen",
       "creationFailedDetail": "Beim Erstellen des physischen Buches ist ein Fehler aufgetreten.",
-      "fileDeletedSummary": "Datei gelöscht",
-      "additionalFileDeletedDetail": "Zusätzliche Datei erfolgreich gelöscht.",
-      "bookFileDeletedDetail": "Buchdatei erfolgreich gelöscht.",
-      "fileDeleteFailedSummary": "Löschen fehlgeschlagen",
-      "fileDeleteFailedDetail": "Beim Löschen der Datei ist ein Fehler aufgetreten.",
       "fileUploadedSummary": "Datei hochgeladen",
       "fileUploadedDetail": "Zusätzliche Datei erfolgreich hochgeladen.",
       "uploadFailedSummary": "Hochladen fehlgeschlagen",

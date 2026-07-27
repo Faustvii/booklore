@@ -217,7 +217,6 @@
     "streamingReaderTooltip": "Lecteur en streaming",
     "playTooltip": "Écouter",
     "downloadTooltip": "Télécharger",
-    "deleteTooltip": "Supprimer",
     "downloadAllTooltip": "Télécharger tous les fichiers en archive ZIP",
     "physicalBookHint": "Vous pouvez téléverser une copie numérique ou ajouter des métadonnées manuellement."
   },
@@ -313,8 +312,6 @@
     "menuQuickSend": "Envoi rapide",
     "menuCustomSend": "Envoi personnalisé",
     "menuAttachToAnotherBook": "Attacher à un autre livre",
-    "menuDeleteFileFormats": "Supprimer les formats de fichier",
-    "menuDeleteSupplementaryFiles": "Supprimer les fichiers supplémentaires",
     "navigationPosition": "{{ current }} sur {{ total }}",
     "channelMono": "Mono",
     "channelStereo": "Stéréo",
@@ -340,14 +337,6 @@
       "quickSendSuccessDetail": "L'envoi du livre a été planifié.",
       "quickSendErrorSummary": "Erreur",
       "quickSendErrorDetail": "Une erreur s'est produite lors de l'envoi du livre.",
-      "deleteSupplementarySuccessSummary": "Succès",
-      "deleteSupplementarySuccessDetail": "Fichier supplémentaire « {{ fileName }} » supprimé avec succès",
-      "deleteSupplementaryErrorSummary": "Erreur",
-      "deleteSupplementaryErrorDetail": "Échec de la suppression du fichier supplémentaire : {{ error }}",
-      "deleteFormatSuccessSummary": "Succès",
-      "deleteFormatSuccessDetail": "Format de livre « {{ fileName }} » supprimé avec succès",
-      "deleteFormatErrorSummary": "Erreur",
-      "deleteFormatErrorDetail": "Échec de la suppression du format de livre : {{ error }}",
       "dateUpdatedSummary": "Date mise à jour",
       "dateUpdatedDetail": "La date de fin du livre a été mise à jour.",
       "dateUpdateFailedSummary": "Échec de la mise à jour",
@@ -355,16 +344,7 @@
     },
     "confirm": {
       "resetProgressMessage": "Réinitialiser la progression de lecture pour « {{ title }} » ?",
-      "resetProgressHeader": "Confirmer la réinitialisation",
-      "deleteSupplementaryMessage": "Êtes-vous sûr de vouloir supprimer le fichier supplémentaire « {{ fileName }} » ?\n\nCe fichier sera définitivement supprimé de votre système de fichiers.",
-      "deleteSupplementaryHeader": "Supprimer le fichier supplémentaire",
-      "deleteOnlyFormatMessage": "Êtes-vous sûr de vouloir supprimer « {{ fileName }} » ?\n\nC'est le SEUL fichier de format de ce livre. Après la suppression, le livre n'aura plus de contenu lisible.\n\nCe fichier sera définitivement supprimé de votre système de fichiers.",
-      "deleteOnlyFormatHeader": "Supprimer le seul format de livre",
-      "deletePrimaryFormatMessage": "Êtes-vous sûr de vouloir supprimer « {{ fileName }} » ?\n\nC'est actuellement le format PRINCIPAL de ce livre. Après la suppression, un format alternatif deviendra le nouveau format principal.\n\nCe fichier sera définitivement supprimé de votre système de fichiers.",
-      "deletePrimaryFormatHeader": "Supprimer le format principal",
-      "deleteAltFormatMessage": "Êtes-vous sûr de vouloir supprimer « {{ fileName }} » ?\n\nCe fichier sera définitivement supprimé de votre système de fichiers.",
-      "deleteAltFormatHeader": "Supprimer le format de livre",
-      "deleteFileBtn": "Supprimer le fichier"
+      "resetProgressHeader": "Confirmer la réinitialisation"
     }
   },
   "sidecar": {

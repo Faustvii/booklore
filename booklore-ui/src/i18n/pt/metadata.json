@@ -217,7 +217,6 @@
     "streamingReaderTooltip": "Leitor por Streaming",
     "playTooltip": "Reproduzir",
     "downloadTooltip": "Baixar",
-    "deleteTooltip": "Excluir",
     "downloadAllTooltip": "Baixar todos os arquivos como arquivo ZIP",
     "physicalBookHint": "Você pode enviar uma cópia digital ou adicionar metadados manualmente."
   },
@@ -313,8 +312,6 @@
     "menuQuickSend": "Envio Rápido",
     "menuCustomSend": "Envio Personalizado",
     "menuAttachToAnotherBook": "Anexar a Outro Livro",
-    "menuDeleteFileFormats": "Excluir Formatos de Arquivo",
-    "menuDeleteSupplementaryFiles": "Excluir Arquivos Complementares",
     "navigationPosition": "{{ current }} de {{ total }}",
     "channelMono": "Mono",
     "channelStereo": "Estéreo",
@@ -340,14 +337,6 @@
       "quickSendSuccessDetail": "O envio do livro foi agendado.",
       "quickSendErrorSummary": "Erro",
       "quickSendErrorDetail": "Ocorreu um erro ao enviar o livro.",
-      "deleteSupplementarySuccessSummary": "Sucesso",
-      "deleteSupplementarySuccessDetail": "Arquivo complementar \"{{ fileName }}\" excluído com sucesso",
-      "deleteSupplementaryErrorSummary": "Erro",
-      "deleteSupplementaryErrorDetail": "Falha ao excluir arquivo complementar: {{ error }}",
-      "deleteFormatSuccessSummary": "Sucesso",
-      "deleteFormatSuccessDetail": "Formato do livro \"{{ fileName }}\" excluído com sucesso",
-      "deleteFormatErrorSummary": "Erro",
-      "deleteFormatErrorDetail": "Falha ao excluir formato do livro: {{ error }}",
       "dateUpdatedSummary": "Data Atualizada",
       "dateUpdatedDetail": "A data de conclusão do livro foi atualizada.",
       "dateUpdateFailedSummary": "Atualização Falhou",
@@ -355,16 +344,7 @@
     },
     "confirm": {
       "resetProgressMessage": "Redefinir o progresso de leitura de \"{{ title }}\"?",
-      "resetProgressHeader": "Confirmar Redefinição",
-      "deleteSupplementaryMessage": "Tem certeza de que deseja excluir o arquivo complementar \"{{ fileName }}\"?\n\nEste arquivo será removido permanentemente do seu sistema de arquivos.",
-      "deleteSupplementaryHeader": "Excluir Arquivo Complementar",
-      "deleteOnlyFormatMessage": "Tem certeza de que deseja excluir \"{{ fileName }}\"?\n\nEste é o ÚNICO formato de arquivo deste livro. Após a exclusão, o livro não terá conteúdo legível.\n\nEste arquivo será removido permanentemente do seu sistema de arquivos.",
-      "deleteOnlyFormatHeader": "Excluir Único Formato do Livro",
-      "deletePrimaryFormatMessage": "Tem certeza de que deseja excluir \"{{ fileName }}\"?\n\nEste é atualmente o formato PRINCIPAL deste livro. Após a exclusão, um formato alternativo se tornará o novo principal.\n\nEste arquivo será removido permanentemente do seu sistema de arquivos.",
-      "deletePrimaryFormatHeader": "Excluir Formato Principal",
-      "deleteAltFormatMessage": "Tem certeza de que deseja excluir \"{{ fileName }}\"?\n\nEste arquivo será removido permanentemente do seu sistema de arquivos.",
-      "deleteAltFormatHeader": "Excluir Formato do Livro",
-      "deleteFileBtn": "Excluir Arquivo"
+      "resetProgressHeader": "Confirmar Redefinição"
     }
   },
   "sidecar": {

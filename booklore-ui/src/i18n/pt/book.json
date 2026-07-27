@@ -74,7 +74,6 @@
       "assignShelf": "Atribuir Prateleira",
       "viewDetails": "Ver Detalhes",
       "download": "Baixar",
-      "delete": "Excluir",
       "emailBook": "Enviar Livro por Email",
       "quickSend": "Envio Rápido",
       "customSend": "Envio Personalizado",
@@ -90,15 +89,10 @@
       "resetKOReaderProgress": "Redefinir Progresso do KOReader",
       "loading": "Carregando..."
     },
-    "confirm": {
-      "deleteFileMessage": "Tem certeza de que deseja excluir o arquivo adicional \"{{ fileName }}\"?",
-      "deleteFileHeader": "Confirmar Exclusão de Arquivo"
-    },
+    "confirm": {},
     "toast": {
       "quickSendSuccessDetail": "O envio do livro foi agendado.",
       "quickSendErrorDetail": "Ocorreu um erro ao enviar o livro.",
-      "deleteFileSuccessDetail": "Arquivo adicional \"{{ fileName }}\" excluído com sucesso",
-      "deleteFileErrorDetail": "Falha ao excluir arquivo adicional: {{ error }}",
       "readStatusUpdatedSummary": "Status de Leitura Atualizado",
       "readStatusUpdatedDetail": "Marcado como \"{{ label }}\"",
       "readStatusFailedSummary": "Atualização Falhou",
@@ -151,11 +145,6 @@
       "physicalBookCreatedDetail": "\"{{ title }}\" foi adicionado à sua biblioteca.",
       "creationFailedSummary": "Criação Falhou",
       "creationFailedDetail": "Ocorreu um erro ao criar o livro físico.",
-      "fileDeletedSummary": "Arquivo Excluído",
-      "additionalFileDeletedDetail": "Arquivo adicional excluído com sucesso.",
-      "bookFileDeletedDetail": "Arquivo do livro excluído com sucesso.",
-      "fileDeleteFailedSummary": "Exclusão Falhou",
-      "fileDeleteFailedDetail": "Ocorreu um erro ao excluir o arquivo.",
       "fileUploadedSummary": "Arquivo Enviado",
       "fileUploadedDetail": "Arquivo adicional enviado com sucesso.",
       "uploadFailedSummary": "Envio Falhou",

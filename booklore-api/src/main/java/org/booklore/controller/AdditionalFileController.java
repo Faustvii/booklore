@@ -47,16 +47,6 @@ public class AdditionalFileController {
         return additionalFileService.downloadAdditionalFile(fileId);
     }
 
-    @DeleteMapping("/{fileId}")
-    @CheckBookAccess(bookIdParam = "bookId")
-    @PreAuthorize("@securityUtil.isAdmin()")
-    public ResponseEntity<Void> deleteAdditionalFile(
-            @PathVariable Long bookId,
-            @PathVariable Long fileId) {
-        additionalFileService.deleteAdditionalFile(fileId);
-        return ResponseEntity.noContent().build();
-    }
-
     @PostMapping("/{fileId}/detach")
     @CheckBookAccess(bookIdParam = "bookId")
     @PreAuthorize("@securityUtil.canManageLibrary() or @securityUtil.isAdmin()")

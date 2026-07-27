@@ -74,7 +74,6 @@
       "assignShelf": "Polcra helyezés",
       "viewDetails": "Részletek megtekintése",
       "download": "Letöltés",
-      "delete": "Törlés",
       "emailBook": "Küldés emailben",
       "quickSend": "Gyors küldés",
       "customSend": "Egyedi küldés",
@@ -91,8 +90,6 @@
       "loading": "Betöltés..."
     },
     "confirm": {
-      "deleteFileMessage": "Biztosan törölni akarod ezt a további fájlt is: \"{{ fileName }}\"?",
-      "deleteFileHeader": "Fájl törlésének megerősítése",
       "largeFileMessage": "Ez a fájl nagyobb mint 25MB. Egyes email szolgáltatók elutasítják a nagy csatolmányokat.\n\nMindenképpen el szeretnéd küldeni?",
       "largeFileHeader": "Figyelmeztetés: nagyméretű fájl",
       "sendAnyway": "Elküldés mindenképp"
@@ -100,8 +97,6 @@
     "toast": {
       "quickSendSuccessDetail": "A köny küldése ütemezésre került.",
       "quickSendErrorDetail": "Egy hiba történt a köny küldése közben.",
-      "deleteFileSuccessDetail": "A másodlagos fájl \"{{ fileName }}\" törlése sikeres",
-      "deleteFileErrorDetail": "A másodlagos fájl törlése sikertelen: {{ error }}",
       "readStatusUpdatedSummary": "Olvasási előrehaladás frissítve",
       "readStatusUpdatedDetail": "Megjelölve mint \"{{ label }}\"",
       "readStatusFailedSummary": "",
@@ -154,11 +149,6 @@
       "physicalBookCreatedDetail": "",
       "creationFailedSummary": "",
       "creationFailedDetail": "",
-      "fileDeletedSummary": "",
-      "additionalFileDeletedDetail": "",
-      "bookFileDeletedDetail": "",
-      "fileDeleteFailedSummary": "",
-      "fileDeleteFailedDetail": "",
       "fileUploadedSummary": "",
       "fileUploadedDetail": "",
       "uploadFailedSummary": "",

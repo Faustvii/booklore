@@ -217,7 +217,6 @@
     "streamingReaderTooltip": "ストリーミングリーダー",
     "playTooltip": "再生",
     "downloadTooltip": "ダウンロード",
-    "deleteTooltip": "削除",
     "downloadAllTooltip": "すべてのファイルをZIPアーカイブとしてダウンロード",
     "physicalBookHint": "デジタルコピーをアップロードするか、メタデータを手動で追加できます。"
   },
@@ -313,8 +312,6 @@
     "menuQuickSend": "クイック送信",
     "menuCustomSend": "カスタム送信",
     "menuAttachToAnotherBook": "別の本に添付",
-    "menuDeleteFileFormats": "ファイル形式を削除",
-    "menuDeleteSupplementaryFiles": "補足ファイルを削除",
     "navigationPosition": "{{ current }} / {{ total }}",
     "channelMono": "モノラル",
     "channelStereo": "ステレオ",
@@ -340,14 +337,6 @@
       "quickSendSuccessDetail": "本の送信がスケジュールされました。",
       "quickSendErrorSummary": "エラー",
       "quickSendErrorDetail": "本の送信中にエラーが発生しました。",
-      "deleteSupplementarySuccessSummary": "成功",
-      "deleteSupplementarySuccessDetail": "補足ファイル「{{ fileName }}」が正常に削除されました",
-      "deleteSupplementaryErrorSummary": "エラー",
-      "deleteSupplementaryErrorDetail": "補足ファイルの削除に失敗しました: {{ error }}",
-      "deleteFormatSuccessSummary": "成功",
-      "deleteFormatSuccessDetail": "ブック形式「{{ fileName }}」が正常に削除されました",
-      "deleteFormatErrorSummary": "エラー",
-      "deleteFormatErrorDetail": "ブック形式の削除に失敗しました: {{ error }}",
       "dateUpdatedSummary": "日付を更新しました",
       "dateUpdatedDetail": "本の完了日が更新されました。",
       "dateUpdateFailedSummary": "更新に失敗しました",
@@ -355,16 +344,7 @@
     },
     "confirm": {
       "resetProgressMessage": "「{{ title }}」の読書進捗をリセットしますか？",
-      "resetProgressHeader": "リセットの確認",
-      "deleteSupplementaryMessage": "補足ファイル「{{ fileName }}」を削除してもよろしいですか？\n\nこのファイルはファイルシステムから完全に削除されます。",
-      "deleteSupplementaryHeader": "補足ファイルの削除",
-      "deleteOnlyFormatMessage": "「{{ fileName }}」を削除してもよろしいですか？\n\nこれはこの本の唯一のブック形式ファイルです。削除後、本に読み取り可能なコンテンツがなくなります。\n\nこのファイルはファイルシステムから完全に削除されます。",
-      "deleteOnlyFormatHeader": "唯一のブック形式の削除",
-      "deletePrimaryFormatMessage": "「{{ fileName }}」を削除してもよろしいですか？\n\nこれは現在この本のプライマリ形式です。削除後、代替フォーマットが新しいプライマリになります。\n\nこのファイルはファイルシステムから完全に削除されます。",
-      "deletePrimaryFormatHeader": "プライマリ形式の削除",
-      "deleteAltFormatMessage": "「{{ fileName }}」を削除してもよろしいですか？\n\nこのファイルはファイルシステムから完全に削除されます。",
-      "deleteAltFormatHeader": "ブック形式の削除",
-      "deleteFileBtn": "ファイルを削除"
+      "resetProgressHeader": "リセットの確認"
     }
   },
   "sidecar": {

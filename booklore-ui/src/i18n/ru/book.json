@@ -74,7 +74,6 @@
       "assignShelf": "Назначить полку",
       "viewDetails": "Просмотреть детали",
       "download": "Скачать",
-      "delete": "Удалить",
       "emailBook": "Отправить книгу по email",
       "quickSend": "Быстрая отправка",
       "customSend": "Настраиваемая отправка",
@@ -90,15 +89,10 @@
       "resetKOReaderProgress": "Сбросить прогресс KOReader",
       "loading": "Загрузка..."
     },
-    "confirm": {
-      "deleteFileMessage": "Вы уверены, что хотите удалить дополнительный файл «{{ fileName }}»?",
-      "deleteFileHeader": "Подтверждение удаления файла"
-    },
+    "confirm": {},
     "toast": {
       "quickSendSuccessDetail": "Отправка книги запланирована.",
       "quickSendErrorDetail": "Произошла ошибка при отправке книги.",
-      "deleteFileSuccessDetail": "Дополнительный файл «{{ fileName }}» успешно удалён",
-      "deleteFileErrorDetail": "Не удалось удалить дополнительный файл: {{ error }}",
       "readStatusUpdatedSummary": "Статус чтения обновлён",
       "readStatusUpdatedDetail": "Отмечено как «{{ label }}»",
       "readStatusFailedSummary": "Ошибка обновления",
@@ -151,11 +145,6 @@
       "physicalBookCreatedDetail": "«{{ title }}» добавлена в вашу библиотеку.",
       "creationFailedSummary": "Ошибка создания",
       "creationFailedDetail": "Произошла ошибка при создании физической книги.",
-      "fileDeletedSummary": "Файл удалён",
-      "additionalFileDeletedDetail": "Дополнительный файл успешно удалён.",
-      "bookFileDeletedDetail": "Файл книги успешно удалён.",
-      "fileDeleteFailedSummary": "Ошибка удаления",
-      "fileDeleteFailedDetail": "Произошла ошибка при удалении файла.",
       "fileUploadedSummary": "Файл загружен",
       "fileUploadedDetail": "Дополнительный файл успешно загружен.",
       "uploadFailedSummary": "Ошибка загрузки",

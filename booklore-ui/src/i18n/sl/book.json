@@ -74,7 +74,6 @@
       "assignShelf": "Dodaj na polico",
       "viewDetails": "Ogled podrobnosti",
       "download": "Prenesi",
-      "delete": "Izbriši",
       "emailBook": "Pošlji po e-pošti",
       "quickSend": "Hitro pošiljanje",
       "customSend": "Pošiljanje po meri",
@@ -91,8 +90,6 @@
       "loading": "Nalaganje..."
     },
     "confirm": {
-      "deleteFileMessage": "Ali si prepričan, da želiš izbrisati dodatno datoteko \"{{ fileName }}\"?",
-      "deleteFileHeader": "Potrdi brisanje datoteke",
       "largeFileMessage": "Ta datoteka presega 25 MB. Nekateri ponudniki e-pošte lahko zavrnejo velike priloge.\n\nAli jo želiš vseeno poslati?",
       "largeFileHeader": "Opozorilo o veliki datoteki",
       "sendAnyway": "Pošlji vseeno"
@@ -100,8 +97,6 @@
     "toast": {
       "quickSendSuccessDetail": "Pošiljanje knjige je bilo načrtovano.",
       "quickSendErrorDetail": "Prišlo je do napake pri pošiljanju knjige.",
-      "deleteFileSuccessDetail": "Dodatna datoteka \"{{ fileName }}\" je bila uspešno izbrisana",
-      "deleteFileErrorDetail": "Napaka pri brisanju dodatne datoteke: {{ error }}",
       "readStatusUpdatedSummary": "Status branja posodobljen",
       "readStatusUpdatedDetail": "Označeno kot \"{{ label }}\"",
       "readStatusFailedSummary": "Posodobitev ni uspela",
@@ -155,11 +150,6 @@
       "physicalBookCreatedDetail": "\"{{ title }}\" je bila dodana v tvojo knjižnico.",
       "creationFailedSummary": "Ustvarjanje ni uspelo",
       "creationFailedDetail": "Prišlo je do napake pri ustvarjanju fizične knjige.",
-      "fileDeletedSummary": "Datoteka izbrisana",
-      "additionalFileDeletedDetail": "Dodatna datoteka je bila uspešno izbrisana.",
-      "bookFileDeletedDetail": "Datoteka knjige je bila uspešno izbrisana.",
-      "fileDeleteFailedSummary": "Brisanje ni uspelo",
-      "fileDeleteFailedDetail": "Prišlo je do napake pri brisanju datoteke.",
       "fileUploadedSummary": "Datoteka naložena",
       "fileUploadedDetail": "Dodatna datoteka je bila uspešno naložena.",
       "uploadFailedSummary": "Nalaganje ni uspelo",

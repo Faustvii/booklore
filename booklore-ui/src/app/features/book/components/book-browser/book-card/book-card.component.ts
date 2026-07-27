@@ -328,8 +328,7 @@ export class BookCardComponent implements OnInit, OnChanges, OnDestroy {
     const hasNoAlternativeFormats = !this.book.alternativeFormats || this.book.alternativeFormats.length === 0;
     const hasNoSupplementaryFiles = !this.book.supplementaryFiles || this.book.supplementaryFiles.length === 0;
     const canDownload = !!this.user?.permissions.canDownload;
-    const isAdmin = !!this.user?.permissions.admin;
-    return (canDownload || isAdmin) && hasNoAlternativeFormats && hasNoSupplementaryFiles;
+    return canDownload && hasNoAlternativeFormats && hasNoSupplementaryFiles;
   }
 
   private initMenu() {
@@ -379,26 +378,6 @@ export class BookCardComponent implements OnInit, OnChanges, OnDestroy {
         items.push({
           label: this.t.translate('book.card.menu.download'),
           icon: this.isSubMenuLoading ? 'pi pi-spin pi-spinner' : 'pi pi-download',
-          items: [{label: this.t.translate('book.card.menu.loading'), disabled: true}]
-        });
-      }
-    }
-
-    if (this.user?.permissions.admin) {
-      const hasAdditionalFiles = (this.book.alternativeFormats && this.book.alternativeFormats.length > 0) ||
-        (this.book.supplementaryFiles && this.book.supplementaryFiles.length > 0);
-
-      if (hasAdditionalFiles) {
-        const deleteItems = this.getDeleteMenuItems();
-        items.push({
-          label: this.t.translate('book.card.menu.delete'),
-          icon: 'pi pi-trash',
-          items: deleteItems
-        });
-      } else if (!this.additionalFilesLoaded) {
-        items.push({
-          label: this.t.translate('book.card.menu.delete'),
-          icon: this.isSubMenuLoading ? 'pi pi-spin pi-spinner' : 'pi pi-trash',
           items: [{label: this.t.translate('book.card.menu.loading'), disabled: true}]
         });
       }
@@ -684,39 +663,6 @@ export class BookCardComponent implements OnInit, OnChanges, OnDestroy {
     return items;
   }
 
-  private getDeleteMenuItems(): MenuItem[] {
-    const items: MenuItem[] = [];
-
-    if (this.book.alternativeFormats && this.book.alternativeFormats.length > 0) {
-      this.book.alternativeFormats.forEach(format => {
-        const extension = this.getFileExtension(format.filePath);
-        items.push({
-          label: `${format.fileName} (${this.getFileSizeInMB(format)})`,
-          icon: this.getFileIcon(extension),
-          command: () => this.deleteAdditionalFile(this.book.id, format.id, format.fileName || 'file')
-        });
-      });
-    }
-
-    if (this.book.alternativeFormats && this.book.alternativeFormats.length > 0 &&
-      this.book.supplementaryFiles && this.book.supplementaryFiles.length > 0) {
-      items.push({separator: true});
-    }
-
-    if (this.book.supplementaryFiles && this.book.supplementaryFiles.length > 0) {
-      this.book.supplementaryFiles.forEach(file => {
-        const extension = this.getFileExtension(file.filePath);
-        items.push({
-          label: `${file.fileName} (${this.getFileSizeInMB(file)})`,
-          icon: this.getFileIcon(extension),
-          command: () => this.deleteAdditionalFile(this.book.id, file.id, file.fileName || 'file')
-        });
-      });
-    }
-
-    return items;
-  }
-
   private hasAdditionalFiles(): boolean {
     return !!(this.book.alternativeFormats && this.book.alternativeFormats.length > 0) ||
       !!(this.book.supplementaryFiles && this.book.supplementaryFiles.length > 0);
@@ -724,35 +670,6 @@ export class BookCardComponent implements OnInit, OnChanges, OnDestroy {
 
   private downloadAdditionalFile(book: Book, fileId: number): void {
     this.bookFileService.downloadAdditionalFile(book, fileId);
-  }
-
-  private deleteAdditionalFile(bookId: number, fileId: number, fileName: string): void {
-    this.confirmationService.confirm({
-      message: this.t.translate('book.card.confirm.deleteFileMessage', {fileName}),
-      header: this.t.translate('book.card.confirm.deleteFileHeader'),
-      icon: 'pi pi-exclamation-triangle',
-      acceptIcon: 'pi pi-trash',
-      rejectIcon: 'pi pi-times',
-      acceptButtonStyleClass: 'p-button-danger',
-      accept: () => {
-        this.bookFileService.deleteAdditionalFile(bookId, fileId).subscribe({
-          next: () => {
-            this.messageService.add({
-              severity: 'success',
-              summary: this.t.translate('common.success'),
-              detail: this.t.translate('book.card.toast.deleteFileSuccessDetail', {fileName})
-            });
-          },
-          error: (error) => {
-            this.messageService.add({
-              severity: 'error',
-              summary: this.t.translate('common.error'),
-              detail: this.t.translate('book.card.toast.deleteFileErrorDetail', {error: error.message || 'Unknown error'})
-            });
-          }
-        });
-      }
-    });
   }
 
   getFileExtension(filePath?: string): string | null {
