@@ -1,7 +1,7 @@
 # Task 09 — Remove Manual Cover Upload and Cover Search
 
 **Priority:** P9
-**Status:** Not started
+**Status:** Done
 **Scope:** Backend + Frontend
 
 ---
@@ -68,11 +68,33 @@ a placeholder, and doesn't call out to the network or touch the source file.
 
 ## Acceptance Criteria
 
-- [ ] No endpoint or UI allows uploading a cover image file or setting a
+- [x] No endpoint or UI allows uploading a cover image file or setting a
       cover from an arbitrary URL
-- [ ] No endpoint or UI allows searching for a cover via DuckDuckGo/Amazon/
+- [x] No endpoint or UI allows searching for a cover via DuckDuckGo/Amazon/
       GoodReads
-- [ ] Cover generation/regeneration (single and bulk) still works unchanged
-- [ ] Author photo search still works unchanged
-- [ ] App starts without errors; compile clean
-- [ ] All existing tests pass; remove or update tests that covered removed code
+- [x] Cover generation/regeneration (single and bulk) still works unchanged
+- [x] Author photo search still works unchanged
+- [x] App starts without errors; compile clean
+- [x] All existing tests pass; remove or update tests that covered removed code
+
+## Implementation Notes
+
+- Removed `BookCoverController`'s upload/from-url/bulk-upload/search endpoints,
+  the corresponding `BookCoverService` methods, and `DuckDuckGoCoverService
+  .getCovers(...)` plus the now-unused `BookCoverProvider` interface,
+  `CoverFetchRequest`, and `CoverUrlRequest`. `DuckDuckGoCoverService
+  .searchImages(...)` (author photo search) and all cover generation methods
+  were left untouched.
+- Deleted the frontend `cover-search` component and `book-cover.service.ts`,
+  and removed the upload/search buttons from the metadata editor and the
+  bulk-metadata-update dialog, along with their now-dead service methods and
+  i18n keys (across all locales).
+- Collateral finding: `metadata-picker.component.ts`'s Save flow used
+  `uploadAudiobookCoverFromUrl` to apply an Audible-fetched audiobook cover
+  for dual-format (ebook+audiobook) books — a different feature from manual
+  upload/search, but dependent on the removed endpoint. Per user decision,
+  this apply-on-save behavior was dropped rather than kept alive via a new
+  endpoint; the audiobook cover lock/preview UI for the current (already
+  saved) cover is unaffected.
+- Backend compiles clean, all existing tests pass (with removed/updated
+  tests for the deleted code paths). Frontend (`ng build`) compiles clean.
