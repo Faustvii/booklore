@@ -126,8 +126,8 @@ export class LibraryService {
     );
   }
 
-  refreshLibrary(id: number): Observable<void> {
-    return this.http.put<void>(`${this.url}/${id}/refresh`, {}).pipe(
+  refreshLibrary(id: number, force = false): Observable<void> {
+    return this.http.put<void>(`${this.url}/${id}/refresh`, {}, {params: {force}}).pipe(
       catchError(err => {
         const curr = this.libraryStateSubject.value;
         this.libraryStateSubject.next({...curr, error: err.message});

@@ -99,6 +99,40 @@ export class LibraryShelfMenuService {
             }
           },
           {
+            label: this.t.translate('book.shelfMenuService.library.forceRescanLibrary'),
+            icon: 'pi pi-exclamation-triangle',
+            command: () => {
+              this.confirmationService.confirm({
+                message: this.t.translate('book.shelfMenuService.confirm.forceRescanLibraryMessage', {name: entity?.name}),
+                header: this.t.translate('book.shelfMenuService.confirm.header'),
+                acceptLabel: this.t.translate('book.shelfMenuService.confirm.forceRescanLabel'),
+                rejectLabel: this.t.translate('common.cancel'),
+                rejectButtonProps: {
+                  label: this.t.translate('common.cancel'),
+                  severity: 'secondary',
+                },
+                acceptButtonProps: {
+                  label: this.t.translate('book.shelfMenuService.confirm.forceRescanLabel'),
+                  severity: 'danger',
+                },
+                accept: () => {
+                  this.libraryService.refreshLibrary(entity?.id!, true).subscribe({
+                    complete: () => {
+                      this.messageService.add({severity: 'info', summary: this.t.translate('common.success'), detail: this.t.translate('book.shelfMenuService.toast.libraryRefreshSuccessDetail')});
+                    },
+                    error: () => {
+                      this.messageService.add({
+                        severity: 'error',
+                        summary: this.t.translate('book.shelfMenuService.toast.failedSummary'),
+                        detail: this.t.translate('book.shelfMenuService.toast.libraryRefreshFailedDetail'),
+                      });
+                    }
+                  });
+                }
+              });
+            }
+          },
+          {
             label: this.t.translate('book.shelfMenuService.library.findDuplicates'),
             icon: 'pi pi-copy',
             command: () => {

@@ -107,8 +107,11 @@ public class LibraryController {
     @PutMapping("/{libraryId}/refresh")
     @CheckLibraryAccess(libraryIdParam = "libraryId")
     @PreAuthorize("@securityUtil.canManageLibrary() or @securityUtil.isAdmin()")
-    public ResponseEntity<?> rescanLibrary(@Parameter(description = "ID of the library") @PathVariable long libraryId) {
-        libraryService.rescanLibrary(libraryId);
+    public ResponseEntity<?> rescanLibrary(
+            @Parameter(description = "ID of the library") @PathVariable long libraryId,
+            @Parameter(description = "Bypass the empty-scan safety check and treat a library that suddenly has zero files as genuinely emptied rather than possibly offline")
+            @RequestParam(defaultValue = "false") boolean force) {
+        libraryService.rescanLibrary(libraryId, force);
         return ResponseEntity.noContent().build();
     }
 

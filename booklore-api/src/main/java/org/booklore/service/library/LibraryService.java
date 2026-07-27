@@ -222,6 +222,10 @@ public class LibraryService {
     }
 
     public void rescanLibrary(long libraryId) {
+        rescanLibrary(libraryId, false);
+    }
+
+    public void rescanLibrary(long libraryId, boolean force) {
         LibraryEntity lib = libraryRepository.findById(libraryId).orElseThrow(() -> ApiError.LIBRARY_NOT_FOUND.createException(libraryId));
         auditService.log(AuditAction.LIBRARY_SCANNED, "Library", libraryId, "Scanned library: " + lib.getName());
 
@@ -233,6 +237,7 @@ public class LibraryService {
             try {
                 RescanLibraryContext context = RescanLibraryContext.builder()
                         .libraryId(libraryId)
+                        .force(force)
                         .build();
                 libraryProcessingService.rescanLibrary(context);
             } catch (InvalidDataAccessApiUsageException e) {

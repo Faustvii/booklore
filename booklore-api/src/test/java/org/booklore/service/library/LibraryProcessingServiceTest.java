@@ -508,6 +508,47 @@ class LibraryProcessingServiceTest {
     }
 
     @Test
+    void rescanLibrary_withForce_shouldProceedAndDeleteAllBooksWhenScanReturnsEmpty(@TempDir Path tempDir) throws IOException {
+        long libraryId = 1L;
+        Path accessiblePath = tempDir.resolve("accessible");
+        Files.createDirectory(accessiblePath);
+
+        LibraryEntity libraryEntity = new LibraryEntity();
+        libraryEntity.setId(libraryId);
+        libraryEntity.setName("Test Library");
+
+        LibraryPathEntity pathEntity = new LibraryPathEntity();
+        pathEntity.setId(10L);
+        pathEntity.setPath(accessiblePath.toString());
+        libraryEntity.setLibraryPaths(List.of(pathEntity));
+
+        BookEntity existingBook = new BookEntity();
+        existingBook.setId(1L);
+        existingBook.setLibraryPath(pathEntity);
+        BookFileEntity existingBookFile = new BookFileEntity();
+        existingBookFile.setBook(existingBook);
+        existingBook.setBookFiles(List.of(existingBookFile));
+        existingBook.getPrimaryBookFile().setFileSubPath("");
+        existingBook.getPrimaryBookFile().setFileName("book1.epub");
+        libraryEntity.setBookEntities(List.of(existingBook));
+
+        when(libraryRepository.findById(libraryId)).thenReturn(Optional.of(libraryEntity));
+        when(libraryFileHelper.getAllLibraryFiles(libraryEntity)).thenReturn(Collections.emptyList());
+        when(libraryFileHelper.filterByAllowedFormats(anyList(), any())).thenAnswer(inv -> inv.getArgument(0));
+        when(bookAdditionalFileRepository.findByLibraryId(libraryId)).thenReturn(Collections.emptyList());
+        when(bookGroupingService.groupForRescan(anyList(), eq(libraryEntity)))
+                .thenReturn(new BookGroupingService.GroupingResult(Collections.emptyMap(), Collections.emptyMap()));
+
+        RescanLibraryContext context = RescanLibraryContext.builder().libraryId(libraryId).force(true).build();
+
+        libraryProcessingService.rescanLibrary(context);
+
+        ArgumentCaptor<List<Long>> deletedBookIdsCaptor = ArgumentCaptor.forClass(List.class);
+        verify(bookDeletionService).processDeletedLibraryFiles(deletedBookIdsCaptor.capture(), anyList());
+        assertThat(deletedBookIdsCaptor.getValue()).containsExactly(1L);
+    }
+
+    @Test
     void rescanLibrary_shouldProceedWhenLibraryHasBooksAndScanFindsThem(@TempDir Path tempDir) throws IOException {
         long libraryId = 1L;
         Path accessiblePath = tempDir.resolve("accessible");
