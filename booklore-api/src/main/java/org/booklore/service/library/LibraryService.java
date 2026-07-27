@@ -18,6 +18,7 @@ import org.booklore.model.entity.LibraryEntity;
 import org.booklore.model.entity.LibraryPathEntity;
 import org.booklore.model.enums.AuditAction;
 import org.booklore.model.enums.BookFileType;
+import org.booklore.model.websocket.LogNotification;
 import org.booklore.model.websocket.Topic;
 import org.booklore.repository.BookRepository;
 import org.booklore.repository.LibraryPathRepository;
@@ -238,6 +239,9 @@ public class LibraryService {
                 log.debug("InvalidDataAccessApiUsageException - Library id: {}", libraryId);
             } catch (IOException e) {
                 log.error("Error while parsing library books", e);
+            } catch (Exception e) {
+                log.error("Rescan failed for library {}: {}", libraryId, e.getMessage(), e);
+                notificationService.sendMessage(Topic.LOG, LogNotification.error("Library rescan failed: " + e.getMessage()));
             } finally {
                 scanningLibraries.remove(libraryId);
             }
