@@ -1,7 +1,7 @@
 # Task 13 — Remove File Naming Patterns
 
 **Priority:** P13
-**Status:** Not started
+**Status:** Done
 **Scope:** Backend + Frontend
 
 ---
@@ -80,22 +80,22 @@ This is a full removal: the `file_naming_pattern` column on the `library` table,
 
 ## Acceptance Criteria
 
-- [ ] `file_naming_pattern` column removed from `library` table (via V1 migration or a follow-up migration)
-- [ ] `LibraryEntity.fileNamingPattern` field removed
-- [ ] `Library.fileNamingPattern` DTO field removed
-- [ ] `LibraryController.setFileNamingPattern()` endpoint removed
-- [ ] `LibraryService.setFileNamingPattern()` method removed
-- [ ] `AuditAction.NAMING_PATTERN_CHANGED` removed
-- [ ] `PathPatternResolver.java` removed
-- [ ] `getFileNamingPattern()` removed from `FileMovingHelper` and `FileMoveHelper`
-- [ ] `BookFileAttachmentService` no longer references `fileNamingPattern` or `PathPatternResolver.resolvePattern()`
-- [ ] `FileNamingPatternComponent` and all 3 files (ts, html, scss, spec) removed
-- [ ] `SettingsTab.NamingPattern` enum entry removed from `settings.component.ts`
-- [ ] `FileNamingPatternComponent` removed from imports and template in `settings.component.ts` and `settings.component.html`
-- [ ] `updateLibraryFileNamingPattern()` removed from `library.service.ts`
-- [ ] `fileNamePatterns` doc type removed from `external-doc-link.component.ts`
-- [ ] `pattern-resolver.ts` removed from frontend
-- [ ] All `settings-naming.json` locale files removed
-- [ ] `patterns` key removed from all `settings.json` locale files
-- [ ] No compile errors or missing imports after removal
-- [ ] All existing tests pass
+- [x] `file_naming_pattern` column removed from `library` table (via V1 migration or a follow-up migration)
+- [x] `LibraryEntity.fileNamingPattern` field removed
+- [x] `Library.fileNamingPattern` DTO field removed
+- [x] `LibraryController.setFileNamingPattern()` endpoint removed
+- [x] `LibraryService.setFileNamingPattern()` method removed
+- [x] `AuditAction.NAMING_PATTERN_CHANGED` removed
+- [x] `PathPatternResolver.java` removed
+- [x] `getFileNamingPattern()` removed from `FileMovingHelper` and `FileMoveHelper`
+- [x] `BookFileAttachmentService` no longer references `fileNamingPattern` or `PathPatternResolver.resolvePattern()`
+- [x] `FileNamingPatternComponent` and all 3 files (ts, html, scss, spec) removed
+- [x] `SettingsTab.NamingPattern` enum entry removed from `settings.component.ts`
+- [x] `FileNamingPatternComponent` removed from imports and template in `settings.component.ts` and `settings.component.html`
+- [x] `updateLibraryFileNamingPattern()` removed from `library.service.ts`
+- [x] `fileNamePatterns` doc type removed from `external-doc-link.component.ts`
+- [x] `pattern-resolver.ts` removed from frontend
+- [x] All `settings-naming.json` locale files removed
+- [x] `patterns` key removed from all `settings.json` locale files
+- [x] No compile errors or missing imports after removal
+- [x] All existing tests pass

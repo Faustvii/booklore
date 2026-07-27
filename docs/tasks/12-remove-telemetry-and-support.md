@@ -1,7 +1,7 @@
 # Task 12 — Remove Telemetry and Support
 
 **Priority:** P12
-**Status:** Not started
+**Status:** Done
 **Scope:** Backend + Frontend
 
 ---
@@ -102,21 +102,21 @@ The support button on the topbar has already been removed from the HTML template
 
 ## Acceptance Criteria
 
-- [ ] `TelemetryService` and `BookloreTelemetry` classes removed from backend
-- [ ] `CronService` no longer contains `sendTelemetryData()`, `sendPing()`, `checkAndRunTelemetry()`, `checkAndRunPing()`, or `isTelemetryEnabled()`
-- [ ] `AppProperties` no longer has a `Telemetry` inner class or `telemetry` field
-- [ ] `AppSettings` no longer has `telemetryEnabled` field
-- [ ] `AppSettingKey` no longer has `TELEMETRY_ENABLED` entry
-- [ ] `application.yaml` no longer references `telemetry`
-- [ ] Backend tests pass with all telemetry/ping tests removed
-- [ ] `GithubSupportDialog` component (ts, html, scss) removed entirely
-- [ ] `app.topbar.component.ts` no longer references `SUPPORT_ANIMATION_KEY`, `supportAnimationEnabled`, or `openGithubSupportDialog()`
-- [ ] `global-preferences.component.ts` no longer has `SUPPORT_ANIMATION_KEY`, `supportButtonAnimation`, or telemetry toggle logic
-- [ ] `global-preferences.component.html` no longer has telemetry section or support button animation toggle
-- [ ] `external-doc-link.component.ts` no longer has `telemetry` in `DocType` union or `DOC_URLS`
-- [ ] `dialog-launcher.service.ts` no longer references `GithubSupportDialog`
-- [ ] `app-settings.model.ts` no longer has `telemetryEnabled` or `TELEMETRY_ENABLED`
-- [ ] `app.topbar.component.scss` no longer has heart/support button animation styles
-- [ ] All locale JSON files: `telemetry`, `appearance.supportButtonAnimation*`, `shared.supportDialog`, and `layout.supportBookLore` keys removed
-- [ ] App starts without errors; compile clean
-- [ ] All existing tests pass
+- [x] `TelemetryService` and `BookloreTelemetry` classes removed from backend
+- [x] `CronService` no longer contains `sendTelemetryData()`, `sendPing()`, `checkAndRunTelemetry()`, `checkAndRunPing()`, or `isTelemetryEnabled()`
+- [x] `AppProperties` no longer has a `Telemetry` inner class or `telemetry` field
+- [x] `AppSettings` no longer has `telemetryEnabled` field
+- [x] `AppSettingKey` no longer has `TELEMETRY_ENABLED` entry
+- [x] `application.yaml` no longer references `telemetry`
+- [x] Backend tests pass with all telemetry/ping tests removed
+- [x] `GithubSupportDialog` component (ts, html, scss) removed entirely
+- [x] `app.topbar.component.ts` no longer references `SUPPORT_ANIMATION_KEY`, `supportAnimationEnabled`, or `openGithubSupportDialog()`
+- [x] `global-preferences.component.ts` no longer has `SUPPORT_ANIMATION_KEY`, `supportButtonAnimation`, or telemetry toggle logic
+- [x] `global-preferences.component.html` no longer has telemetry section or support button animation toggle
+- [x] `external-doc-link.component.ts` no longer has `telemetry` in `DocType` union or `DOC_URLS`
+- [x] `dialog-launcher.service.ts` no longer references `GithubSupportDialog`
+- [x] `app-settings.model.ts` no longer has `telemetryEnabled` or `TELEMETRY_ENABLED`
+- [x] `app.topbar.component.scss` no longer has heart/support button animation styles
+- [x] All locale JSON files: `telemetry`, `appearance.supportButtonAnimation*`, `shared.supportDialog`, and `layout.supportBookLore` keys removed
+- [x] App starts without errors; compile clean
+- [x] All existing tests pass
