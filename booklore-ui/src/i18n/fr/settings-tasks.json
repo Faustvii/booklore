@@ -29,8 +29,8 @@
     "metadataReplace": {
         "label": "Mode de remplacement des métadonnées :",
         "selectMode": "Sélectionner le mode",
-        "replaceMissing": "Mettre à jour uniquement les métadonnées manquantes (Recommandé)",
-        "replaceAll": "Remplacer toutes les métadonnées (Écraser les existantes)",
+        "replaceMissing": "Mettre à jour uniquement les métadonnées manquantes",
+        "replaceAll": "Remplacer toutes les métadonnées (Écraser les existantes) (Recommandé)",
         "replaceMissingDesc": "Met à jour uniquement les livres dont les métadonnées sont manquantes. Les métadonnées existantes seront préservées.",
         "replaceAllDesc": "Remplace toutes les métadonnées pour tous les livres, même s'ils en ont déjà. Utilisez avec précaution car cela écrasera les données existantes."
     },

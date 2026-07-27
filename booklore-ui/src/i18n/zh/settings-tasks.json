@@ -29,8 +29,8 @@
     "metadataReplace": {
         "label": "元数据替换模式：",
         "selectMode": "选择模式",
-        "replaceMissing": "仅更新缺失的元数据（推荐）",
-        "replaceAll": "替换所有元数据（覆盖现有数据）",
+        "replaceMissing": "仅更新缺失的元数据",
+        "replaceAll": "替换所有元数据（覆盖现有数据）（推荐）",
         "replaceMissingDesc": "仅更新缺少元数据信息的书籍。现有元数据将被保留。",
         "replaceAllDesc": "替换所有书籍的元数据，即使它们已有元数据。请谨慎使用，因为这将覆盖现有数据。"
     },
