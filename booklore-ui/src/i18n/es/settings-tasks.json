@@ -29,8 +29,8 @@
     "metadataReplace": {
         "label": "Modo de reemplazo de metadatos:",
         "selectMode": "Seleccionar modo",
-        "replaceMissing": "Actualizar solo metadatos faltantes (Recomendado)",
-        "replaceAll": "Reemplazar todos los metadatos (Sobrescribir existentes)",
+        "replaceMissing": "Actualizar solo metadatos faltantes",
+        "replaceAll": "Reemplazar todos los metadatos (Sobrescribir existentes) (Recomendado)",
         "replaceMissingDesc": "Solo actualizar libros que no tienen información de metadatos. Los metadatos existentes se preservarán.",
         "replaceAllDesc": "Reemplazar todos los metadatos de todos los libros, incluso si ya tienen metadatos. Usar con precaución ya que sobrescribirá los datos existentes."
     },

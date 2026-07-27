@@ -29,8 +29,8 @@
     "metadataReplace": {
         "label": "Metadataersättningsläge:",
         "selectMode": "Välj läge",
-        "replaceMissing": "Uppdatera bara saknad metadata (rekommenderat)",
-        "replaceAll": "Ersätt all metadata (skriv över befintlig)",
+        "replaceMissing": "Uppdatera bara saknad metadata",
+        "replaceAll": "Ersätt all metadata (skriv över befintlig) (rekommenderat)",
         "replaceMissingDesc": "Uppdatera bara böcker som saknar metadatainformation. Befintlig metadata bevaras.",
         "replaceAllDesc": "Ersätt all metadata för alla böcker, även om de redan har metadata. Använd med försiktighet då detta skriver över befintlig data."
     },

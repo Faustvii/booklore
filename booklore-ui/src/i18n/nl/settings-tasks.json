@@ -29,8 +29,8 @@
     "metadataReplace": {
         "label": "Metadata-vervangmodus:",
         "selectMode": "Selecteer modus",
-        "replaceMissing": "Alleen ontbrekende metadata bijwerken (Aanbevolen)",
-        "replaceAll": "Alle metadata vervangen (Bestaande overschrijven)",
+        "replaceMissing": "Alleen ontbrekende metadata bijwerken",
+        "replaceAll": "Alle metadata vervangen (Bestaande overschrijven) (Aanbevolen)",
         "replaceMissingDesc": "Werk alleen boeken bij die metadata missen. Bestaande metadata wordt behouden.",
         "replaceAllDesc": "Vervang alle metadata voor alle boeken, zelfs als ze al metadata hebben. Gebruik met voorzichtigheid, want dit overschrijft bestaande gegevens."
     },

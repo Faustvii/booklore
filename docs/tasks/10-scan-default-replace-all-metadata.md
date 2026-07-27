@@ -1,7 +1,7 @@
 # Task 10 — Switch Library Scan Default to "Replace All Metadata"
 
 **Priority:** P10
-**Status:** Not started
+**Status:** Done
 **Scope:** Backend + Frontend
 
 ---
@@ -43,10 +43,10 @@ File: `booklore-ui/src/app/features/settings/task-management/task-management.com
 
 ## Acceptance Criteria
 
-- [ ] Triggering a manual library rescan with no explicit selection uses
+- [x] Triggering a manual library rescan with no explicit selection uses
       `REPLACE_ALL`
-- [ ] Scheduled/cron-triggered rescans also use `REPLACE_ALL` by default
-- [ ] UI labels "(Recommended)" on `REPLACE_ALL`, not `REPLACE_MISSING`
-- [ ] `REPLACE_MISSING` remains selectable and functions unchanged
-- [ ] App starts without errors; compile clean
-- [ ] All existing tests pass; update any tests asserting the old default
+- [x] Scheduled/cron-triggered rescans also use `REPLACE_ALL` by default
+- [x] UI labels "(Recommended)" on `REPLACE_ALL`, not `REPLACE_MISSING`
+- [x] `REPLACE_MISSING` remains selectable and functions unchanged
+- [x] App starts without errors; compile clean
+- [x] All existing tests pass; update any tests asserting the old default

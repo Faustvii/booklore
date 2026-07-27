@@ -59,19 +59,19 @@ export class TaskManagementComponent implements OnInit, OnDestroy {
   // Metadata Replace Options
   metadataReplaceOptions = [
     {
-      label: 'Update Missing Metadata Only (Recommended)',
+      label: 'Update Missing Metadata Only',
       value: MetadataReplaceMode.REPLACE_MISSING,
       translationKey: 'settingsTasks.metadataReplace.replaceMissing',
       descriptionKey: 'settingsTasks.metadataReplace.replaceMissingDesc'
     },
     {
-      label: 'Replace All Metadata (Overwrite Existing)',
+      label: 'Replace All Metadata (Overwrite Existing) (Recommended)',
       value: MetadataReplaceMode.REPLACE_ALL,
       translationKey: 'settingsTasks.metadataReplace.replaceAll',
       descriptionKey: 'settingsTasks.metadataReplace.replaceAllDesc'
     }
   ];
-  selectedMetadataReplaceMode: MetadataReplaceMode = MetadataReplaceMode.REPLACE_MISSING;
+  selectedMetadataReplaceMode: MetadataReplaceMode = MetadataReplaceMode.REPLACE_ALL;
 
   // Cron Editing State
   cronUpdating = false;

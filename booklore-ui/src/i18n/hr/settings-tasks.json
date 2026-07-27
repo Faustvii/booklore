@@ -29,8 +29,8 @@
     "metadataReplace": {
         "label": "Način zamjene metapodataka:",
         "selectMode": "Odaberite način",
-        "replaceMissing": "Ažuriraj samo nedostajuće metapodatke (preporučeno)",
-        "replaceAll": "Zamijeni sve metapodatke (prepiši postojeće)",
+        "replaceMissing": "Ažuriraj samo nedostajuće metapodatke",
+        "replaceAll": "Zamijeni sve metapodatke (prepiši postojeće) (preporučeno)",
         "replaceMissingDesc": "Ažuriraj samo knjige kojima nedostaju metapodaci. Postojeći metapodaci će biti sačuvani.",
         "replaceAllDesc": "Zamijeni sve metapodatke za sve knjige, čak i ako već imaju metapodatke. Koristite s oprezom jer će ovo prepisati postojeće podatke."
     },
