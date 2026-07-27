@@ -48,9 +48,6 @@ public class LibraryEntity {
     @Column(name = "icon_type")
     private IconType iconType;
 
-    @Column(name = "file_naming_pattern")
-    private String fileNamingPattern;
-
     @Convert(converter = FormatPriorityConverter.class)
     @Column(name = "format_priority")
     @Builder.Default

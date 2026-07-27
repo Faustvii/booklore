@@ -9,7 +9,6 @@ import {UserManagementComponent} from './user-management/user-management.compone
 import {AuthenticationSettingsComponent} from '../../core/security/oauth2-management/authentication-settings.component';
 import {ViewPreferencesParentComponent} from './view-preferences-parent/view-preferences-parent.component';
 import {ReaderPreferences} from './reader-preferences/reader-preferences.component';
-import {FileNamingPatternComponent} from './file-naming-pattern/file-naming-pattern.component';
 import {TaskManagementComponent} from './task-management/task-management.component';
 import {AuditLogsComponent} from './audit-logs/audit-logs.component';
 import {OpdsSettings} from './opds-settings/opds-settings';
@@ -25,7 +24,6 @@ export enum SettingsTab {
   DeviceSettings = 'device',
   UserManagement = 'user',
   EmailSettingsV2 = 'email-v2',
-  NamingPattern = 'naming-pattern',
   MetadataSettings = 'metadata',
   ApplicationSettings = 'application',
   AuthenticationSettings = 'authentication',
@@ -50,7 +48,6 @@ export enum SettingsTab {
     ReaderPreferences,
     MetadataSettingsComponent,
     DeviceSettingsComponent,
-    FileNamingPatternComponent,
     OpdsSettings,
     TaskManagementComponent,
     AuditLogsComponent,

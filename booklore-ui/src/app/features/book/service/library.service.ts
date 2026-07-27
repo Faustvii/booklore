@@ -136,19 +136,6 @@ export class LibraryService {
     );
   }
 
-  updateLibraryFileNamingPattern(id: number, pattern: string): Observable<Library> {
-    return this.http
-      .patch<Library>(`${this.url}/${id}/file-naming-pattern`, {fileNamingPattern: pattern})
-      .pipe(
-        map(updated => {
-          const curr = this.libraryStateSubject.value;
-          const list = curr.libraries?.map(l => (l.id === updated.id ? updated : l)) || [updated];
-          this.libraryStateSubject.next({...curr, libraries: this.sortLibraries(list)});
-          return updated;
-        })
-      );
-  }
-
   doesLibraryExistByName(name: string): boolean {
     return (this.libraryStateSubject.value.libraries || []).some(l => l.name === name);
   }

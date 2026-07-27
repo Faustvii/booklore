@@ -11,7 +11,6 @@ export interface Library {
   icon?: string | null;
   iconType?: 'PRIME_NG' | 'CUSTOM_SVG' | null;
   watch: boolean;
-  fileNamingPattern?: string;
   sort?: SortOption;
   paths: LibraryPath[];
   formatPriority?: BookType[];

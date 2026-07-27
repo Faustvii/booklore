@@ -7,7 +7,6 @@
     "application": "Application",
     "users": "Users",
     "email": "Email",
-    "patterns": "Patterns",
     "authentication": "OIDC",
     "tasks": "Tasks",
     "auditLogs": "Audit Logs",
