@@ -122,3 +122,5 @@ Ratings displayed in Booklore come from the embedded metadata only (e.g. Calibre
 
 - **Komga-compatible API maintenance:** Best-effort for now. Booklore will not commit to tracking every Komga API change; compatibility is maintained on a reasonable basis.
 - **Content restriction tags:** Sourced from embedded file metadata only. Admins cannot define custom restriction tags independent of what is present in the scanned files.
+- **Author bio/photo lookup (Audnexus):** Deliberate, permanent exception to "no outbound provider calls." This data doesn't exist in embedded file metadata and is considered valuable enough to keep.
+- **Cover generation vs. upload/search:** Deriving or regenerating a cover locally from a book's own embedded art (or a placeholder) is kept — it's not an outbound call and doesn't touch the source file. Manual cover upload and provider-backed cover search (e.g. DuckDuckGo image search against Amazon/GoodReads) are being removed.
