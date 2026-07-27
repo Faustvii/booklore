@@ -36,7 +36,9 @@ class RatingAggregationServiceTest {
                 .build();
 
         // No review counts -> each provider contributes weight 1 -> plain average
-        assertThat(service.computeAggregateRating(metadata)).isEqualTo(4.0);
+        RatingAggregationService.RatingAggregate result = service.computeAggregateRating(metadata);
+        assertThat(result.rating()).isEqualTo(4.0);
+        assertThat(result.reviewCount()).isZero();
     }
 
     @Test
@@ -49,12 +51,14 @@ class RatingAggregationServiceTest {
                 .build();
 
         // (5*100 + 1*1) / (100 + 1) = 501/101
-        double expected = (5.0 * 100 + 1.0 * 1) / (100 + 1);
-        assertThat(service.computeAggregateRating(metadata)).isEqualTo(expected);
+        double expectedRating = (5.0 * 100 + 1.0 * 1) / (100 + 1);
+        RatingAggregationService.RatingAggregate result = service.computeAggregateRating(metadata);
+        assertThat(result.rating()).isEqualTo(expectedRating);
+        assertThat(result.reviewCount()).isEqualTo(101);
     }
 
     @Test
-    void computeAggregateRating_treatsMissingReviewCountAsWeightOne() {
+    void computeAggregateRating_treatsMissingReviewCountAsWeightOneForAveraging_butZeroForTotal() {
         BookMetadataEntity metadata = BookMetadataEntity.builder()
                 .hardcoverRating(5.0)
                 .hardcoverReviewCount(9)
@@ -62,8 +66,11 @@ class RatingAggregationServiceTest {
                 .amazonReviewCount(null)
                 .build();
 
-        // (5*9 + 1*1) / (9 + 1) = 46/10 = 4.6
-        assertThat(service.computeAggregateRating(metadata)).isEqualTo(4.6);
+        // (5*9 + 1*1) / (9 + 1) = 46/10 = 4.6 for the weighted average,
+        // but the displayed total review count only counts real (present) review counts.
+        RatingAggregationService.RatingAggregate result = service.computeAggregateRating(metadata);
+        assertThat(result.rating()).isEqualTo(4.6);
+        assertThat(result.reviewCount()).isEqualTo(9);
     }
 
     @Test
@@ -73,6 +80,20 @@ class RatingAggregationServiceTest {
                 .goodreadsReviewCount(10)
                 .build();
 
-        assertThat(service.computeAggregateRating(metadata)).isEqualTo(4.5);
+        RatingAggregationService.RatingAggregate result = service.computeAggregateRating(metadata);
+        assertThat(result.rating()).isEqualTo(4.5);
+        assertThat(result.reviewCount()).isEqualTo(10);
+    }
+
+    @Test
+    void computeAggregateRating_sumsReviewCountsAcrossAllProviders() {
+        BookMetadataEntity metadata = BookMetadataEntity.builder()
+                .hardcoverRating(4.0).hardcoverReviewCount(1000)
+                .amazonRating(4.5).amazonReviewCount(2000)
+                .goodreadsRating(4.2).goodreadsReviewCount(1566)
+                .build();
+
+        RatingAggregationService.RatingAggregate result = service.computeAggregateRating(metadata);
+        assertThat(result.reviewCount()).isEqualTo(4566);
     }
 }

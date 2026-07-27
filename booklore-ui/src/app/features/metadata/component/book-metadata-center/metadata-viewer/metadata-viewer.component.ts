@@ -921,7 +921,7 @@ export class MetadataViewerComponent implements OnInit, OnChanges, AfterViewChec
     switch (source) {
       case 'rating':
         return meta.rating != null
-          ? `★ ${meta.rating.toFixed(1)} | ${meta.reviewCount?.toLocaleString() ?? '0'} reviews`
+          ? `★ ${meta.rating.toFixed(2)} | ${meta.reviewCount?.toLocaleString() ?? '0'} reviews`
           : '';
       case 'amazon':
         return meta.amazonRating != null

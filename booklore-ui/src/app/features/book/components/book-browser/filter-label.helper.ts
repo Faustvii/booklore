@@ -8,6 +8,7 @@ export class FilterLabelHelper {
     publisher: 'Publisher',
     readStatus: 'Read Status',
     personalRating: 'Personal Rating',
+    rating: 'Rating',
     publishedDate: 'Year Published',
     matchScore: 'Metadata Match Score',
     language: 'Language',
@@ -55,6 +56,7 @@ export class FilterLabelHelper {
         return String(value);
       }
 
+      case 'rating':
       case 'amazonrating':
       case 'goodreadsrating':
       case 'hardcoverrating': {

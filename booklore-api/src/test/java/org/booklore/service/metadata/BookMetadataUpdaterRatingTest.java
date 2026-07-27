@@ -85,6 +85,7 @@ class BookMetadataUpdaterRatingTest {
 
         double expected = (5.0 * 100 + 1.0 * 1) / (100 + 1);
         assertThat(bookEntity.getMetadata().getRating()).isEqualTo(expected);
+        assertThat(bookEntity.getMetadata().getReviewCount()).isEqualTo(101);
     }
 
     @Test
