@@ -24,6 +24,10 @@ public interface UserBookProgressRepository extends JpaRepository<UserBookProgre
 
     List<UserBookProgressEntity> findByUserIdAndBookIdIn(Long userId, Set<Long> bookIds);
 
+    @Modifying
+    @Query("DELETE FROM UserBookProgressEntity ubp WHERE ubp.book.id IN :bookIds")
+    void deleteByBookIdIn(@Param("bookIds") java.util.Collection<Long> bookIds);
+
     @Query("""
         SELECT ubp FROM UserBookProgressEntity ubp
         WHERE ubp.user.id = :userId
