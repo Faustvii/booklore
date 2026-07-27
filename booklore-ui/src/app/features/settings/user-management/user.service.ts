@@ -261,7 +261,7 @@ export const ALL_FILTER_OPTIONS: { label: string; value: VisibleFilterType }[] =
 export const DEFAULT_VISIBLE_SORT_FIELDS: string[] = [
   'title', 'seriesName', 'fileName', 'filePath',
   'author', 'authorSurnameVorname', 'seriesNumber',
-  'lastReadTime', 'personalRating', 'addedOn',
+  'lastReadTime', 'rating', 'personalRating', 'addedOn',
   'fileSizeKb', 'locked', 'publisher', 'publishedDate', 'pageCount', 'random'
 ];
 

@@ -183,11 +183,22 @@
               </p-button>
             </div>
 
-            @if (book?.metadata?.amazonRating || book?.metadata?.asin || book?.metadata?.goodreadsRating || book?.metadata?.goodreadsId || book?.metadata?.hardcoverRating || book?.metadata?.hardcoverId || book?.metadata?.lubimyczytacRating || book?.metadata?.lubimyczytacId || book?.metadata?.ranobedbRating || book?.metadata?.ranobedbId || book?.metadata?.audibleRating || book?.metadata?.audibleId || book?.metadata?.googleId) {
+            @if (book?.metadata?.rating || book?.metadata?.amazonRating || book?.metadata?.asin || book?.metadata?.goodreadsRating || book?.metadata?.goodreadsId || book?.metadata?.hardcoverRating || book?.metadata?.hardcoverId || book?.metadata?.lubimyczytacRating || book?.metadata?.lubimyczytacId || book?.metadata?.ranobedbRating || book?.metadata?.ranobedbId || book?.metadata?.audibleRating || book?.metadata?.audibleId || book?.metadata?.googleId) {
               <div class="gradient-divider"></div>
             }
 
             <div class="external-ratings">
+              @if (book?.metadata?.rating) {
+                <span
+                  class="rating-link"
+                  [pTooltip]="getRatingTooltip(book, 'rating')"
+                  tooltipPosition="top"
+                >
+                  <i class="pi pi-star-fill rating-favicon rating-unified-icon"></i>
+                  <span class="rating-value">{{ getRatingPercent(book.metadata!.rating) }}%</span>
+                </span>
+              }
+
               @if (book?.metadata?.amazonRating || book?.metadata?.asin) {
                 <a
                   class="rating-link"

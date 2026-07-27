@@ -914,11 +914,15 @@ export class MetadataViewerComponent implements OnInit, OnChanges, AfterViewChec
     return p != null ? Math.round(p * 10) / 10 : null;
   }
 
-  getRatingTooltip(book: Book, source: 'amazon' | 'goodreads' | 'hardcover' | 'lubimyczytac' | 'ranobedb' | 'audible'): string {
+  getRatingTooltip(book: Book, source: 'rating' | 'amazon' | 'goodreads' | 'hardcover' | 'lubimyczytac' | 'ranobedb' | 'audible'): string {
     const meta = book?.metadata;
     if (!meta) return '';
 
     switch (source) {
+      case 'rating':
+        return meta.rating != null
+          ? `★ ${meta.rating.toFixed(1)} | ${meta.reviewCount?.toLocaleString() ?? '0'} reviews`
+          : '';
       case 'amazon':
         return meta.amazonRating != null
           ? `★ ${meta.amazonRating} | ${meta.amazonReviewCount?.toLocaleString() ?? '0'} reviews`
