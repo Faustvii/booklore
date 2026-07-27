@@ -20,9 +20,7 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.transaction.support.TransactionTemplate;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.net.URI;
 import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -82,23 +80,6 @@ class BookCoverServiceTest {
         }
 
         @Test
-        void updateCoverFromFileThrowsWhenBookNotFound() {
-            when(bookRepository.findById(1L)).thenReturn(Optional.empty());
-            MultipartFile file = mock(MultipartFile.class);
-
-            assertThatThrownBy(() -> service.updateCoverFromFile(1L, file))
-                    .isInstanceOf(APIException.class);
-        }
-
-        @Test
-        void updateCoverFromUrlThrowsWhenBookNotFound() {
-            when(bookRepository.findById(1L)).thenReturn(Optional.empty());
-
-                assertThatThrownBy(() -> service.updateCoverFromUrl(1L, URI.create("http://example.com/cover.jpg")))
-                    .isInstanceOf(APIException.class);
-        }
-
-        @Test
         void regenerateCoverThrowsWhenBookNotFound() {
             when(bookRepository.findByIdWithBookFiles(1L)).thenReturn(Optional.empty());
 
@@ -121,27 +102,6 @@ class BookCoverServiceTest {
         }
 
         @Test
-        void updateCoverFromFileThrowsWhenCoverLocked() {
-            BookEntity book = buildBook(1L, true);
-            when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
-            MultipartFile file = mock(MultipartFile.class);
-
-            assertThatThrownBy(() -> service.updateCoverFromFile(1L, file))
-                    .isInstanceOf(APIException.class)
-                    .hasMessageContaining("locked");
-        }
-
-        @Test
-        void updateCoverFromUrlThrowsWhenCoverLocked() {
-            BookEntity book = buildBook(1L, true);
-            when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
-
-                assertThatThrownBy(() -> service.updateCoverFromUrl(1L, URI.create("http://example.com")))
-                    .isInstanceOf(APIException.class)
-                    .hasMessageContaining("locked");
-        }
-
-        @Test
         void regenerateCoverThrowsWhenCoverLocked() {
             BookEntity book = buildBook(1L, true);
             when(bookRepository.findByIdWithBookFiles(1L)).thenReturn(Optional.of(book));
@@ -154,27 +114,6 @@ class BookCoverServiceTest {
 
     @Nested
     class AudiobookCoverLockChecks {
-
-        @Test
-        void updateAudiobookCoverFromFileThrowsWhenLocked() {
-            BookEntity book = buildBookWithAudiobookLock(1L, true);
-            when(bookRepository.findByIdWithBookFiles(1L)).thenReturn(Optional.of(book));
-            MultipartFile file = mock(MultipartFile.class);
-
-            assertThatThrownBy(() -> service.updateAudiobookCoverFromFile(1L, file))
-                    .isInstanceOf(APIException.class)
-                    .hasMessageContaining("locked");
-        }
-
-        @Test
-        void updateAudiobookCoverFromUrlThrowsWhenLocked() {
-            BookEntity book = buildBookWithAudiobookLock(1L, true);
-            when(bookRepository.findByIdWithBookFiles(1L)).thenReturn(Optional.of(book));
-
-                assertThatThrownBy(() -> service.updateAudiobookCoverFromUrl(1L, URI.create("http://example.com")))
-                    .isInstanceOf(APIException.class)
-                    .hasMessageContaining("locked");
-        }
 
         @Test
         void regenerateAudiobookCoverThrowsWhenLocked() {
@@ -369,199 +308,6 @@ class BookCoverServiceTest {
     }
 
     @Nested
-    class BulkCoverFromFile {
-
-        @Test
-        void filtersOutLockedBooksForBulkOperations() {
-            BookEntity unlocked = buildBook(1L, false);
-            BookEntity locked = buildBook(2L, true);
-
-            when(bookQueryService.findAllWithMetadataByIds(Set.of(1L, 2L)))
-                    .thenReturn(List.of(unlocked, locked));
-
-            MultipartFile file = mock(MultipartFile.class);
-            when(file.isEmpty()).thenReturn(false);
-            when(file.getContentType()).thenReturn("image/jpeg");
-            when(file.getSize()).thenReturn(1024L);
-            try {
-                when(file.getBytes()).thenReturn(new byte[]{1, 2, 3});
-            } catch (Exception ignored) {}
-
-            service.updateCoverFromFileForBooks(Set.of(1L, 2L), file);
-
-            verify(bookQueryService).findAllWithMetadataByIds(Set.of(1L, 2L));
-        }
-    }
-
-    @Nested
-    class FileValidation {
-
-        @Test
-        void rejectsEmptyFile() {
-            MultipartFile file = mock(MultipartFile.class);
-            when(file.isEmpty()).thenReturn(true);
-
-            assertThatThrownBy(() -> service.updateCoverFromFileForBooks(Set.of(1L), file))
-                    .isInstanceOf(APIException.class)
-                    .hasMessageContaining("empty");
-        }
-
-        @Test
-        void rejectsNonImageContentType() {
-            MultipartFile file = mock(MultipartFile.class);
-            when(file.isEmpty()).thenReturn(false);
-            when(file.getContentType()).thenReturn("application/pdf");
-
-            assertThatThrownBy(() -> service.updateCoverFromFileForBooks(Set.of(1L), file))
-                    .isInstanceOf(APIException.class)
-                    .hasMessageContaining("JPEG and PNG");
-        }
-
-        @Test
-        void rejectsFileLargerThan5MB() {
-            MultipartFile file = mock(MultipartFile.class);
-            when(file.isEmpty()).thenReturn(false);
-            when(file.getContentType()).thenReturn("image/jpeg");
-            when(file.getSize()).thenReturn(6L * 1024 * 1024);
-
-            assertThatThrownBy(() -> service.updateCoverFromFileForBooks(Set.of(1L), file))
-                    .isInstanceOf(APIException.class)
-                    .hasMessageContaining("exceeds");
-        }
-
-        @Test
-        void acceptsJpegFile() {
-            MultipartFile file = mock(MultipartFile.class);
-            when(file.isEmpty()).thenReturn(false);
-            when(file.getContentType()).thenReturn("image/jpeg");
-            when(file.getSize()).thenReturn(1024L);
-            try {
-                when(file.getBytes()).thenReturn(new byte[]{1, 2, 3});
-            } catch (Exception ignored) {}
-
-            when(bookQueryService.findAllWithMetadataByIds(any())).thenReturn(List.of());
-
-            service.updateCoverFromFileForBooks(Set.of(1L), file);
-        }
-
-        @Test
-        void acceptsPngFile() {
-            MultipartFile file = mock(MultipartFile.class);
-            when(file.isEmpty()).thenReturn(false);
-            when(file.getContentType()).thenReturn("image/png");
-            when(file.getSize()).thenReturn(1024L);
-            try {
-                when(file.getBytes()).thenReturn(new byte[]{1, 2, 3});
-            } catch (Exception ignored) {}
-
-            when(bookQueryService.findAllWithMetadataByIds(any())).thenReturn(List.of());
-
-            service.updateCoverFromFileForBooks(Set.of(1L), file);
-        }
-
-        @Test
-        void rejectsNullContentType() {
-            MultipartFile file = mock(MultipartFile.class);
-            when(file.isEmpty()).thenReturn(false);
-            when(file.getContentType()).thenReturn(null);
-
-            assertThatThrownBy(() -> service.updateCoverFromFileForBooks(Set.of(1L), file))
-                    .isInstanceOf(APIException.class);
-        }
-    }
-
-    @Nested
-    class UpdateCoverFromUrl {
-
-        @Test
-        void successfullyUpdatesCoverFromUrl() {
-            BookEntity book = buildBook(1L, false);
-            when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
-            when(bookRepository.findCoverUpdateInfoByIds(any())).thenReturn(List.of());
-
-            service.updateCoverFromUrl(1L, URI.create("https://example.com/cover.jpg"));
-
-            verify(fileService).createThumbnailFromUrl(1L, "https://example.com/cover.jpg");
-            verify(bookRepository).save(book);
-            assertThat(book.getMetadata().getCoverUpdatedOn()).isNotNull();
-            assertThat(book.getBookCoverHash()).isNotNull();
-        }
-
-    }
-
-    @Nested
-    class UpdateCoverFromFileSuccess {
-
-        @Test
-        void successfullyUpdatesCoverFromFile() {
-            BookEntity book = buildBook(1L, false);
-            when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
-            when(bookRepository.findCoverUpdateInfoByIds(any())).thenReturn(List.of());
-            MultipartFile file = mock(MultipartFile.class);
-
-            service.updateCoverFromFile(1L, file);
-
-            verify(fileService).createThumbnailFromFile(1L, file);
-            verify(bookRepository).save(book);
-            assertThat(book.getMetadata().getCoverUpdatedOn()).isNotNull();
-        }
-    }
-
-    @Nested
-    class UpdateAudiobookCoverFromFile {
-
-        @Test
-        void successfullyUpdatesCoverFromFile() {
-            BookEntity book = buildBookWithAudiobookLock(1L, false);
-            when(bookRepository.findByIdWithBookFiles(1L)).thenReturn(Optional.of(book));
-            when(bookRepository.findCoverUpdateInfoByIds(any())).thenReturn(List.of());
-            MultipartFile file = mock(MultipartFile.class);
-
-            service.updateAudiobookCoverFromFile(1L, file);
-
-            verify(fileService).createAudiobookThumbnailFromFile(1L, file);
-            verify(bookRepository).save(book);
-            assertThat(book.getMetadata().getAudiobookCoverUpdatedOn()).isNotNull();
-            assertThat(book.getAudiobookCoverHash()).isNotNull();
-        }
-
-        @Test
-        void throwsWhenBookNotFound() {
-            when(bookRepository.findByIdWithBookFiles(1L)).thenReturn(Optional.empty());
-            MultipartFile file = mock(MultipartFile.class);
-
-            assertThatThrownBy(() -> service.updateAudiobookCoverFromFile(1L, file))
-                    .isInstanceOf(APIException.class);
-        }
-    }
-
-    @Nested
-    class UpdateAudiobookCoverFromUrl {
-
-        @Test
-        void successfullyUpdatesCoverFromUrl() {
-            BookEntity book = buildBookWithAudiobookLock(1L, false);
-            when(bookRepository.findByIdWithBookFiles(1L)).thenReturn(Optional.of(book));
-            when(bookRepository.findCoverUpdateInfoByIds(any())).thenReturn(List.of());
-
-            service.updateAudiobookCoverFromUrl(1L, URI.create("https://example.com/audiobook-cover.jpg"));
-
-            verify(fileService).createAudiobookThumbnailFromUrl(1L, "https://example.com/audiobook-cover.jpg");
-            verify(bookRepository).save(book);
-            assertThat(book.getMetadata().getAudiobookCoverUpdatedOn()).isNotNull();
-            assertThat(book.getAudiobookCoverHash()).isNotNull();
-        }
-
-        @Test
-        void throwsWhenBookNotFound() {
-            when(bookRepository.findByIdWithBookFiles(1L)).thenReturn(Optional.empty());
-
-                assertThatThrownBy(() -> service.updateAudiobookCoverFromUrl(1L, URI.create("https://example.com")))
-                    .isInstanceOf(APIException.class);
-        }
-    }
-
-    @Nested
     class RegenerateAudiobookCoverSuccess {
 
         @Test
@@ -683,37 +429,6 @@ class BookCoverServiceTest {
                         });
 
                 service.generateCustomCoversForBooks(Set.of(1L, 2L));
-
-                secMock.verify(() -> SecurityContextVirtualThread.runWithSecurityContext(any(Runnable.class)));
-            }
-        }
-    }
-
-    @Nested
-    class BulkUpdateCoverFromFileForBooks {
-
-        @Test
-        void processesOnlyUnlockedBooks() throws Exception {
-            BookEntity unlocked = buildBook(1L, false);
-            BookEntity locked = buildBook(2L, true);
-
-            when(bookQueryService.findAllWithMetadataByIds(Set.of(1L, 2L)))
-                    .thenReturn(List.of(unlocked, locked));
-
-            MultipartFile file = mock(MultipartFile.class);
-            when(file.isEmpty()).thenReturn(false);
-            when(file.getContentType()).thenReturn("image/png");
-            when(file.getSize()).thenReturn(1024L);
-            when(file.getBytes()).thenReturn(new byte[]{1, 2, 3});
-
-            try (MockedStatic<SecurityContextVirtualThread> secMock = mockStatic(SecurityContextVirtualThread.class)) {
-                secMock.when(() -> SecurityContextVirtualThread.runWithSecurityContext(any(Runnable.class)))
-                        .thenAnswer(inv -> {
-                            inv.<Runnable>getArgument(0).run();
-                            return null;
-                        });
-
-                service.updateCoverFromFileForBooks(Set.of(1L, 2L), file);
 
                 secMock.verify(() -> SecurityContextVirtualThread.runWithSecurityContext(any(Runnable.class)));
             }
@@ -949,11 +664,12 @@ class BookCoverServiceTest {
         void sendsNotificationWhenUpdatesExist() {
             BookEntity book = buildBook(1L, false);
             when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
+            when(coverImageGenerator.generateCover(any(), any())).thenReturn(new byte[]{1});
 
             BookCoverUpdateProjection projection = mock(BookCoverUpdateProjection.class);
             when(bookRepository.findCoverUpdateInfoByIds(List.of(1L))).thenReturn(List.of(projection));
 
-            service.updateCoverFromUrl(1L, URI.create("https://example.com/cover.jpg"));
+            service.generateCustomCover(1L);
 
             verify(notificationService).sendMessage(any(), eq(List.of(projection)));
         }
@@ -962,9 +678,10 @@ class BookCoverServiceTest {
         void doesNotSendNotificationWhenNoUpdates() {
             BookEntity book = buildBook(1L, false);
             when(bookRepository.findById(1L)).thenReturn(Optional.of(book));
+            when(coverImageGenerator.generateCover(any(), any())).thenReturn(new byte[]{1});
             when(bookRepository.findCoverUpdateInfoByIds(any())).thenReturn(List.of());
 
-            service.updateCoverFromUrl(1L, URI.create("https://example.com/cover.jpg"));
+            service.generateCustomCover(1L);
 
             verify(notificationService, never()).sendMessage(any(), anyList());
         }

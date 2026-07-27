@@ -13,7 +13,6 @@ import {AddPhysicalBookDialogComponent} from '../add-physical-book-dialog/add-ph
 import {BulkIsbnImportDialogComponent} from '../bulk-isbn-import-dialog/bulk-isbn-import-dialog.component';
 import {DuplicateMergerComponent} from '../duplicate-merger/duplicate-merger.component';
 import {BulkMetadataUpdateComponent} from '../../../metadata/component/bulk-metadata-update/bulk-metadata-update-component';
-import {CoverSearchComponent} from '../../../metadata/component/cover-search/cover-search.component';
 
 @Injectable({providedIn: 'root'})
 export class BookDialogHelperService {
@@ -95,17 +94,6 @@ export class BookDialogHelperService {
       styleClass: `${DialogSize.SM} ${DialogStyle.MINIMAL}`,
       data: {
         book: book,
-      },
-    });
-  }
-
-  openCoverSearchDialog(bookId: number, coverType?: 'ebook' | 'audiobook'): DynamicDialogRef | null {
-    return this.openDialog(CoverSearchComponent, {
-      showHeader: false,
-      styleClass: `${DialogSize.FULL} ${DialogStyle.MINIMAL}`,
-      data: {
-        bookId: bookId,
-        coverType: coverType,
       },
     });
   }
