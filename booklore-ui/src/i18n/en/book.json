@@ -240,6 +240,7 @@
       "bulkIsbnImport": "Import ISBNs from File",
       "editLibrary": "Edit Library",
       "rescanLibrary": "Sync Library Files",
+      "forceRescanLibrary": "Force Sync (Ignore Empty-Path Safety Check)",
       "customFetchMetadata": "Custom Fetch Metadata",
       "autoFetchMetadata": "Auto Fetch Metadata",
       "findDuplicates": "Find Duplicates",
@@ -260,11 +261,13 @@
     },
     "confirm": {
       "rescanLibraryMessage": "Are you sure you want to sync library files for: {{ name }}?",
+      "forceRescanLibraryMessage": "Normal sync refuses to run when it finds zero files for a library that has existing books, since that usually means the storage is offline (which would otherwise wipe out every book entry). Only continue if the library at \"{{ name }}\" is genuinely empty now - this will permanently delete the database entries for all its books.",
       "deleteLibraryMessage": "Are you sure you want to delete library: {{ name }}?",
       "deleteShelfMessage": "Are you sure you want to delete shelf: {{ name }}?",
       "deleteMagicShelfMessage": "Are you sure you want to delete magic shelf: {{ name }}?",
       "header": "Confirmation",
-      "rescanLabel": "Sync"
+      "rescanLabel": "Sync",
+      "forceRescanLabel": "Force Sync"
     },
     "toast": {
       "libraryRefreshSuccessDetail": "Library file sync scheduled",

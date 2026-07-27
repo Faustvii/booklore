@@ -83,9 +83,13 @@ public class LibraryProcessingService {
             String paths = libraryEntity.getLibraryPaths().stream()
                     .map(LibraryPathEntity::getPath)
                     .collect(Collectors.joining(", "));
-            log.error("Library '{}' has {} existing books but scan found 0 files. Paths may be offline: {}",
+            if (!context.isForce()) {
+                log.error("Library '{}' has {} existing books but scan found 0 files. Paths may be offline: {}",
+                        libraryEntity.getName(), existingBookCount, paths);
+                throw ApiError.LIBRARY_PATH_NOT_ACCESSIBLE.createException(paths);
+            }
+            log.warn("Library '{}' has {} existing books but scan found 0 files at {} - proceeding anyway because force was requested; all existing books will be treated as deleted.",
                     libraryEntity.getName(), existingBookCount, paths);
-            throw ApiError.LIBRARY_PATH_NOT_ACCESSIBLE.createException(paths);
         }
 
         List<Long> additionalFileIds = detectDeletedAdditionalFiles(allLibraryFiles, libraryEntity);
