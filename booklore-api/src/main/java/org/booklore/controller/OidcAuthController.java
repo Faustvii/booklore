@@ -43,8 +43,8 @@ public class OidcAuthController {
             @RequestBody @Valid OidcCallbackRequest request,
             HttpServletRequest httpRequest) {
         log.info("OIDC callback received");
-        oidcStateService.validateAndConsume(request.state());
         try {
+            oidcStateService.validateAndConsume(request.state());
             return oidcAuthService.exchangeCodeForTokens(
                     request.code(),
                     request.codeVerifier(),
@@ -53,7 +53,8 @@ public class OidcAuthController {
                     httpRequest
             );
         } catch (Exception e) {
-            auditService.log(AuditAction.OIDC_LOGIN_FAILED, "OIDC callback login failed");
+            log.warn("OIDC callback login failed: {}", e.getMessage(), e);
+            auditService.log(AuditAction.OIDC_LOGIN_FAILED, "OIDC callback login failed: " + e.getMessage());
             throw e;
         }
     }
@@ -68,10 +69,10 @@ public class OidcAuthController {
             @RequestParam("app_redirect_uri") String appRedirectUri,
             HttpServletRequest httpRequest) {
 
-        oidcStateService.validateAndConsume(state);
-        oidcAuthService.validateAppRedirectUri(appRedirectUri);
-
         try {
+            oidcStateService.validateAndConsume(state);
+            oidcAuthService.validateAppRedirectUri(appRedirectUri);
+
             ResponseEntity<Map<String, String>> tokenResponse = oidcAuthService.exchangeCodeForTokens(
                     code, codeVerifier, redirectUri, nonce, httpRequest);
             Map<String, String> tokens = tokenResponse.getBody();
@@ -95,7 +96,8 @@ public class OidcAuthController {
             return new ResponseEntity<>(headers, HttpStatus.FOUND);
 
         } catch (Exception e) {
-            auditService.log(AuditAction.OIDC_LOGIN_FAILED, "OIDC redirect login failed");
+            log.warn("OIDC redirect login failed: {}", e.getMessage(), e);
+            auditService.log(AuditAction.OIDC_LOGIN_FAILED, "OIDC redirect login failed: " + e.getMessage());
             String errorRedirect = appRedirectUri + "#error=" + URLEncoder.encode("Authentication failed", StandardCharsets.UTF_8);
 
             HttpHeaders headers = new HttpHeaders();
@@ -113,11 +115,12 @@ public class OidcAuthController {
             @RequestParam("state") String state,
             HttpServletRequest httpRequest) {
 
-        oidcStateService.validateAndConsume(state);
         try {
+            oidcStateService.validateAndConsume(state);
             return oidcAuthService.exchangeCodeForTokens(code, codeVerifier, redirectUri, nonce, httpRequest);
         } catch (Exception e) {
-            auditService.log(AuditAction.OIDC_LOGIN_FAILED, "OIDC mobile callback login failed");
+            log.warn("OIDC mobile callback login failed: {}", e.getMessage(), e);
+            auditService.log(AuditAction.OIDC_LOGIN_FAILED, "OIDC mobile callback login failed: " + e.getMessage());
             throw e;
         }
     }
