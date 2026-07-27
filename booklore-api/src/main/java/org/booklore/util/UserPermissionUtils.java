@@ -15,7 +15,6 @@ public class UserPermissionUtils {
             case EDIT_METADATA -> perms.isPermissionEditMetadata();
             case MANAGE_LIBRARY -> perms.isPermissionManageLibrary();
             case EMAIL_BOOK -> perms.isPermissionEmailBook();
-            case DELETE_BOOK -> perms.isPermissionDeleteBook();
             case ACCESS_OPDS -> perms.isPermissionAccessOpds();
             case SYNC_KOREADER -> perms.isPermissionSyncKoreader();
             case SYNC_KOBO -> perms.isPermissionSyncKobo();
@@ -37,7 +36,6 @@ public class UserPermissionUtils {
             case EDIT_METADATA -> perms.isCanEditMetadata();
             case MANAGE_LIBRARY -> perms.isCanManageLibrary();
             case EMAIL_BOOK -> perms.isCanEmailBook();
-            case DELETE_BOOK -> perms.isCanDeleteBook();
             case ACCESS_OPDS -> perms.isCanAccessOpds();
             case SYNC_KOREADER -> perms.isCanSyncKoReader();
             case SYNC_KOBO -> perms.isCanSyncKobo();

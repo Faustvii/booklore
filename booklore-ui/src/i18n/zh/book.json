@@ -1,8 +1,6 @@
 {
   "browser": {
     "confirm": {
-      "deleteMessage": "确定要删除 {{ count }} 本书吗？\n\n这将永久删除文件系统中的图书文件。\n\n此操作无法撤销。",
-      "deleteHeader": "确认删除",
       "regenCoverMessage": "确定要为 {{ count }} 本书重新生成封面吗？",
       "regenCoverHeader": "确认重新生成封面",
       "customCoverMessage": "确定要为 {{ count }} 本书生成自定义封面吗？",
@@ -27,7 +25,6 @@
       "multipleLibrariesDetail": "所有选中的图书必须来自同一个书库。"
     },
     "loading": {
-      "deleting": "正在删除 {{ count }} 本书...",
       "unshelving": "正在移出 {{ count }} 本书..."
     },
     "labels": {
@@ -65,8 +62,7 @@
       "attachToBook": "附加到其他图书",
       "moreActions": "更多操作",
       "selectAll": "选择所有图书",
-      "deselectAll": "取消选择所有图书",
-      "deleteSelected": "删除选中的图书"
+      "deselectAll": "取消选择所有图书"
     },
     "placeholder": {
       "selectColumns": "选择列",
@@ -92,12 +88,9 @@
       "readStatus": "阅读状态",
       "resetBookloreProgress": "重置 Booklore 进度",
       "resetKOReaderProgress": "重置 KOReader 进度",
-      "book": "图书",
       "loading": "加载中..."
     },
     "confirm": {
-      "deleteBookMessage": "确定要删除「{{ title }}」吗？\n\n这将永久删除文件系统中的图书文件。\n\n此操作无法撤销。",
-      "deleteBookHeader": "确认删除",
       "deleteFileMessage": "确定要删除附加文件「{{ fileName }}」吗？",
       "deleteFileHeader": "确认删除文件"
     },
@@ -155,12 +148,6 @@
   },
   "bookService": {
     "toast": {
-      "someFilesNotDeletedSummary": "部分文件无法删除",
-      "someFilesNotDeletedDetail": "图书：{{ fileNames }}",
-      "booksDeletedSummary": "图书已删除",
-      "booksDeletedDetail": "{{ count }} 本书已成功删除。",
-      "deleteFailedSummary": "删除失败",
-      "deleteFailedDetail": "删除图书时发生错误。",
       "physicalBookCreatedSummary": "实体书已创建",
       "physicalBookCreatedDetail": "「{{ title }}」已添加到您的书库。",
       "creationFailedSummary": "创建失败",
@@ -685,8 +672,7 @@
       "lockUnlockMetadata": "锁定/解锁元数据",
       "moreActions": "更多操作",
       "selectAll": "选择所有图书",
-      "deselectAll": "取消选择所有图书",
-      "deleteSelected": "删除选中的图书"
+      "deselectAll": "取消选择所有图书"
     },
     "readButton": "",
     "booksInSeries": "",
@@ -733,11 +719,10 @@
     "allMerged": "所有重复组已处理完毕。",
     "mergeAll": "全部合并 ({{ count }})",
     "merge": "合并",
-    "deleteSelected": "删除 ({{ count }})",
     "dismiss": "忽略",
     "target": "目标",
     "sameFormatWarning": "相同格式",
-    "helpText": "每组包含疑似重复的图书。选择目标图书（要保留的那本），然后点击合并来合并文件。要删除特定的重复项，勾选要移除的项目并点击删除。",
+    "helpText": "每组包含疑似重复的图书。选择目标图书（要保留的那本），然后点击合并来合并文件。",
     "groupLabel": "第 {{ index }} 组",
     "fileCount": "{{ count }} 个文件",
     "reason": {
@@ -747,10 +732,7 @@
       "DIRECTORY": "同一目录",
       "FILENAME": "文件名匹配"
     },
-    "confirm": {
-      "deleteHeader": "确认删除",
-      "deleteMessage": "这将永久删除 {{ count }} 本书及其磁盘上的文件。此操作无法撤销。"
-    },
+    "confirm": {},
     "toast": {
       "scanFailedSummary": "扫描失败",
       "scanFailedDetail": "无法扫描重复项。",

@@ -1,8 +1,6 @@
 {
   "browser": {
     "confirm": {
-      "deleteMessage": "Sei sicuro di voler eliminare {{ count }} libro/i?\n\nQuesto rimuoverà permanentemente i file dei libri dal tuo file system.\n\nQuesta azione non può essere annullata.",
-      "deleteHeader": "Conferma eliminazione",
       "regenCoverMessage": "Sei sicuro di voler rigenerare le copertine per {{ count }} libro/i?",
       "regenCoverHeader": "Conferma rigenerazione copertine",
       "customCoverMessage": "Sei sicuro di voler generare copertine personalizzate per {{ count }} libro/i?",
@@ -27,7 +25,6 @@
       "multipleLibrariesDetail": "Tutti i libri selezionati devono provenire dalla stessa libreria."
     },
     "loading": {
-      "deleting": "Eliminazione di {{ count }} libro/i...",
       "unshelving": "Rimozione di {{ count }} libro/i dagli scaffali..."
     },
     "labels": {
@@ -65,8 +62,7 @@
       "attachToBook": "Allega ad un altro libro",
       "moreActions": "Altre azioni",
       "selectAll": "Seleziona tutti i libri",
-      "deselectAll": "Deseleziona tutti i libri",
-      "deleteSelected": "Elimina libri selezionati"
+      "deselectAll": "Deseleziona tutti i libri"
     },
     "placeholder": {
       "selectColumns": "Seleziona colonne",
@@ -92,12 +88,9 @@
       "readStatus": "Stato lettura",
       "resetBookloreProgress": "Ripristina progresso Booklore",
       "resetKOReaderProgress": "Ripristina progresso KOReader",
-      "book": "Libro",
       "loading": "Caricamento..."
     },
     "confirm": {
-      "deleteBookMessage": "Sei sicuro di voler eliminare \"{{ title }}\"?\n\nQuesto rimuoverà permanentemente il file del libro dal tuo file system.\n\nQuesta azione non può essere annullata.",
-      "deleteBookHeader": "Conferma eliminazione",
       "deleteFileMessage": "Sei sicuro di voler eliminare il file aggiuntivo \"{{ fileName }}\"?",
       "deleteFileHeader": "Conferma eliminazione file"
     },
@@ -154,12 +147,6 @@
   },
   "bookService": {
     "toast": {
-      "someFilesNotDeletedSummary": "Alcuni file non sono stati eliminati",
-      "someFilesNotDeletedDetail": "Libri: {{ fileNames }}",
-      "booksDeletedSummary": "Libri eliminati",
-      "booksDeletedDetail": "{{ count }} libro/i eliminato/i con successo.",
-      "deleteFailedSummary": "Eliminazione fallita",
-      "deleteFailedDetail": "Si è verificato un errore durante l'eliminazione dei libri.",
       "physicalBookCreatedSummary": "Libro fisico creato",
       "physicalBookCreatedDetail": "\"{{ title }}\" è stato aggiunto alla tua libreria.",
       "creationFailedSummary": "Creazione fallita",
@@ -684,8 +671,7 @@
       "lockUnlockMetadata": "Blocca/Sblocca metadati",
       "moreActions": "Altre azioni",
       "selectAll": "Seleziona tutti i libri",
-      "deselectAll": "Deseleziona tutti i libri",
-      "deleteSelected": "Elimina libri selezionati"
+      "deselectAll": "Deseleziona tutti i libri"
     },
     "readButton": "",
     "booksInSeries": "",
@@ -734,7 +720,7 @@
     "merge": "Unisci",
     "dismiss": "Ignora",
     "target": "Destinazione",
-    "helpText": "Ogni gruppo contiene libri che sembrano essere duplicati. Seleziona il libro di destinazione (quello da mantenere), quindi fai clic su Unisci per combinare i file. Per eliminare duplicati specifici, seleziona quelli che vuoi rimuovere e fai clic su Elimina.",
+    "helpText": "Ogni gruppo contiene libri che sembrano essere duplicati. Seleziona il libro di destinazione (quello da mantenere), quindi fai clic su Unisci per combinare i file. ",
     "groupLabel": "Gruppo {{ index }}",
     "fileCount": "{{ count }} file",
     "reason": {
@@ -753,11 +739,7 @@
       "mergeFailedDetail": "Impossibile unire questo gruppo.",
       "mergePartialDetail": "{{ success }} uniti, {{ failed }} falliti."
     },
-    "deleteSelected": "Elimina ({{ count }})",
     "sameFormatWarning": "Stesso formato",
-    "confirm": {
-      "deleteHeader": "Conferma eliminazione",
-      "deleteMessage": "Questo eliminerà permanentemente {{ count }} libro/i e i relativi file dal disco. Questa azione non può essere annullata."
-    }
+    "confirm": {}
   }
 }

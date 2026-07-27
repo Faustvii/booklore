@@ -315,8 +315,6 @@
     "menuAttachToAnotherBook": "Anexar a Outro Livro",
     "menuDeleteFileFormats": "Excluir Formatos de Arquivo",
     "menuDeleteSupplementaryFiles": "Excluir Arquivos Complementares",
-    "menuDeleteBookAllFiles": "Excluir Livro e Todos os Arquivos",
-    "menuDeleteBook": "Excluir Livro",
     "navigationPosition": "{{ current }} de {{ total }}",
     "channelMono": "Mono",
     "channelStereo": "Estéreo",
@@ -360,16 +358,13 @@
       "resetProgressHeader": "Confirmar Redefinição",
       "deleteSupplementaryMessage": "Tem certeza de que deseja excluir o arquivo complementar \"{{ fileName }}\"?\n\nEste arquivo será removido permanentemente do seu sistema de arquivos.",
       "deleteSupplementaryHeader": "Excluir Arquivo Complementar",
-      "deleteOnlyFormatMessage": "Tem certeza de que deseja excluir \"{{ fileName }}\"?\n\nEste é o ÚNICO formato de arquivo deste livro. Após a exclusão, o livro não terá conteúdo legível.\n\nConsidere usar \"Excluir Livro e Todos os Arquivos\" para remover completamente o livro.\n\nEste arquivo será removido permanentemente do seu sistema de arquivos.",
+      "deleteOnlyFormatMessage": "Tem certeza de que deseja excluir \"{{ fileName }}\"?\n\nEste é o ÚNICO formato de arquivo deste livro. Após a exclusão, o livro não terá conteúdo legível.\n\nEste arquivo será removido permanentemente do seu sistema de arquivos.",
       "deleteOnlyFormatHeader": "Excluir Único Formato do Livro",
       "deletePrimaryFormatMessage": "Tem certeza de que deseja excluir \"{{ fileName }}\"?\n\nEste é atualmente o formato PRINCIPAL deste livro. Após a exclusão, um formato alternativo se tornará o novo principal.\n\nEste arquivo será removido permanentemente do seu sistema de arquivos.",
       "deletePrimaryFormatHeader": "Excluir Formato Principal",
       "deleteAltFormatMessage": "Tem certeza de que deseja excluir \"{{ fileName }}\"?\n\nEste arquivo será removido permanentemente do seu sistema de arquivos.",
       "deleteAltFormatHeader": "Excluir Formato do Livro",
-      "deleteFileBtn": "Excluir Arquivo",
-      "deleteBookMessage": "Tem certeza de que deseja excluir \"{{ title }}\"?\n\nIsso removerá permanentemente o registro do livro da sua biblioteca.\n\nEssa ação não pode ser desfeita.",
-      "deleteBookAllFilesMessage": "Tem certeza de que deseja excluir \"{{ title }}\"?\n\nIsso removerá permanentemente o registro do livro E todos os arquivos associados do seu sistema de arquivos.\n\nEssa ação não pode ser desfeita.",
-      "deleteEverythingBtn": "Excluir Tudo"
+      "deleteFileBtn": "Excluir Arquivo"
     }
   },
   "sidecar": {

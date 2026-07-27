@@ -48,7 +48,6 @@
   "perms": {
     "fullAdmin": "完全管理者アクセス",
     "downloadBooks": "本をダウンロード",
-    "deleteBooks": "本を削除",
     "manageLibrary": "ライブラリを管理",
     "emailBooks": "本をメール送信",
     "viewLibraryStats": "ライブラリ統計を表示",

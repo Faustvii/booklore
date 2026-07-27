@@ -315,8 +315,6 @@
     "menuAttachToAnotherBook": "Attacher à un autre livre",
     "menuDeleteFileFormats": "Supprimer les formats de fichier",
     "menuDeleteSupplementaryFiles": "Supprimer les fichiers supplémentaires",
-    "menuDeleteBookAllFiles": "Supprimer le livre et tous les fichiers",
-    "menuDeleteBook": "Supprimer le livre",
     "navigationPosition": "{{ current }} sur {{ total }}",
     "channelMono": "Mono",
     "channelStereo": "Stéréo",
@@ -360,16 +358,13 @@
       "resetProgressHeader": "Confirmer la réinitialisation",
       "deleteSupplementaryMessage": "Êtes-vous sûr de vouloir supprimer le fichier supplémentaire « {{ fileName }} » ?\n\nCe fichier sera définitivement supprimé de votre système de fichiers.",
       "deleteSupplementaryHeader": "Supprimer le fichier supplémentaire",
-      "deleteOnlyFormatMessage": "Êtes-vous sûr de vouloir supprimer « {{ fileName }} » ?\n\nC'est le SEUL fichier de format de ce livre. Après la suppression, le livre n'aura plus de contenu lisible.\n\nPensez à utiliser « Supprimer le livre et tous les fichiers » pour supprimer complètement le livre.\n\nCe fichier sera définitivement supprimé de votre système de fichiers.",
+      "deleteOnlyFormatMessage": "Êtes-vous sûr de vouloir supprimer « {{ fileName }} » ?\n\nC'est le SEUL fichier de format de ce livre. Après la suppression, le livre n'aura plus de contenu lisible.\n\nCe fichier sera définitivement supprimé de votre système de fichiers.",
       "deleteOnlyFormatHeader": "Supprimer le seul format de livre",
       "deletePrimaryFormatMessage": "Êtes-vous sûr de vouloir supprimer « {{ fileName }} » ?\n\nC'est actuellement le format PRINCIPAL de ce livre. Après la suppression, un format alternatif deviendra le nouveau format principal.\n\nCe fichier sera définitivement supprimé de votre système de fichiers.",
       "deletePrimaryFormatHeader": "Supprimer le format principal",
       "deleteAltFormatMessage": "Êtes-vous sûr de vouloir supprimer « {{ fileName }} » ?\n\nCe fichier sera définitivement supprimé de votre système de fichiers.",
       "deleteAltFormatHeader": "Supprimer le format de livre",
-      "deleteFileBtn": "Supprimer le fichier",
-      "deleteBookMessage": "Êtes-vous sûr de vouloir supprimer « {{ title }} » ?\n\nCela supprimera définitivement l'enregistrement du livre de votre bibliothèque.\n\nCette action est irréversible.",
-      "deleteBookAllFilesMessage": "Êtes-vous sûr de vouloir supprimer « {{ title }} » ?\n\nCela supprimera définitivement l'enregistrement du livre ET tous les fichiers associés de votre système de fichiers.\n\nCette action est irréversible.",
-      "deleteEverythingBtn": "Tout supprimer"
+      "deleteFileBtn": "Supprimer le fichier"
     }
   },
   "sidecar": {

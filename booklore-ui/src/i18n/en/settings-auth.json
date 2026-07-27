@@ -89,7 +89,6 @@
     "editMetadata": "Edit Book Metadata",
     "manageLibrary": "Manage Library",
     "emailBook": "Email Book",
-    "deleteBook": "Delete Book",
     "koreaderSync": "KOReader Sync",
     "koboSync": "Kobo Sync",
     "accessOpds": "Access OPDS"

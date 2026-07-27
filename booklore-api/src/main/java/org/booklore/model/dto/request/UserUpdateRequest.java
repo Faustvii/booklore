@@ -18,7 +18,6 @@ public class UserUpdateRequest {
         private boolean canEditMetadata;
         private boolean canManageLibrary;
         private boolean canEmailBook;
-        private boolean canDeleteBook;
         private boolean canAccessOpds;
         private boolean canSyncKoReader;
         private boolean canSyncKobo;

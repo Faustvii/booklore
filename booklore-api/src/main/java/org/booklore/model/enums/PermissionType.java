@@ -10,7 +10,6 @@ public enum PermissionType {
     EDIT_METADATA("permissionEditMetadata"),
     MANAGE_LIBRARY("permissionManageLibrary"),
     EMAIL_BOOK("permissionEmailBook"),
-    DELETE_BOOK("permissionDeleteBook"),
     SYNC_KOREADER("permissionSyncKoreader"),
     SYNC_KOBO("permissionSyncKobo"),
     ACCESS_OPDS("permissionAccessOpds"),

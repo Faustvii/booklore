@@ -236,7 +236,6 @@ export class UserManagementComponent implements OnInit, OnDestroy {
     const permissions = user.permissions;
     let count = 0;
     if (permissions.canDownload) count++;
-    if (permissions.canDeleteBook) count++;
     if (permissions.canManageLibrary) count++;
     if (permissions.canEmailBook) count++;
     return count;
@@ -314,7 +313,6 @@ export class UserManagementComponent implements OnInit, OnDestroy {
   onAdminCheckboxChange(user: User) {
     if (user.permissions.admin) {
       user.permissions.canDownload = true;
-      user.permissions.canDeleteBook = true;
       user.permissions.canEditMetadata = true;
       user.permissions.canManageLibrary = true;
       user.permissions.canEmailBook = true;

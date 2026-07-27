@@ -569,30 +569,6 @@ export class BookBrowserComponent implements OnInit, AfterViewInit, OnDestroy {
     this.moreActionsMenuItems = this.bookMenuService.getMoreActionsMenu(this.selectedBooks, this.user());
   }
 
-  confirmDeleteBooks(): void {
-    this.confirmationService.confirm({
-      message: this.t.translate('book.browser.confirm.deleteMessage', {count: this.selectedBooks.size}),
-      header: this.t.translate('book.browser.confirm.deleteHeader'),
-      icon: 'pi pi-exclamation-triangle',
-      acceptIcon: 'pi pi-trash',
-      rejectIcon: 'pi pi-times',
-      acceptLabel: this.t.translate('common.delete'),
-      rejectLabel: this.t.translate('common.cancel'),
-      acceptButtonStyleClass: 'p-button-danger',
-      rejectButtonStyleClass: 'p-button-outlined',
-      accept: () => {
-        const count = this.selectedBooks.size;
-        const loader = this.loadingService.show(this.t.translate('book.browser.loading.deleting', {count}));
-
-        this.bookService.deleteBooks(this.selectedBooks)
-          .pipe(finalize(() => this.loadingService.hide(loader)))
-          .subscribe(() => {
-            this.bookSelectionService.deselectAll();
-          });
-      }
-    });
-  }
-
   onSeriesCollapseCheckboxChange(value: boolean): void {
     this.seriesCollapseFilter.setCollapsed(value);
   }

@@ -1,8 +1,6 @@
 {
   "browser": {
     "confirm": {
-      "deleteMessage": "Are you sure you want to delete {{ count }} book(s)?\n\nThis will permanently remove the book files from your filesystem.\n\nThis action cannot be undone.",
-      "deleteHeader": "Confirm Deletion",
       "regenCoverMessage": "Are you sure you want to regenerate covers for {{ count }} book(s)?",
       "regenCoverHeader": "Confirm Cover Regeneration",
       "customCoverMessage": "Are you sure you want to generate custom covers for {{ count }} book(s)?",
@@ -27,7 +25,6 @@
       "multipleLibrariesDetail": "All selected books must be from the same library."
     },
     "loading": {
-      "deleting": "Deleting {{ count }} book(s)...",
       "unshelving": "Unshelving {{ count }} book(s)..."
     },
     "labels": {
@@ -65,8 +62,7 @@
       "attachToBook": "Attach to Another Book",
       "moreActions": "More actions",
       "selectAll": "Select all books",
-      "deselectAll": "Deselect all books",
-      "deleteSelected": "Delete selected books"
+      "deselectAll": "Deselect all books"
     },
     "placeholder": {
       "selectColumns": "Select Columns",
@@ -92,12 +88,9 @@
       "readStatus": "Read Status",
       "resetBookloreProgress": "Reset Booklore Progress",
       "resetKOReaderProgress": "Reset KOReader Progress",
-      "book": "Book",
       "loading": "Loading..."
     },
     "confirm": {
-      "deleteBookMessage": "Are you sure you want to delete \"{{ title }}\"?\n\nThis will permanently remove the book file from your filesystem.\n\nThis action cannot be undone.",
-      "deleteBookHeader": "Confirm Deletion",
       "deleteFileMessage": "Are you sure you want to delete the additional file \"{{ fileName }}\"?",
       "deleteFileHeader": "Confirm File Deletion",
       "largeFileMessage": "This file exceeds 25MB. Some email providers may reject large attachments.\n\nDo you want to send it anyway?",
@@ -158,12 +151,6 @@
   },
   "bookService": {
     "toast": {
-      "someFilesNotDeletedSummary": "Some files could not be deleted",
-      "someFilesNotDeletedDetail": "Books: {{ fileNames }}",
-      "booksDeletedSummary": "Books Deleted",
-      "booksDeletedDetail": "{{ count }} book(s) deleted successfully.",
-      "deleteFailedSummary": "Delete Failed",
-      "deleteFailedDetail": "An error occurred while deleting books.",
       "physicalBookCreatedSummary": "Physical Book Created",
       "physicalBookCreatedDetail": "\"{{ title }}\" has been added to your library.",
       "creationFailedSummary": "Creation Failed",
@@ -760,8 +747,7 @@
       "lockUnlockMetadata": "Lock/Unlock metadata",
       "moreActions": "More actions",
       "selectAll": "Select all books",
-      "deselectAll": "Deselect all books",
-      "deleteSelected": "Delete selected books"
+      "deselectAll": "Deselect all books"
     }
   },
   "duplicateMerger": {
@@ -784,11 +770,10 @@
     "allMerged": "All duplicate groups have been processed.",
     "mergeAll": "Merge All ({{ count }})",
     "merge": "Merge",
-    "deleteSelected": "Delete ({{ count }})",
     "dismiss": "Dismiss",
     "target": "Target",
     "sameFormatWarning": "Same format",
-    "helpText": "Each group contains books that appear to be duplicates. Select the target book (the one to keep), then click Merge to combine files. To delete specific duplicates, check the ones you want to remove and click Delete.",
+    "helpText": "Each group contains books that appear to be duplicates. Select the target book (the one to keep), then click Merge to combine files. ",
     "groupLabel": "Group {{ index }}",
     "fileCount": "{{ count }} files",
     "reason": {
@@ -798,10 +783,7 @@
       "DIRECTORY": "Same Directory",
       "FILENAME": "Filename Match"
     },
-    "confirm": {
-      "deleteHeader": "Confirm Deletion",
-      "deleteMessage": "This will permanently delete {{ count }} book(s) and their files from disk. This cannot be undone."
-    },
+    "confirm": {},
     "toast": {
       "scanFailedSummary": "Scan Failed",
       "scanFailedDetail": "Could not scan for duplicates.",

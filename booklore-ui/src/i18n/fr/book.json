@@ -1,8 +1,6 @@
 {
   "browser": {
     "confirm": {
-      "deleteMessage": "Êtes-vous sûr de vouloir supprimer {{ count }} livre(s) ?\n\nCela supprimera définitivement les fichiers de votre système de fichiers.\n\nCette action est irréversible.",
-      "deleteHeader": "Confirmer la suppression",
       "regenCoverMessage": "Êtes-vous sûr de vouloir régénérer les couvertures de {{ count }} livre(s) ?",
       "regenCoverHeader": "Confirmer la régénération des couvertures",
       "customCoverMessage": "Êtes-vous sûr de vouloir générer des couvertures personnalisées pour {{ count }} livre(s) ?",
@@ -27,7 +25,6 @@
       "multipleLibrariesDetail": "Tous les livres sélectionnés doivent provenir de la même bibliothèque."
     },
     "loading": {
-      "deleting": "Suppression de {{ count }} livre(s)...",
       "unshelving": "Retrait de {{ count }} livre(s) des étagères..."
     },
     "labels": {
@@ -65,8 +62,7 @@
       "attachToBook": "Joindre à un autre livre",
       "moreActions": "Plus d'actions",
       "selectAll": "Sélectionner tous les livres",
-      "deselectAll": "Désélectionner tous les livres",
-      "deleteSelected": "Supprimer les livres sélectionnés"
+      "deselectAll": "Désélectionner tous les livres"
     },
     "placeholder": {
       "selectColumns": "Sélectionner les colonnes",
@@ -92,12 +88,9 @@
       "readStatus": "Statut de lecture",
       "resetBookloreProgress": "Réinitialiser la progression Booklore",
       "resetKOReaderProgress": "Réinitialiser la progression KOReader",
-      "book": "Livre",
       "loading": "Chargement..."
     },
     "confirm": {
-      "deleteBookMessage": "Êtes-vous sûr de vouloir supprimer « {{ title }} » ?\n\nCela supprimera définitivement le fichier de votre système de fichiers.\n\nCette action est irréversible.",
-      "deleteBookHeader": "Confirmer la suppression",
       "deleteFileMessage": "Êtes-vous sûr de vouloir supprimer le fichier supplémentaire « {{ fileName }} » ?",
       "deleteFileHeader": "Confirmer la suppression du fichier",
       "largeFileMessage": "Ce fichier dépasse 25MB. Certains fournisseurs de courriel peuvent rejeter les grosses pièces jointes.\n\nVoulez vous l'envoyer quand même?",
@@ -157,12 +150,6 @@
   },
   "bookService": {
     "toast": {
-      "someFilesNotDeletedSummary": "Certains fichiers n'ont pas pu être supprimés",
-      "someFilesNotDeletedDetail": "Livres : {{ fileNames }}",
-      "booksDeletedSummary": "Livres supprimés",
-      "booksDeletedDetail": "{{ count }} livre(s) supprimé(s) avec succès.",
-      "deleteFailedSummary": "Échec de la suppression",
-      "deleteFailedDetail": "Une erreur est survenue lors de la suppression des livres.",
       "physicalBookCreatedSummary": "Livre physique créé",
       "physicalBookCreatedDetail": "« {{ title }} » a été ajouté à votre bibliothèque.",
       "creationFailedSummary": "Échec de la création",
@@ -687,8 +674,7 @@
       "lockUnlockMetadata": "Verrouiller/Déverrouiller les métadonnées",
       "moreActions": "Plus d'actions",
       "selectAll": "Sélectionner tous les livres",
-      "deselectAll": "Désélectionner tous les livres",
-      "deleteSelected": "Supprimer les livres sélectionnés"
+      "deselectAll": "Désélectionner tous les livres"
     },
     "readButton": "",
     "booksInSeries": "",
@@ -737,7 +723,7 @@
     "merge": "Fusionner",
     "dismiss": "Ignorer",
     "target": "Cible",
-    "helpText": "Chaque groupe contient des livres qui semblent être des doublons. Sélectionnez le livre cible (celui à conserver), puis cliquez sur Fusionner pour combiner les fichiers. Pour supprimer des doublons spécifiques, cochez ceux que vous souhaitez retirer et cliquez sur Supprimer.",
+    "helpText": "Chaque groupe contient des livres qui semblent être des doublons. Sélectionnez le livre cible (celui à conserver), puis cliquez sur Fusionner pour combiner les fichiers. ",
     "groupLabel": "Groupe {{ index }}",
     "fileCount": "{{ count }} fichiers",
     "reason": {
@@ -756,11 +742,7 @@
       "mergeFailedDetail": "Impossible de fusionner ce groupe.",
       "mergePartialDetail": "{{ success }} fusionné(s), {{ failed }} échoué(s)."
     },
-    "deleteSelected": "Supprimer ({{ count }})",
     "sameFormatWarning": "Même format",
-    "confirm": {
-      "deleteHeader": "Confirmer la suppression",
-      "deleteMessage": "Cela supprimera définitivement {{ count }} livre(s) et leurs fichiers du disque. Cette action est irréversible."
-    }
+    "confirm": {}
   }
 }

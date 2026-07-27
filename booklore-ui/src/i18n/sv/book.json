@@ -1,8 +1,6 @@
 {
   "browser": {
     "confirm": {
-      "deleteMessage": "Är du säker på att du vill radera {{ count }} bok/böcker?\n\nDetta tar permanent bort bokfilerna från ditt filsystem.\n\nDenna åtgärd kan inte ångras.",
-      "deleteHeader": "Bekräfta radering",
       "regenCoverMessage": "Är du säker på att du vill återskapa omslag för {{ count }} bok/böcker?",
       "regenCoverHeader": "Bekräfta omslagsåterskapning",
       "customCoverMessage": "Är du säker på att du vill generera anpassade omslag för {{ count }} bok/böcker?",
@@ -27,7 +25,6 @@
       "multipleLibrariesDetail": "Alla valda böcker måste vara från samma bibliotek."
     },
     "loading": {
-      "deleting": "Raderar {{ count }} bok/böcker...",
       "unshelving": "Tar bort {{ count }} bok/böcker från hyllor..."
     },
     "labels": {
@@ -65,8 +62,7 @@
       "attachToBook": "Bifoga till annan bok",
       "moreActions": "Fler åtgärder",
       "selectAll": "Välj alla böcker",
-      "deselectAll": "Avmarkera alla böcker",
-      "deleteSelected": "Radera valda böcker"
+      "deselectAll": "Avmarkera alla böcker"
     },
     "placeholder": {
       "selectColumns": "Välj kolumner",
@@ -92,12 +88,9 @@
       "readStatus": "Lässtatus",
       "resetBookloreProgress": "Återställ Booklore-framsteg",
       "resetKOReaderProgress": "Återställ KOReader-framsteg",
-      "book": "Bok",
       "loading": "Laddar..."
     },
     "confirm": {
-      "deleteBookMessage": "Är du säker på att du vill radera \"{{ title }}\"?\n\nDetta tar permanent bort bokfilen från ditt filsystem.\n\nDenna åtgärd kan inte ångras.",
-      "deleteBookHeader": "Bekräfta radering",
       "deleteFileMessage": "Är du säker på att du vill radera den extra filen \"{{ fileName }}\"?",
       "deleteFileHeader": "Bekräfta filradering",
       "largeFileMessage": "Den här filen överstiger 25 MB. Vissa e-postleverantörer kan avvisa stora bilagor.\n\nVill du skicka den ändå?",
@@ -158,12 +151,6 @@
   },
   "bookService": {
     "toast": {
-      "someFilesNotDeletedSummary": "Vissa filer kunde inte raderas",
-      "someFilesNotDeletedDetail": "Böcker: {{ fileNames }}",
-      "booksDeletedSummary": "Böcker raderade",
-      "booksDeletedDetail": "{{ count }} bok/böcker raderades.",
-      "deleteFailedSummary": "Radering misslyckades",
-      "deleteFailedDetail": "Ett fel uppstod vid radering av böcker.",
       "physicalBookCreatedSummary": "Fysisk bok skapad",
       "physicalBookCreatedDetail": "\"{{ title }}\" har lagts till i ditt bibliotek.",
       "creationFailedSummary": "Skapande misslyckades",
@@ -692,8 +679,7 @@
       "lockUnlockMetadata": "Lås/lås upp metadata",
       "moreActions": "Fler åtgärder",
       "selectAll": "Välj alla böcker",
-      "deselectAll": "Avmarkera alla böcker",
-      "deleteSelected": "Radera valda böcker"
+      "deselectAll": "Avmarkera alla böcker"
     },
     "bookListTab": "Boklista",
     "book": "Bok",
@@ -742,7 +728,7 @@
     "merge": "Sammanfoga",
     "dismiss": "Stäng",
     "target": "Mål",
-    "helpText": "Varje grupp innehåller böcker som verkar vara dubbletter. Välj målboken (den du vill behålla) och klicka sedan på Slå samman för att kombinera filerna. För att ta bort specifika dubbletter, markera de du vill ta bort och klicka på Ta bort.",
+    "helpText": "Varje grupp innehåller böcker som verkar vara dubbletter. Välj målboken (den du vill behålla) och klicka sedan på Slå samman för att kombinera filerna. ",
     "groupLabel": "Grupp {{ index }}",
     "fileCount": "{{ count }} filer",
     "reason": {
@@ -761,12 +747,8 @@
       "mergeFailedDetail": "Kunde inte sammanfoga denna grupp.",
       "mergePartialDetail": "{{ success }} sammanfogade, {{ failed }} misslyckades."
     },
-    "deleteSelected": "Ta bort ({{ count }})",
     "sameFormatWarning": "Samma format",
-    "confirm": {
-      "deleteHeader": "Bekräfta borttagning",
-      "deleteMessage": "Detta tar permanent bort {{ count }} bok/böcker och deras filer från disken. Detta kan inte ångras."
-    }
+    "confirm": {}
   },
   "bulkIsbnImport": {
     "title": "Importera ISBN-nummer",

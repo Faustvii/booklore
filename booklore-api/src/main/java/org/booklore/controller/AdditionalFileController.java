@@ -49,7 +49,7 @@ public class AdditionalFileController {
 
     @DeleteMapping("/{fileId}")
     @CheckBookAccess(bookIdParam = "bookId")
-    @PreAuthorize("@securityUtil.canDeleteBook() or @securityUtil.isAdmin()")
+    @PreAuthorize("@securityUtil.isAdmin()")
     public ResponseEntity<Void> deleteAdditionalFile(
             @PathVariable Long bookId,
             @PathVariable Long fileId) {

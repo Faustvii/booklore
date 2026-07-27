@@ -22,7 +22,6 @@ import org.booklore.model.dto.request.ShelvesAssignmentRequest;
 import org.booklore.model.dto.request.ToggleAllLockRequest;
 import org.booklore.model.dto.request.ToggleFieldLocksRequest;
 import org.booklore.model.dto.response.AttachBookFileResponse;
-import org.booklore.model.dto.response.BookDeletionResponse;
 import org.booklore.model.dto.response.BookStatusUpdateResponse;
 import org.booklore.model.dto.response.DuplicateGroup;
 import org.booklore.model.dto.response.PersonalRatingUpdateResponse;
@@ -120,18 +119,6 @@ public class BookController {
     public ResponseEntity<Book> createPhysicalBook(
             @Parameter(description = "Physical book creation request") @RequestBody @Valid CreatePhysicalBookRequest request) {
         return ResponseEntity.status(201).body(physicalBookService.createPhysicalBook(request));
-    }
-
-    @Operation(summary = "Delete books", description = "Delete one or more books by their IDs. Requires admin or delete permission.")
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "Books deleted successfully"),
-            @ApiResponse(responseCode = "403", description = "Forbidden")
-    })
-    @PreAuthorize("@securityUtil.canDeleteBook() or @securityUtil.isAdmin()")
-    @DeleteMapping
-    public ResponseEntity<BookDeletionResponse> deleteBooks(
-            @Parameter(description = "Set of book IDs to delete") @RequestParam Set<Long> ids) {
-        return bookService.deleteBooks(ids);
     }
 
     @Operation(summary = "Get books by IDs", description = "Retrieve multiple books by their IDs. Optionally include descriptions.")

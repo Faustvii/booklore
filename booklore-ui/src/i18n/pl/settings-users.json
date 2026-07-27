@@ -48,7 +48,6 @@
   "perms": {
     "fullAdmin": "Pełny dostęp administratora",
     "downloadBooks": "Pobieranie książek",
-    "deleteBooks": "Usuwanie książek",
     "manageLibrary": "Zarządzanie biblioteką",
     "emailBooks": "Wysyłanie książek e-mailem",
     "viewLibraryStats": "Przeglądanie statystyk biblioteki",

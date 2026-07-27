@@ -382,11 +382,6 @@ export interface BulkMetadataUpdateRequest {
   clearContentRating?: boolean;
 }
 
-export interface BookDeletionResponse {
-  deleted: number[];
-  failedFileDeletions: number[];
-}
-
 export enum ReadStatus {
   UNREAD = 'UNREAD',
   READING = 'READING',

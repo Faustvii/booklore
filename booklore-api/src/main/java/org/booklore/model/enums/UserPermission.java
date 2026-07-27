@@ -66,14 +66,6 @@ public enum UserPermission {
             UserPermissionsEntity::isPermissionEmailBook,
             UserPermissionsEntity::setPermissionEmailBook
     ),
-    CAN_DELETE_BOOK(
-            "Delete books",
-            BookLoreUser.UserPermissions::isCanDeleteBook,
-            BookLoreUser.UserPermissions::setCanDeleteBook,
-            UserUpdateRequest.Permissions::isCanDeleteBook,
-            UserPermissionsEntity::isPermissionDeleteBook,
-            UserPermissionsEntity::setPermissionDeleteBook
-    ),
     CAN_ACCESS_OPDS(
             "Access OPDS",
             BookLoreUser.UserPermissions::isCanAccessOpds,

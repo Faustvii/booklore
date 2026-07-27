@@ -47,7 +47,6 @@ class UserPermissionUtilsTest {
                 .permissionEditMetadata(false)
                 .permissionManageLibrary(false)
                 .permissionEmailBook(false)
-                .permissionDeleteBook(false)
                 .permissionAccessOpds(false)
                 .permissionSyncKoreader(false)
                 .permissionSyncKobo(false)
@@ -74,7 +73,6 @@ class UserPermissionUtilsTest {
                 .permissionEditMetadata(true)
                 .permissionManageLibrary(true)
                 .permissionEmailBook(true)
-                .permissionDeleteBook(true)
                 .permissionAccessOpds(true)
                 .permissionSyncKoreader(true)
                 .permissionSyncKobo(true)
@@ -100,7 +98,6 @@ class UserPermissionUtilsTest {
                 .permissionEditMetadata(false)
                 .permissionManageLibrary(false)
                 .permissionEmailBook(false)
-                .permissionDeleteBook(false)
                 .permissionAccessOpds(false)
                 .permissionSyncKoreader(false)
                 .permissionSyncKobo(false)
@@ -119,7 +116,6 @@ class UserPermissionUtilsTest {
             case EDIT_METADATA -> builder.permissionEditMetadata(value);
             case MANAGE_LIBRARY -> builder.permissionManageLibrary(value);
             case EMAIL_BOOK -> builder.permissionEmailBook(value);
-            case DELETE_BOOK -> builder.permissionDeleteBook(value);
             case ACCESS_OPDS -> builder.permissionAccessOpds(value);
             case SYNC_KOREADER -> builder.permissionSyncKoreader(value);
             case SYNC_KOBO -> builder.permissionSyncKobo(value);
@@ -145,7 +141,6 @@ class UserPermissionUtilsTest {
         perms.setCanEditMetadata(false);
         perms.setCanManageLibrary(false);
         perms.setCanEmailBook(false);
-        perms.setCanDeleteBook(false);
         perms.setCanAccessOpds(false);
         perms.setCanSyncKoReader(false);
         perms.setCanSyncKobo(false);
@@ -163,7 +158,6 @@ class UserPermissionUtilsTest {
             case EDIT_METADATA -> perms.setCanEditMetadata(value);
             case MANAGE_LIBRARY -> perms.setCanManageLibrary(value);
             case EMAIL_BOOK -> perms.setCanEmailBook(value);
-            case DELETE_BOOK -> perms.setCanDeleteBook(value);
             case ACCESS_OPDS -> perms.setCanAccessOpds(value);
             case SYNC_KOREADER -> perms.setCanSyncKoReader(value);
             case SYNC_KOBO -> perms.setCanSyncKobo(value);

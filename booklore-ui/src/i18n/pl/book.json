@@ -1,8 +1,6 @@
 {
   "browser": {
     "confirm": {
-      "deleteMessage": "Czy na pewno chcesz usunąć {{ count }} książkę/książki/książek?\n\nSpowoduje to trwałe usunięcie plików książek z systemu plików.\n\nTej operacji nie można cofnąć.",
-      "deleteHeader": "Potwierdź usunięcie",
       "regenCoverMessage": "Czy na pewno chcesz ponownie wygenerować okładki dla {{ count }} książki/książek?",
       "regenCoverHeader": "Potwierdź ponowne generowanie okładek",
       "customCoverMessage": "Czy na pewno chcesz wygenerować niestandardowe okładki dla {{ count }} książki/książek?",
@@ -27,7 +25,6 @@
       "multipleLibrariesDetail": "Wszystkie wybrane książki muszą pochodzić z tej samej biblioteki."
     },
     "loading": {
-      "deleting": "Usuwanie {{ count }} książki/książek...",
       "unshelving": "Usuwanie z półek {{ count }} książki/książek..."
     },
     "labels": {
@@ -65,8 +62,7 @@
       "attachToBook": "Dołącz do innej książki",
       "moreActions": "Więcej akcji",
       "selectAll": "Zaznacz wszystkie książki",
-      "deselectAll": "Odznacz wszystkie książki",
-      "deleteSelected": "Usuń zaznaczone książki"
+      "deselectAll": "Odznacz wszystkie książki"
     },
     "placeholder": {
       "selectColumns": "Wybierz kolumny",
@@ -92,12 +88,9 @@
       "readStatus": "Status czytania",
       "resetBookloreProgress": "Resetuj postęp Booklore",
       "resetKOReaderProgress": "Resetuj postęp KOReader",
-      "book": "Książka",
       "loading": "Ładowanie..."
     },
     "confirm": {
-      "deleteBookMessage": "Czy na pewno chcesz usunąć \"{{ title }}\"?\n\nSpowoduje to trwałe usunięcie pliku książki z systemu plików.\n\nTej operacji nie można cofnąć.",
-      "deleteBookHeader": "Potwierdź usunięcie",
       "deleteFileMessage": "Czy na pewno chcesz usunąć dodatkowy plik \"{{ fileName }}\"?",
       "deleteFileHeader": "Potwierdź usunięcie pliku"
     },
@@ -154,12 +147,6 @@
   },
   "bookService": {
     "toast": {
-      "someFilesNotDeletedSummary": "Nie udało się usunąć niektórych plików",
-      "someFilesNotDeletedDetail": "Książki: {{ fileNames }}",
-      "booksDeletedSummary": "Książki usunięte",
-      "booksDeletedDetail": "{{ count }} książka/książki/książek zostało pomyślnie usuniętych.",
-      "deleteFailedSummary": "Usuwanie nie powiodło się",
-      "deleteFailedDetail": "Wystąpił błąd podczas usuwania książek.",
       "physicalBookCreatedSummary": "Książka fizyczna utworzona",
       "physicalBookCreatedDetail": "\"{{ title }}\" została dodana do Twojej biblioteki.",
       "creationFailedSummary": "Tworzenie nie powiodło się",
@@ -684,8 +671,7 @@
       "lockUnlockMetadata": "Zablokuj/Odblokuj metadane",
       "moreActions": "Więcej akcji",
       "selectAll": "Zaznacz wszystkie książki",
-      "deselectAll": "Odznacz wszystkie książki",
-      "deleteSelected": "Usuń zaznaczone książki"
+      "deselectAll": "Odznacz wszystkie książki"
     },
     "readButton": "",
     "booksInSeries": "",
@@ -732,11 +718,10 @@
     "allMerged": "Wszystkie grupy duplikatów zostały przetworzone.",
     "mergeAll": "Scal wszystkie ({{ count }})",
     "merge": "Scal",
-    "deleteSelected": "Usuń ({{ count }})",
     "dismiss": "Odrzuć",
     "target": "Docelowa",
     "sameFormatWarning": "Ten sam format",
-    "helpText": "Każda grupa zawiera książki, które wyglądają na duplikaty. Wybierz książkę docelową (tę, którą chcesz zachować), a następnie kliknij Scal, aby połączyć pliki. Aby usunąć konkretne duplikaty, zaznacz te do usunięcia i kliknij Usuń.",
+    "helpText": "Każda grupa zawiera książki, które wyglądają na duplikaty. Wybierz książkę docelową (tę, którą chcesz zachować), a następnie kliknij Scal, aby połączyć pliki. ",
     "groupLabel": "Grupa {{ index }}",
     "fileCount": "{{ count }} plików",
     "reason": {
@@ -746,10 +731,7 @@
       "DIRECTORY": "Ten sam katalog",
       "FILENAME": "Dopasowanie nazwy pliku"
     },
-    "confirm": {
-      "deleteHeader": "Potwierdź usunięcie",
-      "deleteMessage": "Spowoduje to trwałe usunięcie {{ count }} książki/książek i ich plików z dysku. Tej operacji nie można cofnąć."
-    },
+    "confirm": {},
     "toast": {
       "scanFailedSummary": "Skanowanie nie powiodło się",
       "scanFailedDetail": "Nie udało się przeskanować w poszukiwaniu duplikatów.",

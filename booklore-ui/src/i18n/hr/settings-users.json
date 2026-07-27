@@ -48,7 +48,6 @@
   "perms": {
     "fullAdmin": "Potpuni administratorski pristup",
     "downloadBooks": "Preuzimanje knjiga",
-    "deleteBooks": "Brisanje knjiga",
     "manageLibrary": "Upravljanje zbirkom",
     "emailBooks": "Slanje knjiga e-poštom",
     "viewLibraryStats": "Pregled knjižnične statistike",

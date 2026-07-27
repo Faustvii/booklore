@@ -1,8 +1,6 @@
 {
   "browser": {
     "confirm": {
-      "deleteMessage": "Tem certeza de que deseja excluir {{ count }} livro(s)?\n\nIsso removerá permanentemente os arquivos dos livros do seu sistema de arquivos.\n\nEssa ação não pode ser desfeita.",
-      "deleteHeader": "Confirmar Exclusão",
       "regenCoverMessage": "Tem certeza de que deseja regenerar as capas de {{ count }} livro(s)?",
       "regenCoverHeader": "Confirmar Regeneração de Capa",
       "customCoverMessage": "Tem certeza de que deseja gerar capas personalizadas para {{ count }} livro(s)?",
@@ -27,7 +25,6 @@
       "multipleLibrariesDetail": "Todos os livros selecionados devem ser da mesma biblioteca."
     },
     "loading": {
-      "deleting": "Excluindo {{ count }} livro(s)...",
       "unshelving": "Removendo {{ count }} livro(s) das prateleiras..."
     },
     "labels": {
@@ -65,8 +62,7 @@
       "attachToBook": "Anexar a Outro Livro",
       "moreActions": "Mais ações",
       "selectAll": "Selecionar todos os livros",
-      "deselectAll": "Desmarcar todos os livros",
-      "deleteSelected": "Excluir livros selecionados"
+      "deselectAll": "Desmarcar todos os livros"
     },
     "placeholder": {
       "selectColumns": "Selecionar Colunas",
@@ -92,12 +88,9 @@
       "readStatus": "Status de Leitura",
       "resetBookloreProgress": "Redefinir Progresso do Booklore",
       "resetKOReaderProgress": "Redefinir Progresso do KOReader",
-      "book": "Livro",
       "loading": "Carregando..."
     },
     "confirm": {
-      "deleteBookMessage": "Tem certeza de que deseja excluir \"{{ title }}\"?\n\nIsso removerá permanentemente o arquivo do livro do seu sistema de arquivos.\n\nEssa ação não pode ser desfeita.",
-      "deleteBookHeader": "Confirmar Exclusão",
       "deleteFileMessage": "Tem certeza de que deseja excluir o arquivo adicional \"{{ fileName }}\"?",
       "deleteFileHeader": "Confirmar Exclusão de Arquivo"
     },
@@ -154,12 +147,6 @@
   },
   "bookService": {
     "toast": {
-      "someFilesNotDeletedSummary": "Alguns arquivos não puderam ser excluídos",
-      "someFilesNotDeletedDetail": "Livros: {{ fileNames }}",
-      "booksDeletedSummary": "Livros Excluídos",
-      "booksDeletedDetail": "{{ count }} livro(s) excluído(s) com sucesso.",
-      "deleteFailedSummary": "Exclusão Falhou",
-      "deleteFailedDetail": "Ocorreu um erro ao excluir livros.",
       "physicalBookCreatedSummary": "Livro Físico Criado",
       "physicalBookCreatedDetail": "\"{{ title }}\" foi adicionado à sua biblioteca.",
       "creationFailedSummary": "Criação Falhou",
@@ -684,8 +671,7 @@
       "lockUnlockMetadata": "Bloquear/Desbloquear metadados",
       "moreActions": "Mais ações",
       "selectAll": "Selecionar todos os livros",
-      "deselectAll": "Desmarcar todos os livros",
-      "deleteSelected": "Excluir livros selecionados"
+      "deselectAll": "Desmarcar todos os livros"
     },
     "readButton": "",
     "booksInSeries": "",
@@ -732,11 +718,10 @@
     "allMerged": "Todos os grupos de duplicatas foram processados.",
     "mergeAll": "Mesclar Todos ({{ count }})",
     "merge": "Mesclar",
-    "deleteSelected": "Excluir ({{ count }})",
     "dismiss": "Dispensar",
     "target": "Alvo",
     "sameFormatWarning": "Mesmo formato",
-    "helpText": "Cada grupo contém livros que parecem ser duplicatas. Selecione o livro alvo (o que manter), depois clique em Mesclar para combinar os arquivos. Para excluir duplicatas específicas, marque as que deseja remover e clique em Excluir.",
+    "helpText": "Cada grupo contém livros que parecem ser duplicatas. Selecione o livro alvo (o que manter), depois clique em Mesclar para combinar os arquivos. ",
     "groupLabel": "Grupo {{ index }}",
     "fileCount": "{{ count }} arquivos",
     "reason": {
@@ -746,10 +731,7 @@
       "DIRECTORY": "Mesmo Diretório",
       "FILENAME": "Correspondência de Nome de Arquivo"
     },
-    "confirm": {
-      "deleteHeader": "Confirmar Exclusão",
-      "deleteMessage": "Isso excluirá permanentemente {{ count }} livro(s) e seus arquivos do disco. Essa ação não pode ser desfeita."
-    },
+    "confirm": {},
     "toast": {
       "scanFailedSummary": "Escaneamento Falhou",
       "scanFailedDetail": "Não foi possível escanear duplicatas.",

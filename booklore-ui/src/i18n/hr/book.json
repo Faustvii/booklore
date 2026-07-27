@@ -1,8 +1,6 @@
 {
   "browser": {
     "confirm": {
-      "deleteMessage": "Jeste li sigurni da želite obrisati {{ count }} knjigu/e?\n\nOvo će trajno ukloniti datoteke knjiga iz vašeg datotečnog sustava.\n\nOva radnja se ne može poništiti.",
-      "deleteHeader": "Potvrdi brisanje",
       "regenCoverMessage": "Jeste li sigurni da želite regenerirati naslovnice za {{ count }} knjigu/e?",
       "regenCoverHeader": "Potvrdi regeneraciju naslovnica",
       "customCoverMessage": "Jeste li sigurni da želite generirati prilagođene naslovnice za {{ count }} knjigu/e?",
@@ -27,7 +25,6 @@
       "multipleLibrariesDetail": "Sve odabrane knjige moraju biti iz iste zbirke."
     },
     "loading": {
-      "deleting": "Brisanje {{ count }} knjige/a...",
       "unshelving": "Uklanjanje {{ count }} knjige/a s polica..."
     },
     "labels": {
@@ -65,8 +62,7 @@
       "attachToBook": "Priloži drugoj knjizi",
       "moreActions": "Više radnji",
       "selectAll": "Odaberi sve knjige",
-      "deselectAll": "Poništi odabir svih knjiga",
-      "deleteSelected": "Obriši odabrane knjige"
+      "deselectAll": "Poništi odabir svih knjiga"
     },
     "placeholder": {
       "selectColumns": "Odaberi stupce",
@@ -92,12 +88,9 @@
       "readStatus": "Status čitanja",
       "resetBookloreProgress": "Vrati Booklore napredak",
       "resetKOReaderProgress": "Vrati KOReader napredak",
-      "book": "Knjiga",
       "loading": "Učitavanje..."
     },
     "confirm": {
-      "deleteBookMessage": "Jeste li sigurni da želite obrisati \"{{ title }}\"?\n\nOvo će trajno ukloniti datoteku knjige iz vašeg datotečnog sustava.\n\nOva radnja se ne može poništiti.",
-      "deleteBookHeader": "Potvrdi brisanje",
       "deleteFileMessage": "Jeste li sigurni da želite obrisati dodatnu datoteku \"{{ fileName }}\"?",
       "deleteFileHeader": "Potvrdi brisanje datoteke",
       "largeFileMessage": "Ova datoteka prelazi 25 MB. Neki pružatelji usluga e-pošte mogu odbiti velike priloge.\n\nŽelite li je ipak poslati?",
@@ -158,12 +151,6 @@
   },
   "bookService": {
     "toast": {
-      "someFilesNotDeletedSummary": "Neke datoteke nije moguće obrisati",
-      "someFilesNotDeletedDetail": "Knjige: {{ fileNames }}",
-      "booksDeletedSummary": "Knjige obrisane",
-      "booksDeletedDetail": "{{ count }} knjiga uspješno obrisano.",
-      "deleteFailedSummary": "Brisanje nije uspjelo",
-      "deleteFailedDetail": "Došlo je do pogreške prilikom brisanja knjiga.",
       "physicalBookCreatedSummary": "Fizička knjiga kreirana",
       "physicalBookCreatedDetail": "\"{{ title }}\" je dodana u vašu knjižnicu.",
       "creationFailedSummary": "Kreiranje nije uspjelo",
@@ -691,8 +678,7 @@
       "lockUnlockMetadata": "Zaključaj/Otključaj metapodatke",
       "moreActions": "Više radnji",
       "selectAll": "Odaberi sve knjige",
-      "deselectAll": "Poništi odabir svih knjiga",
-      "deleteSelected": "Obriši odabrane knjige"
+      "deselectAll": "Poništi odabir svih knjiga"
     },
     "readButton": "Čitaj",
     "booksInSeries": "Knjige u seriji",
@@ -741,7 +727,7 @@
     "merge": "Spoji",
     "dismiss": "Odbaci",
     "target": "Cilj",
-    "helpText": "Svaka grupa sadrži knjige koje izgledaju kao duplikati. Odaberite ciljnu knjigu (onu koju želite zadržati), zatim kliknite Spoji za kombiniranje datoteka. Za brisanje određenih duplikata, označite one koje želite ukloniti i kliknite Obriši.",
+    "helpText": "Svaka grupa sadrži knjige koje izgledaju kao duplikati. Odaberite ciljnu knjigu (onu koju želite zadržati), zatim kliknite Spoji za kombiniranje datoteka. ",
     "groupLabel": "Grupa {{ index }}",
     "fileCount": "{{ count }} datoteka",
     "reason": {
@@ -760,11 +746,7 @@
       "mergeFailedDetail": "Spajanje ove grupe nije uspjelo.",
       "mergePartialDetail": "{{ success }} spojeno, {{ failed }} neuspjelo."
     },
-    "deleteSelected": "Obriši ({{ count }})",
     "sameFormatWarning": "Isti format",
-    "confirm": {
-      "deleteHeader": "Potvrdi brisanje",
-      "deleteMessage": "Ovo će trajno obrisati {{ count }} knjigu/e i njihove datoteke s diska. Ova radnja se ne može poništiti."
-    }
+    "confirm": {}
   }
 }

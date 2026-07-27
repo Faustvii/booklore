@@ -315,8 +315,6 @@
     "menuAttachToAnotherBook": "Dołącz do innej książki",
     "menuDeleteFileFormats": "Usuń formaty plików",
     "menuDeleteSupplementaryFiles": "Usuń pliki dodatkowe",
-    "menuDeleteBookAllFiles": "Usuń książkę i wszystkie pliki",
-    "menuDeleteBook": "Usuń książkę",
     "navigationPosition": "{{ current }} z {{ total }}",
     "channelMono": "Mono",
     "channelStereo": "Stereo",
@@ -360,16 +358,13 @@
       "resetProgressHeader": "Potwierdź reset",
       "deleteSupplementaryMessage": "Czy na pewno chcesz usunąć plik dodatkowy \"{{ fileName }}\"?\n\nTen plik zostanie trwale usunięty z systemu plików.",
       "deleteSupplementaryHeader": "Usuń plik dodatkowy",
-      "deleteOnlyFormatMessage": "Czy na pewno chcesz usunąć \"{{ fileName }}\"?\n\nTo jest JEDYNY format pliku dla tej książki. Po usunięciu książka nie będzie miała żadnej czytelnej zawartości.\n\nRozważ użycie opcji \"Usuń książkę i wszystkie pliki\", aby całkowicie usunąć książkę.\n\nTen plik zostanie trwale usunięty z systemu plików.",
+      "deleteOnlyFormatMessage": "Czy na pewno chcesz usunąć \"{{ fileName }}\"?\n\nTo jest JEDYNY format pliku dla tej książki. Po usunięciu książka nie będzie miała żadnej czytelnej zawartości.\n\nTen plik zostanie trwale usunięty z systemu plików.",
       "deleteOnlyFormatHeader": "Usuń jedyny format książki",
       "deletePrimaryFormatMessage": "Czy na pewno chcesz usunąć \"{{ fileName }}\"?\n\nTo jest aktualnie GŁÓWNY format tej książki. Po usunięciu alternatywny format stanie się nowym głównym formatem.\n\nTen plik zostanie trwale usunięty z systemu plików.",
       "deletePrimaryFormatHeader": "Usuń główny format",
       "deleteAltFormatMessage": "Czy na pewno chcesz usunąć \"{{ fileName }}\"?\n\nTen plik zostanie trwale usunięty z systemu plików.",
       "deleteAltFormatHeader": "Usuń format książki",
-      "deleteFileBtn": "Usuń plik",
-      "deleteBookMessage": "Czy na pewno chcesz usunąć \"{{ title }}\"?\n\nSpowoduje to trwałe usunięcie rekordu książki z Twojej biblioteki.\n\nTej operacji nie można cofnąć.",
-      "deleteBookAllFilesMessage": "Czy na pewno chcesz usunąć \"{{ title }}\"?\n\nSpowoduje to trwałe usunięcie rekordu książki ORAZ wszystkich powiązanych plików z systemu plików.\n\nTej operacji nie można cofnąć.",
-      "deleteEverythingBtn": "Usuń wszystko"
+      "deleteFileBtn": "Usuń plik"
     }
   },
   "sidecar": {

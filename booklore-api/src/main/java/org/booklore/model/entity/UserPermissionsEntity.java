@@ -39,10 +39,6 @@ public class UserPermissionsEntity {
     @Builder.Default
     private boolean permissionEmailBook = false;
 
-    @Column(name = "permission_delete_book", nullable = false)
-    @Builder.Default
-    private boolean permissionDeleteBook = false;
-
     @Column(name = "permission_sync_koreader", nullable = false)
     @Builder.Default
     private boolean permissionSyncKoreader = false;

@@ -52,7 +52,6 @@ export class AuthenticationSettingsComponent implements OnInit {
     {label: 'Edit Book Metadata', value: 'permissionEditMetadata', selected: false, translationKey: 'perms.editMetadata'},
     {label: 'Manage Library', value: 'permissionManipulateLibrary', selected: false, translationKey: 'perms.manageLibrary'},
     {label: 'Email Book', value: 'permissionEmailBook', selected: false, translationKey: 'perms.emailBook'},
-    {label: 'Delete Book', value: 'permissionDeleteBook', selected: false, translationKey: 'perms.deleteBook'},
     {label: 'KOReader Sync', value: 'permissionSyncKoreader', selected: false, translationKey: 'perms.koreaderSync'},
     {label: 'Kobo Sync', value: 'permissionSyncKobo', selected: false, translationKey: 'perms.koboSync'},
     {label: 'Access OPDS', value: 'permissionAccessOpds', selected: false, translationKey: 'perms.accessOpds'}

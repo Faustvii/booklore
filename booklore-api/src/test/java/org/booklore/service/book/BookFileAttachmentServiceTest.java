@@ -608,7 +608,7 @@ class BookFileAttachmentServiceTest {
 
             service.attachBookFiles(1L, List.of(2L), true);
 
-            verify(bookService, atLeastOnce()).deleteEmptyParentDirsUpToLibraryFolders(any(Path.class), anySet());
+            verify(fileMoveHelper, atLeastOnce()).deleteEmptyParentDirsUpToLibraryFolders(any(Path.class), anySet());
         }
 
         @Test

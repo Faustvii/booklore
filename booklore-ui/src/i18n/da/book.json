@@ -1,8 +1,6 @@
 {
   "browser": {
     "confirm": {
-      "deleteMessage": "",
-      "deleteHeader": "",
       "regenCoverMessage": "",
       "regenCoverHeader": "",
       "customCoverMessage": "",
@@ -27,7 +25,6 @@
       "multipleLibrariesDetail": ""
     },
     "loading": {
-      "deleting": "",
       "unshelving": ""
     },
     "labels": {
@@ -65,8 +62,7 @@
       "attachToBook": "",
       "moreActions": "",
       "selectAll": "",
-      "deselectAll": "",
-      "deleteSelected": ""
+      "deselectAll": ""
     },
     "placeholder": {
       "selectColumns": "",
@@ -92,12 +88,9 @@
       "readStatus": "",
       "resetBookloreProgress": "",
       "resetKOReaderProgress": "",
-      "book": "",
       "loading": ""
     },
     "confirm": {
-      "deleteBookMessage": "",
-      "deleteBookHeader": "",
       "deleteFileMessage": "",
       "deleteFileHeader": "",
       "largeFileMessage": "",
@@ -158,12 +151,6 @@
   },
   "bookService": {
     "toast": {
-      "someFilesNotDeletedSummary": "",
-      "someFilesNotDeletedDetail": "",
-      "booksDeletedSummary": "",
-      "booksDeletedDetail": "",
-      "deleteFailedSummary": "",
-      "deleteFailedDetail": "",
       "physicalBookCreatedSummary": "",
       "physicalBookCreatedDetail": "",
       "creationFailedSummary": "",
@@ -759,8 +746,7 @@
       "lockUnlockMetadata": "",
       "moreActions": "",
       "selectAll": "",
-      "deselectAll": "",
-      "deleteSelected": ""
+      "deselectAll": ""
     }
   },
   "duplicateMerger": {
@@ -783,7 +769,6 @@
     "allMerged": "",
     "mergeAll": "",
     "merge": "",
-    "deleteSelected": "",
     "dismiss": "",
     "target": "",
     "sameFormatWarning": "",
@@ -797,10 +782,7 @@
       "DIRECTORY": "",
       "FILENAME": ""
     },
-    "confirm": {
-      "deleteHeader": "",
-      "deleteMessage": ""
-    },
+    "confirm": {},
     "toast": {
       "scanFailedSummary": "",
       "scanFailedDetail": "",

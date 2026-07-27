@@ -48,7 +48,6 @@
   "perms": {
     "fullAdmin": "Volledige beheerderstoegang",
     "downloadBooks": "Boeken downloaden",
-    "deleteBooks": "Boeken verwijderen",
     "manageLibrary": "Bibliotheek beheren",
     "emailBooks": "Boeken e-mailen",
     "viewLibraryStats": "Bibliotheekstatistieken bekijken",

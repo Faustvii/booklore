@@ -337,7 +337,7 @@ public class BookFileAttachmentService {
                     .collect(Collectors.toSet());
 
             for (Path sourceDir : sourceDirectoriesToCleanup) {
-                bookService.deleteEmptyParentDirsUpToLibraryFolders(sourceDir, libraryRoots);
+                fileMoveHelper.deleteEmptyParentDirsUpToLibraryFolders(sourceDir, libraryRoots);
             }
 
             return deletedSourceBookIds;

@@ -315,8 +315,6 @@
     "menuAttachToAnotherBook": "Allega ad un altro libro",
     "menuDeleteFileFormats": "Elimina formati file",
     "menuDeleteSupplementaryFiles": "Elimina file supplementari",
-    "menuDeleteBookAllFiles": "Elimina libro e tutti i file",
-    "menuDeleteBook": "Elimina libro",
     "navigationPosition": "{{ current }} di {{ total }}",
     "channelMono": "Mono",
     "channelStereo": "Stereo",
@@ -360,16 +358,13 @@
       "resetProgressHeader": "Conferma ripristino",
       "deleteSupplementaryMessage": "Sei sicuro di voler eliminare il file supplementare \"{{ fileName }}\"?\n\nQuesto file verrà rimosso permanentemente dal tuo file system.",
       "deleteSupplementaryHeader": "Elimina file supplementare",
-      "deleteOnlyFormatMessage": "Sei sicuro di voler eliminare \"{{ fileName }}\"?\n\nQuesto è l'UNICO file formato per questo libro. Dopo l'eliminazione, il libro non avrà contenuto leggibile.\n\nConsidera di usare \"Elimina libro e tutti i file\" per rimuovere completamente il libro.\n\nQuesto file verrà rimosso permanentemente dal tuo file system.",
+      "deleteOnlyFormatMessage": "Sei sicuro di voler eliminare \"{{ fileName }}\"?\n\nQuesto è l'UNICO file formato per questo libro. Dopo l'eliminazione, il libro non avrà contenuto leggibile.\n\nQuesto file verrà rimosso permanentemente dal tuo file system.",
       "deleteOnlyFormatHeader": "Elimina unico formato libro",
       "deletePrimaryFormatMessage": "Sei sicuro di voler eliminare \"{{ fileName }}\"?\n\nQuesto è attualmente il formato PRINCIPALE per questo libro. Dopo l'eliminazione, un formato alternativo diventerà il nuovo principale.\n\nQuesto file verrà rimosso permanentemente dal tuo file system.",
       "deletePrimaryFormatHeader": "Elimina formato principale",
       "deleteAltFormatMessage": "Sei sicuro di voler eliminare \"{{ fileName }}\"?\n\nQuesto file verrà rimosso permanentemente dal tuo file system.",
       "deleteAltFormatHeader": "Elimina formato libro",
-      "deleteFileBtn": "Elimina file",
-      "deleteBookMessage": "Sei sicuro di voler eliminare \"{{ title }}\"?\n\nQuesto rimuoverà permanentemente il record del libro dalla tua libreria.\n\nQuesta azione non può essere annullata.",
-      "deleteBookAllFilesMessage": "Sei sicuro di voler eliminare \"{{ title }}\"?\n\nQuesto rimuoverà permanentemente il record del libro E tutti i file associati dal tuo file system.\n\nQuesta azione non può essere annullata.",
-      "deleteEverythingBtn": "Elimina tutto"
+      "deleteFileBtn": "Elimina file"
     }
   },
   "sidecar": {

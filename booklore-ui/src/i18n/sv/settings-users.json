@@ -48,7 +48,6 @@
   "perms": {
     "fullAdmin": "Fullständig administratörsåtkomst",
     "downloadBooks": "Ladda ner böcker",
-    "deleteBooks": "Radera böcker",
     "manageLibrary": "Hantera bibliotek",
     "emailBooks": "Skicka böcker via e-post",
     "viewLibraryStats": "Visa biblioteksstatistik",

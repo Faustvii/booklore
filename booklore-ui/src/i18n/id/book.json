@@ -1,8 +1,6 @@
 {
   "browser": {
     "confirm": {
-      "deleteMessage": "Anda yakin ingin menghapus {{ count }} buku?\n\nIni akan menghapus buku dari sistem file Anda selamanya.\n\nTindakan ini tidak dapat dibatalkan.",
-      "deleteHeader": "Konfirmasi Penghapusan",
       "regenCoverMessage": "Apakah Anda yakin ingin membuat ulang sampul untuk {{ count }} buku?",
       "regenCoverHeader": "Konfirmasi Pembuatan Ulang Sampul",
       "customCoverMessage": "Apakah Anda yakin ingin membuat sampul khusus untuk {{ count }} buku?",
@@ -27,7 +25,6 @@
       "multipleLibrariesDetail": "Semua buku yang dipilih harus berasal dari perpustakaan yang sama."
     },
     "loading": {
-      "deleting": "Menghapus {{ count }} buku...",
       "unshelving": "Mengeluarkan {{ count }} buku dari rak..."
     },
     "labels": {
@@ -65,8 +62,7 @@
       "attachToBook": "Sematkan ke Buku Lainnya",
       "moreActions": "Tindakan lain",
       "selectAll": "Pilih semua buku",
-      "deselectAll": "Batalkan memilih semua buku",
-      "deleteSelected": "Hapus buku terpilih"
+      "deselectAll": "Batalkan memilih semua buku"
     },
     "placeholder": {
       "selectColumns": "Pilih Kolom",
@@ -92,12 +88,9 @@
       "readStatus": "",
       "resetBookloreProgress": "",
       "resetKOReaderProgress": "",
-      "book": "",
       "loading": ""
     },
     "confirm": {
-      "deleteBookMessage": "",
-      "deleteBookHeader": "",
       "deleteFileMessage": "",
       "deleteFileHeader": "",
       "largeFileMessage": "",
@@ -157,12 +150,6 @@
   },
   "bookService": {
     "toast": {
-      "someFilesNotDeletedSummary": "",
-      "someFilesNotDeletedDetail": "",
-      "booksDeletedSummary": "",
-      "booksDeletedDetail": "",
-      "deleteFailedSummary": "",
-      "deleteFailedDetail": "",
       "physicalBookCreatedSummary": "",
       "physicalBookCreatedDetail": "",
       "creationFailedSummary": "",
@@ -712,8 +699,7 @@
       "lockUnlockMetadata": "",
       "moreActions": "",
       "selectAll": "",
-      "deselectAll": "",
-      "deleteSelected": ""
+      "deselectAll": ""
     }
   },
   "duplicateMerger": {
@@ -736,7 +722,6 @@
     "allMerged": "",
     "mergeAll": "",
     "merge": "",
-    "deleteSelected": "",
     "dismiss": "",
     "target": "",
     "sameFormatWarning": "",
@@ -750,10 +735,7 @@
       "DIRECTORY": "",
       "FILENAME": ""
     },
-    "confirm": {
-      "deleteHeader": "",
-      "deleteMessage": ""
-    },
+    "confirm": {},
     "toast": {
       "scanFailedSummary": "",
       "scanFailedDetail": "",

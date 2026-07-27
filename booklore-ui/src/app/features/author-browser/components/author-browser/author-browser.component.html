@@ -209,8 +209,8 @@
                   [index]="authorList.indexOf(author)"
                   [cacheBuster]="thumbnailCacheBusters.get(author.id) || 0"
                   [canQuickMatch]="canEditMetadata"
-                  [canDelete]="canDeleteBook"
-                  [isCheckboxEnabled]="canEditMetadata || canDeleteBook"
+                  [canDelete]="canDeleteAuthor"
+                  [isCheckboxEnabled]="canEditMetadata || canDeleteAuthor"
                   [isSelected]="isAuthorSelected(author.id)"
                   (cardClick)="navigateToAuthor($event)"
                   (viewAuthor)="navigateToAuthor($event)"
@@ -234,7 +234,7 @@
             <span class="selected-count">{{ selectedCount }}</span>
             <span class="selected-label">{{ t('footer.selected') }}</span>
           </div>
-          @if (canEditMetadata || canDeleteBook) {
+          @if (canEditMetadata || canDeleteAuthor) {
             <p-divider layout="vertical"></p-divider>
             <div class="action-buttons-group">
               @if (canEditMetadata) {
@@ -247,7 +247,7 @@
                   tooltipPosition="top">
                 </p-button>
               }
-              @if (canDeleteBook) {
+              @if (canDeleteAuthor) {
                 <p-button
                   icon="pi pi-trash"
                   outlined="true"
