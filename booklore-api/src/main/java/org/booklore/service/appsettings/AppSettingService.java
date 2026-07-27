@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import tools.jackson.core.JacksonException;
 import tools.jackson.core.type.TypeReference;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
@@ -68,6 +69,9 @@ public class AppSettingService {
         if (key == AppSettingKey.OIDC_FORCE_ONLY_MODE) {
             validateOidcForceOnlyMode(val);
         }
+        if (key == AppSettingKey.OIDC_PROVIDER_DETAILS) {
+            val = preserveClientSecretIfBlank(val);
+        }
 
         var setting = settingPersistenceHelper.appSettingsRepository.findByName(key.toString());
         if (setting == null) {
@@ -99,6 +103,32 @@ public class AppSettingService {
                 || details.getClientId() == null || details.getClientId().isBlank()) {
             throw ApiError.GENERIC_BAD_REQUEST.createException("Cannot enable OIDC-only mode: OIDC must be configured with issuer URI and client ID");
         }
+    }
+
+    /**
+     * The OIDC settings form never round-trips the stored client secret to the client (see
+     * buildAppSettings/buildPublicSetting), so a save that doesn't touch the secret field always
+     * arrives here with it blank. Without this, every unrelated OIDC settings edit (scopes, claim
+     * mapping, group sync, ...) would silently wipe a previously configured confidential-client
+     * secret and break login.
+     */
+    @SuppressWarnings("unchecked")
+    private Object preserveClientSecretIfBlank(Object val) {
+        if (!(val instanceof Map<?, ?> map)) {
+            return val;
+        }
+        Object incomingSecret = map.get("clientSecret");
+        if (incomingSecret instanceof String s && !s.isBlank()) {
+            return val;
+        }
+        OidcProviderDetails existing = settingPersistenceHelper.getJsonSetting(
+                getSettingsMap(), AppSettingKey.OIDC_PROVIDER_DETAILS, OidcProviderDetails.class, null, false);
+        if (existing == null || existing.getClientSecret() == null || existing.getClientSecret().isBlank()) {
+            return val;
+        }
+        Map<String, Object> merged = new LinkedHashMap<>((Map<String, Object>) map);
+        merged.put("clientSecret", existing.getClientSecret());
+        return merged;
     }
 
     private void validatePermission(AppSettingKey key, BookLoreUser user) {
@@ -183,6 +213,12 @@ public class AppSettingService {
         Boolean forceDisable = appProperties.getForceDisableOidc();
         boolean finalEnabled = settingEnabled && (forceDisable == null || !forceDisable);
         builder.oidcEnabled(finalEnabled);
+
+        OidcProviderDetails oidcProviderDetails = settingPersistenceHelper.getJsonSetting(settingsMap, AppSettingKey.OIDC_PROVIDER_DETAILS, OidcProviderDetails.class, null, false);
+        if (oidcProviderDetails != null) {
+            oidcProviderDetails.setClientSecret(null);
+        }
+        builder.oidcProviderDetails(oidcProviderDetails);
 
         builder.oidcGroupSyncMode(settingPersistenceHelper.getOrCreateSetting(
                 AppSettingKey.OIDC_GROUP_SYNC_MODE, "DISABLED"));
