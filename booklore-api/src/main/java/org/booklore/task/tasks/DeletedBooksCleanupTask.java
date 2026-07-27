@@ -7,6 +7,7 @@ import org.booklore.model.dto.response.TaskCreateResponse;
 import org.booklore.model.enums.TaskType;
 import org.booklore.model.enums.UserPermission;
 import org.booklore.repository.BookRepository;
+import org.booklore.service.library.BookDeletionService;
 import org.booklore.task.TaskStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.UUID;
 
 @Component
@@ -22,6 +24,7 @@ import java.util.UUID;
 public class DeletedBooksCleanupTask implements Task {
 
     private final BookRepository bookRepository;
+    private final BookDeletionService bookDeletionService;
 
     @Override
     public void validatePermissions(BookLoreUser user, TaskCreateRequest request) {
@@ -40,14 +43,16 @@ public class DeletedBooksCleanupTask implements Task {
         log.info("{}: Task started", getTaskType());
 
         try {
-            int deletedCount;
+            List<Long> idsToDelete;
             if (request.isTriggeredByCron()) {
                 Instant cutoff = Instant.now().minus(7, ChronoUnit.DAYS);
-                deletedCount = bookRepository.deleteSoftDeletedBefore(cutoff);
-                log.info("{}: Removed {} deleted books older than {}", getTaskType(), deletedCount, cutoff);
+                idsToDelete = bookRepository.findIdsByDeletedTrueAndDeletedAtBefore(cutoff);
+                bookDeletionService.deleteRemovedBooks(idsToDelete);
+                log.info("{}: Removed {} deleted books older than {}", getTaskType(), idsToDelete.size(), cutoff);
             } else {
-                deletedCount = bookRepository.deleteAllSoftDeleted();
-                log.info("{}: Removed all {} deleted books (on-demand execution)", getTaskType(), deletedCount);
+                idsToDelete = bookRepository.findIdsByDeletedTrue();
+                bookDeletionService.deleteRemovedBooks(idsToDelete);
+                log.info("{}: Removed all {} deleted books (on-demand execution)", getTaskType(), idsToDelete.size());
             }
             builder.status(TaskStatus.COMPLETED);
         } catch (Exception e) {

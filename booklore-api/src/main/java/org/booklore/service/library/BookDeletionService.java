@@ -6,8 +6,16 @@ import org.booklore.model.entity.BookEntity;
 import org.booklore.model.entity.LibraryEntity;
 import org.booklore.model.enums.BookFileType;
 import org.booklore.model.websocket.Topic;
+import org.booklore.repository.AnnotationRepository;
 import org.booklore.repository.BookAdditionalFileRepository;
+import org.booklore.repository.BookMarkRepository;
+import org.booklore.repository.BookNoteRepository;
+import org.booklore.repository.BookNoteV2Repository;
 import org.booklore.repository.BookRepository;
+import org.booklore.repository.PdfAnnotationRepository;
+import org.booklore.repository.ReadingSessionRepository;
+import org.booklore.repository.UserBookFileProgressRepository;
+import org.booklore.repository.UserBookProgressRepository;
 import org.booklore.service.NotificationService;
 import org.booklore.util.FileService;
 import jakarta.persistence.EntityManager;
@@ -34,6 +42,14 @@ public class BookDeletionService {
     private final BookAdditionalFileRepository bookAdditionalFileRepository;
     private final FileService fileService;
     private final NotificationService notificationService;
+    private final AnnotationRepository annotationRepository;
+    private final BookMarkRepository bookMarkRepository;
+    private final BookNoteRepository bookNoteRepository;
+    private final BookNoteV2Repository bookNoteV2Repository;
+    private final PdfAnnotationRepository pdfAnnotationRepository;
+    private final ReadingSessionRepository readingSessionRepository;
+    private final UserBookProgressRepository userBookProgressRepository;
+    private final UserBookFileProgressRepository userBookFileProgressRepository;
 
     @PersistenceContext
     private final EntityManager entityManager;
@@ -77,6 +93,15 @@ public class BookDeletionService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void deleteRemovedBooks(List<Long> bookIds) {
+        if (bookIds.isEmpty()) {
+            return;
+        }
+
+        // These tables have no ON DELETE CASCADE at the DB level and BookEntity has no
+        // cascading JPA relationship to most of them, so they must be cleared explicitly
+        // before the book rows themselves can be deleted.
+        purgeBookDependentData(bookIds);
+
         List<BookEntity> books = bookRepository.findAllById(bookIds);
         for (BookEntity book : books) {
             try {
@@ -94,6 +119,17 @@ public class BookDeletionService {
         entityManager.clear();
         notificationService.sendMessage(Topic.BOOKS_REMOVE, bookIds);
         if (bookIds.size() > 1) log.info("Books removed: {}", bookIds);
+    }
+
+    private void purgeBookDependentData(List<Long> bookIds) {
+        annotationRepository.deleteByBookIdIn(bookIds);
+        bookMarkRepository.deleteByBookIdIn(bookIds);
+        bookNoteRepository.deleteByBookIdIn(bookIds);
+        bookNoteV2Repository.deleteByBookIdIn(bookIds);
+        pdfAnnotationRepository.deleteByBookIdIn(bookIds);
+        readingSessionRepository.deleteByBookIdIn(bookIds);
+        userBookFileProgressRepository.deleteByBookIdIn(bookIds);
+        userBookProgressRepository.deleteByBookIdIn(bookIds);
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
