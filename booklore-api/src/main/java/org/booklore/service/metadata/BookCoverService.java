@@ -64,7 +64,8 @@ public class BookCoverService {
 
         String title = bookEntity.getMetadata().getTitle();
         String author = getAuthorNames(bookEntity);
-        byte[] coverBytes = coverImageGenerator.generateCover(title, author);
+        String seriesText = formatSeriesPosition(bookEntity.getMetadata().getSeriesNumber());
+        byte[] coverBytes = coverImageGenerator.generateCover(title, author, seriesText);
 
         fileService.createThumbnailFromBytes(bookId, coverBytes);
         updateBookCoverMetadata(bookEntity);
@@ -114,7 +115,8 @@ public class BookCoverService {
 
         String title = bookEntity.getMetadata().getTitle();
         String author = getAuthorNames(bookEntity);
-        byte[] coverBytes = coverImageGenerator.generateSquareCover(title, author);
+        String seriesText = formatSeriesPosition(bookEntity.getMetadata().getSeriesNumber());
+        byte[] coverBytes = coverImageGenerator.generateSquareCover(title, author, seriesText);
 
         fileService.createAudiobookThumbnailFromBytes(bookId, coverBytes);
         updateAudiobookCoverMetadata(bookEntity);
@@ -321,7 +323,8 @@ public class BookCoverService {
                         bookRepository.findById(bookInfo.id()).ifPresent(book -> {
                             String title = book.getMetadata().getTitle();
                             String author = getAuthorNames(book);
-                            byte[] coverBytes = coverImageGenerator.generateCover(title, author);
+                            String seriesText = formatSeriesPosition(book.getMetadata().getSeriesNumber());
+                            byte[] coverBytes = coverImageGenerator.generateCover(title, author, seriesText);
 
                             fileService.createThumbnailFromBytes(book.getId(), coverBytes);
                             updateBookCoverMetadata(book);
@@ -371,6 +374,16 @@ public class BookCoverService {
 
     private boolean isAudiobookCoverLocked(BookEntity book) {
         return book.getMetadata().getAudiobookCoverLocked() != null && book.getMetadata().getAudiobookCoverLocked();
+    }
+
+    private String formatSeriesPosition(Float seriesNumber) {
+        if (seriesNumber == null) {
+            return null;
+        }
+        String number = (seriesNumber == Math.rint(seriesNumber))
+                ? String.valueOf(seriesNumber.intValue())
+                : String.valueOf(seriesNumber);
+        return "Book " + number;
     }
 
     private String getAuthorNames(BookEntity bookEntity) {
