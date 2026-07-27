@@ -42,12 +42,17 @@ public class OidcTokenClient {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
         body.add("client_id", providerDetails.getClientId());
-        if (providerDetails.getClientSecret() != null && !providerDetails.getClientSecret().isBlank()) {
+        boolean hasSecret = providerDetails.getClientSecret() != null && !providerDetails.getClientSecret().isBlank();
+        if (hasSecret) {
             body.add("client_secret", providerDetails.getClientSecret());
         }
         body.add("code", code);
         body.add("redirect_uri", redirectUri);
         body.add("code_verifier", codeVerifier);
+
+        log.info("OIDC token exchange request: endpoint={}, client_id='{}', redirect_uri='{}', client_secret_present={}, client_secret_length={}",
+                tokenEndpoint, providerDetails.getClientId(), redirectUri, hasSecret,
+                hasSecret ? providerDetails.getClientSecret().length() : 0);
 
         try {
             HttpHeaders headers = new HttpHeaders();

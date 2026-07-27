@@ -54,8 +54,35 @@ class AppSettingServiceTest {
         return entity;
     }
 
+    private AppSettingEntity storedSetting(AppSettingKey key, String json) {
+        AppSettingEntity entity = new AppSettingEntity();
+        entity.setName(key.toString());
+        entity.setVal(json);
+        return entity;
+    }
+
     @Test
-    void getAppSettings_returnsOidcProviderDetailsWithSecretNulledOut() {
+    void getAppSettings_populatesOidcAutoProvisionDetails() {
+        String stored = "{\"enableAutoProvisioning\":true,\"allowLocalAccountLinking\":true,"
+                + "\"defaultPermissions\":[\"permissionRead\"],\"defaultLibraryIds\":[1]}";
+        when(appSettingsRepository.findAll()).thenReturn(
+                java.util.List.of(storedSetting(AppSettingKey.OIDC_AUTO_PROVISION_DETAILS, stored)));
+
+        AppSettings settings = service.getAppSettings();
+
+        assertThat(settings.getOidcAutoProvisionDetails()).isNotNull();
+        assertThat(settings.getOidcAutoProvisionDetails().isEnableAutoProvisioning()).isTrue();
+        assertThat(settings.getOidcAutoProvisionDetails().isAllowLocalAccountLinking()).isTrue();
+        assertThat(settings.getOidcAutoProvisionDetails().getDefaultPermissions()).containsExactly("permissionRead");
+        assertThat(settings.getOidcAutoProvisionDetails().getDefaultLibraryIds()).containsExactly(1L);
+    }
+
+    @Test
+    void getAppSettings_keepsRealClientSecret_forInternalUseByOidcAuthService() {
+        // AppSettingService.getAppSettings() is the internal singleton OidcAuthService/
+        // OidcTokenClient use to actually authenticate with the IdP - it must never have the
+        // secret stripped, or every OIDC login silently sends no client_secret. Only the
+        // HTTP-facing AppSettingController.getAppSettings() sanitizes a copy for the API response.
         String stored = "{\"providerName\":\"Authentik\",\"clientId\":\"abc\",\"clientSecret\":\"super-secret\",\"issuerUri\":\"https://idp.example.com\"}";
         when(appSettingsRepository.findAll()).thenReturn(java.util.List.of(storedOidcProviderDetails(stored)));
 
@@ -65,7 +92,7 @@ class AppSettingServiceTest {
         assertThat(settings.getOidcProviderDetails().getProviderName()).isEqualTo("Authentik");
         assertThat(settings.getOidcProviderDetails().getClientId()).isEqualTo("abc");
         assertThat(settings.getOidcProviderDetails().getIssuerUri()).isEqualTo("https://idp.example.com");
-        assertThat(settings.getOidcProviderDetails().getClientSecret()).isNull();
+        assertThat(settings.getOidcProviderDetails().getClientSecret()).isEqualTo("super-secret");
     }
 
     @Test
