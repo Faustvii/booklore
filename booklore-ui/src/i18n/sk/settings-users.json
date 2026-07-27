@@ -48,7 +48,6 @@
   "perms": {
     "fullAdmin": "",
     "downloadBooks": "",
-    "deleteBooks": "",
     "manageLibrary": "",
     "emailBooks": "",
     "viewLibraryStats": "",

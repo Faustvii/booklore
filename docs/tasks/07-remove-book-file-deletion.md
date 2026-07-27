@@ -1,7 +1,7 @@
 # Task 07 — Remove Book/File Deletion
 
 **Priority:** P7
-**Status:** Not started
+**Status:** Done
 **Scope:** Backend + Frontend
 
 ---
@@ -64,13 +64,65 @@ handle it as part of this task.
 
 ## Acceptance Criteria
 
-- [ ] No code path deletes a book's file(s) from disk
-- [ ] "Delete Books" endpoint and UI actions no longer exist
-- [ ] `CAN_DELETE_BOOK` permission removed end-to-end, including a Flyway
+- [x] No code path deletes a book's file(s) from disk
+- [x] "Delete Books" endpoint and UI actions no longer exist
+- [x] `CAN_DELETE_BOOK` permission removed end-to-end, including a Flyway
       migration dropping the column
-- [ ] Duplicate Merger feature has an explicit, working (non-broken) behavior
+- [x] Duplicate Merger feature has an explicit, working (non-broken) behavior
       after this change
-- [ ] Books removed from disk outside Booklore are still cleaned up
+- [x] Books removed from disk outside Booklore are still cleaned up
       automatically via the watcher/rescan path (unchanged, verify still works)
-- [ ] App starts without errors; compile clean
-- [ ] All existing tests pass; remove or update tests that covered removed code
+- [x] App starts without errors; compile clean
+- [x] All existing tests pass; remove or update tests that covered removed code
+
+## Implementation Notes
+
+- `BookController.deleteBooks` and `BookService.deleteBooks` were deleted,
+  along with the now-dead `BookService.deleteDirectoryRecursively` and
+  `BookService.deleteEmptyParentDirsUpToLibraryFolders`, and the
+  `BookDeletionResponse` DTO. `SidecarMetadataWriter.deleteSidecarFiles(...)`
+  had no other caller, so it was deleted too (`moveSidecarFiles` is unrelated
+  shared infra used by `FileMoveService` and was left untouched).
+- `BookFileAttachmentService` (the merge/attach-file feature backing
+  Duplicate Merger's "Merge" action) turned out to call
+  `bookService.deleteEmptyParentDirsUpToLibraryFolders(...)` directly for
+  post-move directory cleanup — this was **not** dead code. It was
+  repointed to the already-existing `FileMoveHelper.deleteEmptyParentDirsUpToLibraryFolders(...)`
+  (the same helper `FileMoveService` uses), so no duplicate logic was
+  reintroduced into `BookService`.
+- `CAN_DELETE_BOOK` / `permissionDeleteBook` was removed end-to-end:
+  `UserPermission` enum entry, `PermissionType`/`UserPermissionUtils`,
+  `BookLoreUser`/`UserUpdateRequest`/`UserCreateRequest` DTO fields,
+  `UserPermissionsEntity` column + `SecurityUtil.canDeleteBook()`,
+  OIDC group mapping (`OidcGroupMappingService`) and all four
+  `UserProvisioningService` provisioning paths, plus the admin permissions
+  UI checkbox and create-user dialog — and a new Flyway migration
+  (`V7__Remove_book_file_deletion.sql`) dropping `permission_delete_book`.
+- Two other endpoints reused `@securityUtil.canDeleteBook()` for unrelated
+  file-deleting actions outside this task's scope
+  (`AuthorController.deleteAuthors`, which deletes cached author images, and
+  `AdditionalFileController.deleteAdditionalFile`, which deletes individual
+  book format/supplementary files — used by the metadata viewer's "Delete
+  File Formats"/"Delete Supplementary Files" menus). Since the permission
+  they checked no longer exists, both were re-gated to `isAdmin()` only
+  rather than left broken or silently removed; the corresponding frontend
+  gates (`author-browser.component.ts`'s `canDeleteBook` getter, renamed to
+  `canDeleteAuthor`; `book-card.component.ts`; `metadata-viewer.component.ts`)
+  were updated to check `permissions.admin` instead. The whole-book "Delete
+  Book" / "Delete Book & All Files" menu item in the metadata viewer (which
+  called the now-removed `bookService.deleteBooks`) was deleted; the
+  per-format and per-supplementary-file delete actions in that same menu
+  were kept since they don't go through the removed endpoint.
+- Duplicate Merger: removed `deleteGroup()`, `toggleDeleteSelection()`,
+  `getDeleteSelectedCount()`, the `selectedForDeletion` field, and the
+  corresponding checkbox/button in the template. "Merge" (via
+  `attachBookFiles`) and "Dismiss" remain as the two resolution actions per
+  group, so the feature keeps a working, non-destructive resolution path.
+- Removed unused i18n keys (delete confirmation dialogs/toasts for
+  book-browser, book-card, series-page, `bookService`, the duplicate-merger
+  "Delete Selected" action, and the metadata-viewer whole-book delete menu)
+  across all 19 locale files, and corrected now-stale wording in
+  `duplicateMerger.helpText` and `metadata.viewer.confirm.deleteOnlyFormatMessage`
+  that referenced the removed "Delete Book & All Files" action.
+- Verified with the full backend test suite (3050 tests, 0 failures) and a
+  clean Angular production build.

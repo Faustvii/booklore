@@ -1,8 +1,6 @@
 {
   "browser": {
     "confirm": {
-      "deleteMessage": "Sind Sie sicher, dass Sie {{ count }} Buch/Bücher löschen möchten?\n\nDies entfernt die Buchdateien dauerhaft aus Ihrem Dateisystem.\n\nDiese Aktion kann nicht rückgängig gemacht werden.",
-      "deleteHeader": "Löschen bestätigen",
       "regenCoverMessage": "Sind Sie sicher, dass Sie die Cover für {{ count }} Buch/Bücher neu generieren möchten?",
       "regenCoverHeader": "Cover-Neugenerierung bestätigen",
       "customCoverMessage": "Sind Sie sicher, dass Sie benutzerdefinierte Cover für {{ count }} Buch/Bücher generieren möchten?",
@@ -27,7 +25,6 @@
       "multipleLibrariesDetail": "Alle ausgewählten Bücher müssen aus derselben Bibliothek stammen."
     },
     "loading": {
-      "deleting": "{{ count }} Buch/Bücher werden gelöscht...",
       "unshelving": "{{ count }} Buch/Bücher werden aus Regalen entfernt..."
     },
     "labels": {
@@ -65,8 +62,7 @@
       "attachToBook": "An ein anderes Buch anhängen",
       "moreActions": "Weitere Aktionen",
       "selectAll": "Alle Bücher auswählen",
-      "deselectAll": "Alle Bücher abwählen",
-      "deleteSelected": "Ausgewählte Bücher löschen"
+      "deselectAll": "Alle Bücher abwählen"
     },
     "placeholder": {
       "selectColumns": "Spalten auswählen",
@@ -92,12 +88,9 @@
       "readStatus": "Lesestatus",
       "resetBookloreProgress": "Booklore-Fortschritt zurücksetzen",
       "resetKOReaderProgress": "KOReader-Fortschritt zurücksetzen",
-      "book": "Buch",
       "loading": "Laden..."
     },
     "confirm": {
-      "deleteBookMessage": "Sind Sie sicher, dass Sie \"{{ title }}\" löschen möchten?\n\nDies entfernt die Buchdatei dauerhaft aus Ihrem Dateisystem.\n\nDiese Aktion kann nicht rückgängig gemacht werden.",
-      "deleteBookHeader": "Löschen bestätigen",
       "deleteFileMessage": "Sind Sie sicher, dass Sie die zusätzliche Datei \"{{ fileName }}\" löschen möchten?",
       "deleteFileHeader": "Dateilöschung bestätigen",
       "largeFileMessage": "Diese Datei überschreitet 25 MB. Einige E-Mail-Anbieter lehnen möglicherweise große Anhänge ab..\n\nMöchten Sie es dennoch versenden?",
@@ -158,12 +151,6 @@
   },
   "bookService": {
     "toast": {
-      "someFilesNotDeletedSummary": "Einige Dateien konnten nicht gelöscht werden",
-      "someFilesNotDeletedDetail": "Bücher: {{ fileNames }}",
-      "booksDeletedSummary": "Bücher gelöscht",
-      "booksDeletedDetail": "{{ count }} Buch/Bücher erfolgreich gelöscht.",
-      "deleteFailedSummary": "Löschen fehlgeschlagen",
-      "deleteFailedDetail": "Beim Löschen der Bücher ist ein Fehler aufgetreten.",
       "physicalBookCreatedSummary": "Physisches Buch erstellt",
       "physicalBookCreatedDetail": "\"{{ title }}\" wurde Ihrer Bibliothek hinzugefügt.",
       "creationFailedSummary": "Erstellung fehlgeschlagen",
@@ -692,8 +679,7 @@
       "lockUnlockMetadata": "Metadaten sperren/entsperren",
       "moreActions": "Weitere Aktionen",
       "selectAll": "Alle Bücher auswählen",
-      "deselectAll": "Alle Bücher abwählen",
-      "deleteSelected": "Ausgewählte Bücher löschen"
+      "deselectAll": "Alle Bücher abwählen"
     },
     "readButton": "",
     "booksInSeries": "",
@@ -740,11 +726,10 @@
     "allMerged": "Alle Duplikatgruppen wurden verarbeitet.",
     "mergeAll": "Alle zusammenführen ({{ count }})",
     "merge": "Zusammenführen",
-    "deleteSelected": "Löschen ({{ count }})",
     "dismiss": "Verwerfen",
     "target": "Ziel",
     "sameFormatWarning": "Gleiches Format",
-    "helpText": "Jede Gruppe enthält Bücher, die Duplikate zu sein scheinen. Wählen Sie das Zielbuch (das behalten werden soll) und klicken Sie auf Zusammenführen, um die Dateien zusammenzuführen. Um bestimmte Duplikate zu löschen, markieren Sie die zu entfernenden und klicken Sie auf Löschen.",
+    "helpText": "Jede Gruppe enthält Bücher, die Duplikate zu sein scheinen. Wählen Sie das Zielbuch (das behalten werden soll) und klicken Sie auf Zusammenführen, um die Dateien zusammenzuführen. ",
     "groupLabel": "Gruppe {{ index }}",
     "fileCount": "{{ count }} Dateien",
     "reason": {
@@ -754,10 +739,7 @@
       "DIRECTORY": "Gleiches Verzeichnis",
       "FILENAME": "Dateiname-Übereinstimmung"
     },
-    "confirm": {
-      "deleteHeader": "Löschen bestätigen",
-      "deleteMessage": "Dadurch werden {{ count }} Buch/Bücher und deren Dateien dauerhaft von der Festplatte gelöscht. Dies kann nicht rückgängig gemacht werden."
-    },
+    "confirm": {},
     "toast": {
       "scanFailedSummary": "Scan fehlgeschlagen",
       "scanFailedDetail": "Duplikatsuche konnte nicht durchgeführt werden.",

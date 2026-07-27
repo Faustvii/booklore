@@ -315,8 +315,6 @@
     "menuAttachToAnotherBook": "附加到其他图书",
     "menuDeleteFileFormats": "删除文件格式",
     "menuDeleteSupplementaryFiles": "删除补充文件",
-    "menuDeleteBookAllFiles": "删除图书和所有文件",
-    "menuDeleteBook": "删除图书",
     "navigationPosition": "{{ current }} / {{ total }}",
     "channelMono": "单声道",
     "channelStereo": "立体声",
@@ -360,16 +358,13 @@
       "resetProgressHeader": "确认重置",
       "deleteSupplementaryMessage": "确定要删除补充文件「{{ fileName }}」吗？\n\n此文件将从您的文件系统中永久删除。",
       "deleteSupplementaryHeader": "删除补充文件",
-      "deleteOnlyFormatMessage": "确定要删除「{{ fileName }}」吗？\n\n这是此图书的唯一格式文件。删除后，此图书将没有可读内容。\n\n建议使用「删除图书和所有文件」来完全移除此图书。\n\n此文件将从您的文件系统中永久删除。",
+      "deleteOnlyFormatMessage": "确定要删除「{{ fileName }}」吗？\n\n这是此图书的唯一格式文件。删除后，此图书将没有可读内容。\n\n此文件将从您的文件系统中永久删除。",
       "deleteOnlyFormatHeader": "删除唯一图书格式",
       "deletePrimaryFormatMessage": "确定要删除「{{ fileName }}」吗？\n\n这是此图书当前的主要格式。删除后，替代格式将成为新的主要格式。\n\n此文件将从您的文件系统中永久删除。",
       "deletePrimaryFormatHeader": "删除主要格式",
       "deleteAltFormatMessage": "确定要删除「{{ fileName }}」吗？\n\n此文件将从您的文件系统中永久删除。",
       "deleteAltFormatHeader": "删除图书格式",
-      "deleteFileBtn": "删除文件",
-      "deleteBookMessage": "确定要删除「{{ title }}」吗？\n\n这将从您的书库中永久删除图书记录。\n\n此操作无法撤销。",
-      "deleteBookAllFilesMessage": "确定要删除「{{ title }}」吗？\n\n这将从您的文件系统中永久删除图书记录及所有关联文件。\n\n此操作无法撤销。",
-      "deleteEverythingBtn": "删除所有"
+      "deleteFileBtn": "删除文件"
     }
   },
   "sidecar": {

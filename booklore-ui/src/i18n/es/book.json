@@ -1,8 +1,6 @@
 {
   "browser": {
     "confirm": {
-      "deleteMessage": "¿Estás seguro de que deseas eliminar {{ count }} libro(s)?\n\nEsto eliminará permanentemente los archivos de libros de tu sistema de archivos.\n\nEsta acción no se puede deshacer.",
-      "deleteHeader": "Confirmar eliminación",
       "regenCoverMessage": "¿Estás seguro de que deseas regenerar las portadas de {{ count }} libro(s)?",
       "regenCoverHeader": "Confirmar regeneración de portada",
       "customCoverMessage": "¿Estás seguro de que deseas generar portadas personalizadas para {{ count }} libro(s)?",
@@ -27,7 +25,6 @@
       "multipleLibrariesDetail": "Todos los libros seleccionados deben ser de la misma biblioteca."
     },
     "loading": {
-      "deleting": "Eliminando {{ count }} libro(s)...",
       "unshelving": "Quitando {{ count }} libro(s) del estante..."
     },
     "labels": {
@@ -65,8 +62,7 @@
       "attachToBook": "Adjuntar a otro libro",
       "moreActions": "Más acciones",
       "selectAll": "Seleccionar todos los libros",
-      "deselectAll": "Deseleccionar todos los libros",
-      "deleteSelected": "Eliminar libros seleccionados"
+      "deselectAll": "Deseleccionar todos los libros"
     },
     "placeholder": {
       "selectColumns": "Seleccionar columnas",
@@ -92,12 +88,9 @@
       "readStatus": "Estado de lectura",
       "resetBookloreProgress": "Restablecer progreso de Booklore",
       "resetKOReaderProgress": "Restablecer progreso de KOReader",
-      "book": "Libro",
       "loading": "Cargando..."
     },
     "confirm": {
-      "deleteBookMessage": "¿Estás seguro de que deseas eliminar \"{{ title }}\"?\n\nEsto eliminará permanentemente el archivo del libro de tu sistema de archivos.\n\nEsta acción no se puede deshacer.",
-      "deleteBookHeader": "Confirmar eliminación",
       "deleteFileMessage": "¿Estás seguro de que deseas eliminar el archivo adicional \"{{ fileName }}\"?",
       "deleteFileHeader": "Confirmar eliminación de archivo",
       "largeFileMessage": "Este archivo supera los 25 MB. Algunos proveedores de correo pueden rechazar archivos adjuntos grandes.\n\n¿Deseas enviarlo de todos modos?",
@@ -158,12 +151,6 @@
   },
   "bookService": {
     "toast": {
-      "someFilesNotDeletedSummary": "Algunos archivos no pudieron ser eliminados",
-      "someFilesNotDeletedDetail": "Libros: {{ fileNames }}",
-      "booksDeletedSummary": "Libros eliminados",
-      "booksDeletedDetail": "{{ count }} libro(s) eliminado(s) correctamente.",
-      "deleteFailedSummary": "Error al eliminar",
-      "deleteFailedDetail": "Ocurrió un error al eliminar los libros.",
       "physicalBookCreatedSummary": "Libro físico creado",
       "physicalBookCreatedDetail": "\"{{ title }}\" ha sido añadido a tu biblioteca.",
       "creationFailedSummary": "Error al crear",
@@ -760,8 +747,7 @@
       "lockUnlockMetadata": "Bloquear/Desbloquear metadatos",
       "moreActions": "Más acciones",
       "selectAll": "Seleccionar todos los libros",
-      "deselectAll": "Deseleccionar todos los libros",
-      "deleteSelected": "Eliminar libros seleccionados"
+      "deselectAll": "Deseleccionar todos los libros"
     }
   },
   "duplicateMerger": {
@@ -784,11 +770,10 @@
     "allMerged": "Todos los grupos duplicados han sido procesados.",
     "mergeAll": "Fusionar todo ({{ count }})",
     "merge": "Fusionar",
-    "deleteSelected": "Eliminar ({{ count }})",
     "dismiss": "Descartar",
     "target": "Destino",
     "sameFormatWarning": "Mismo formato",
-    "helpText": "Cada grupo contiene libros que parecen ser duplicados. Seleccione el libro destino (el que se conserva) y haga clic en Fusionar para combinar archivos. Para eliminar duplicados específicos, marque los que desea eliminar y haga clic en Eliminar.",
+    "helpText": "Cada grupo contiene libros que parecen ser duplicados. Seleccione el libro destino (el que se conserva) y haga clic en Fusionar para combinar archivos. ",
     "groupLabel": "Grupo {{ index }}",
     "fileCount": "{{ count }} archivos",
     "reason": {
@@ -798,10 +783,7 @@
       "DIRECTORY": "Mismo directorio",
       "FILENAME": "Coincidencia de nombre"
     },
-    "confirm": {
-      "deleteHeader": "Confirmar eliminación",
-      "deleteMessage": "Esto eliminará permanentemente {{ count }} libro(s) y sus archivos del disco. Esta acción no se puede deshacer."
-    },
+    "confirm": {},
     "toast": {
       "scanFailedSummary": "Error de escaneo",
       "scanFailedDetail": "No se pudieron buscar duplicados.",

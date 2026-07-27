@@ -28,7 +28,6 @@ public class UserCreateRequest {
     private boolean permissionEditMetadata;
     private boolean permissionManageLibrary;
     private boolean permissionEmailBook;
-    private boolean permissionDeleteBook;
     private boolean permissionAccessOpds;
     private boolean permissionSyncKoreader;
     private boolean permissionSyncKobo;

@@ -315,8 +315,6 @@
     "menuAttachToAnotherBook": "別の本に添付",
     "menuDeleteFileFormats": "ファイル形式を削除",
     "menuDeleteSupplementaryFiles": "補足ファイルを削除",
-    "menuDeleteBookAllFiles": "本とすべてのファイルを削除",
-    "menuDeleteBook": "本を削除",
     "navigationPosition": "{{ current }} / {{ total }}",
     "channelMono": "モノラル",
     "channelStereo": "ステレオ",
@@ -360,16 +358,13 @@
       "resetProgressHeader": "リセットの確認",
       "deleteSupplementaryMessage": "補足ファイル「{{ fileName }}」を削除してもよろしいですか？\n\nこのファイルはファイルシステムから完全に削除されます。",
       "deleteSupplementaryHeader": "補足ファイルの削除",
-      "deleteOnlyFormatMessage": "「{{ fileName }}」を削除してもよろしいですか？\n\nこれはこの本の唯一のブック形式ファイルです。削除後、本に読み取り可能なコンテンツがなくなります。\n\n本を完全に削除するには「本とすべてのファイルを削除」の使用を検討してください。\n\nこのファイルはファイルシステムから完全に削除されます。",
+      "deleteOnlyFormatMessage": "「{{ fileName }}」を削除してもよろしいですか？\n\nこれはこの本の唯一のブック形式ファイルです。削除後、本に読み取り可能なコンテンツがなくなります。\n\nこのファイルはファイルシステムから完全に削除されます。",
       "deleteOnlyFormatHeader": "唯一のブック形式の削除",
       "deletePrimaryFormatMessage": "「{{ fileName }}」を削除してもよろしいですか？\n\nこれは現在この本のプライマリ形式です。削除後、代替フォーマットが新しいプライマリになります。\n\nこのファイルはファイルシステムから完全に削除されます。",
       "deletePrimaryFormatHeader": "プライマリ形式の削除",
       "deleteAltFormatMessage": "「{{ fileName }}」を削除してもよろしいですか？\n\nこのファイルはファイルシステムから完全に削除されます。",
       "deleteAltFormatHeader": "ブック形式の削除",
-      "deleteFileBtn": "ファイルを削除",
-      "deleteBookMessage": "「{{ title }}」を削除してもよろしいですか？\n\nライブラリからブックレコードが完全に削除されます。\n\nこの操作は元に戻せません。",
-      "deleteBookAllFilesMessage": "「{{ title }}」を削除してもよろしいですか？\n\nブックレコードと関連するすべてのファイルがファイルシステムから完全に削除されます。\n\nこの操作は元に戻せません。",
-      "deleteEverythingBtn": "すべて削除"
+      "deleteFileBtn": "ファイルを削除"
     }
   },
   "sidecar": {

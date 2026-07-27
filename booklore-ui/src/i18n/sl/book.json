@@ -1,8 +1,6 @@
 {
   "browser": {
     "confirm": {
-      "deleteMessage": "Ali si prepričan, da želiš izbrisati {{ count }} knjig(e)?\n\nTo bo trajno odstranilo datoteke s tvojega diska.\n\nTe akcije ni mogoče preklicati.",
-      "deleteHeader": "Potrdi brisanje",
       "regenCoverMessage": "Ali si prepričan, da želiš ponovno ustvariti naslovnice za {{ count }} knjig(e)?",
       "regenCoverHeader": "Potrdi ponovno ustvarjanje naslovnic",
       "customCoverMessage": "Ali si prepričan, da želiš ustvariti naslovnice po meri za {{ count }} knjig(e)?",
@@ -27,7 +25,6 @@
       "multipleLibrariesDetail": "Vse izbrane knjige morajo biti iz iste knjižnice."
     },
     "loading": {
-      "deleting": "Brisanje {{ count }} knjig(e)...",
       "unshelving": "Odstranjevanje {{ count }} knjig(e) s polic..."
     },
     "labels": {
@@ -65,8 +62,7 @@
       "attachToBook": "Pripni k drugi knjigi",
       "moreActions": "Več dejanj",
       "selectAll": "Izberi vse knjige",
-      "deselectAll": "Počisti izbor vseh knjig",
-      "deleteSelected": "Izbriši izbrane knjige"
+      "deselectAll": "Počisti izbor vseh knjig"
     },
     "placeholder": {
       "selectColumns": "Izberi stolpce",
@@ -92,12 +88,9 @@
       "readStatus": "Status branja",
       "resetBookloreProgress": "Ponastavi Booklore napredek",
       "resetKOReaderProgress": "Ponastavi KOReader napredek",
-      "book": "Knjiga",
       "loading": "Nalaganje..."
     },
     "confirm": {
-      "deleteBookMessage": "Ali si prepričan, da želiš izbrisati \"{{ title }}\"?\n\nTo bo trajno odstranilo datoteko s tvojega diska.\n\nTe akcije ni mogoče preklicati.",
-      "deleteBookHeader": "Potrdi brisanje",
       "deleteFileMessage": "Ali si prepričan, da želiš izbrisati dodatno datoteko \"{{ fileName }}\"?",
       "deleteFileHeader": "Potrdi brisanje datoteke",
       "largeFileMessage": "Ta datoteka presega 25 MB. Nekateri ponudniki e-pošte lahko zavrnejo velike priloge.\n\nAli jo želiš vseeno poslati?",
@@ -158,12 +151,6 @@
   },
   "bookService": {
     "toast": {
-      "someFilesNotDeletedSummary": "Nekaterih datotek ni bilo mogoče izbrisati",
-      "someFilesNotDeletedDetail": "Knjige: {{ fileNames }}",
-      "booksDeletedSummary": "Knjige izbrisane",
-      "booksDeletedDetail": "{{ count }} knjig(e) je bilo uspešno izbrisanih.",
-      "deleteFailedSummary": "Brisanje ni uspelo",
-      "deleteFailedDetail": "Prišlo je do napake pri brisanju knjig.",
       "physicalBookCreatedSummary": "Fizična knjiga ustvarjena",
       "physicalBookCreatedDetail": "\"{{ title }}\" je bila dodana v tvojo knjižnico.",
       "creationFailedSummary": "Ustvarjanje ni uspelo",
@@ -692,8 +679,7 @@
       "lockUnlockMetadata": "Zakleni/Odkleni metapodatke",
       "moreActions": "Več dejanj",
       "selectAll": "Izberi vse knjige",
-      "deselectAll": "Počisti izbor vseh knjig",
-      "deleteSelected": "Izbriši izbrane knjige"
+      "deselectAll": "Počisti izbor vseh knjig"
     },
     "bookListTab": "Seznam knjig",
     "book": "Knjiga",
@@ -740,11 +726,10 @@
     "allMerged": "Vse skupine dvojnikov so bile obdelane.",
     "mergeAll": "Združi vse ({{ count }})",
     "merge": "Združi",
-    "deleteSelected": "Izbriši ({{ count }})",
     "dismiss": "Prezri",
     "target": "Cilj",
     "sameFormatWarning": "Isti format",
-    "helpText": "Vsaka skupina vsebuje knjige, ki so verjetno dvojniki. Izberi ciljno knjigo (tisto, ki jo želiš obdržati), nato klikni Združi za združitev datotek. Če želiš določene dvojnike izbrisati, jih označi in klikni Izbriši.",
+    "helpText": "Vsaka skupina vsebuje knjige, ki so verjetno dvojniki. Izberi ciljno knjigo (tisto, ki jo želiš obdržati), nato klikni Združi za združitev datotek. ",
     "groupLabel": "Skupina {{ index }}",
     "fileCount": "{{ count }} datotek",
     "reason": {
@@ -754,10 +739,7 @@
       "DIRECTORY": "Ista mapa",
       "FILENAME": "Ujemanje imena datoteke"
     },
-    "confirm": {
-      "deleteHeader": "Potrdi brisanje",
-      "deleteMessage": "S tem boš trajno izbrisal {{ count }} knjig(e) in njihove datoteke z diska. Te akcije ni mogoče preklicati."
-    },
+    "confirm": {},
     "toast": {
       "scanFailedSummary": "Skeniranje ni uspelo",
       "scanFailedDetail": "Ni bilo mogoče izvesti iskanja dvojnikov.",

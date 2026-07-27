@@ -297,7 +297,6 @@ export interface User {
     admin: boolean;
     canDownload: boolean;
     canEmailBook: boolean;
-    canDeleteBook: boolean;
     canEditMetadata: boolean;
     canManageLibrary: boolean;
     canManageMetadataConfig: boolean;

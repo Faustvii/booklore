@@ -1,8 +1,6 @@
 {
   "browser": {
     "confirm": {
-      "deleteMessage": "Ste si istý, že chcete zmazať {{ count }} knihu/ knihy?\n\nTýmto sa trvalo odstránia súbory kníh z vášho súborového systému.\n\nTáto akcia sa nedá vrátiť späť.",
-      "deleteHeader": "",
       "regenCoverMessage": "",
       "regenCoverHeader": "",
       "customCoverMessage": "",
@@ -27,7 +25,6 @@
       "multipleLibrariesDetail": ""
     },
     "loading": {
-      "deleting": "",
       "unshelving": ""
     },
     "labels": {
@@ -65,8 +62,7 @@
       "attachToBook": "",
       "moreActions": "",
       "selectAll": "",
-      "deselectAll": "",
-      "deleteSelected": ""
+      "deselectAll": ""
     },
     "placeholder": {
       "selectColumns": "",
@@ -92,12 +88,9 @@
       "readStatus": "",
       "resetBookloreProgress": "",
       "resetKOReaderProgress": "",
-      "book": "",
       "loading": ""
     },
     "confirm": {
-      "deleteBookMessage": "",
-      "deleteBookHeader": "",
       "deleteFileMessage": "",
       "deleteFileHeader": ""
     },
@@ -154,12 +147,6 @@
   },
   "bookService": {
     "toast": {
-      "someFilesNotDeletedSummary": "",
-      "someFilesNotDeletedDetail": "",
-      "booksDeletedSummary": "",
-      "booksDeletedDetail": "",
-      "deleteFailedSummary": "",
-      "deleteFailedDetail": "",
       "physicalBookCreatedSummary": "",
       "physicalBookCreatedDetail": "",
       "creationFailedSummary": "",
@@ -708,8 +695,7 @@
       "lockUnlockMetadata": "",
       "moreActions": "",
       "selectAll": "",
-      "deselectAll": "",
-      "deleteSelected": ""
+      "deselectAll": ""
     }
   },
   "duplicateMerger": {
@@ -732,7 +718,6 @@
     "allMerged": "",
     "mergeAll": "",
     "merge": "",
-    "deleteSelected": "",
     "dismiss": "",
     "target": "",
     "sameFormatWarning": "",
@@ -746,10 +731,7 @@
       "DIRECTORY": "",
       "FILENAME": ""
     },
-    "confirm": {
-      "deleteHeader": "",
-      "deleteMessage": ""
-    },
+    "confirm": {},
     "toast": {
       "scanFailedSummary": "",
       "scanFailedDetail": "",

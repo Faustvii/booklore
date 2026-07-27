@@ -1,8 +1,6 @@
 {
   "browser": {
     "confirm": {
-      "deleteMessage": "{{ count }}冊の本を削除してもよろしいですか？\n\nファイルシステムからブックファイルが完全に削除されます。\n\nこの操作は元に戻せません。",
-      "deleteHeader": "削除の確認",
       "regenCoverMessage": "{{ count }}冊の本のカバーを再生成してもよろしいですか？",
       "regenCoverHeader": "カバー再生成の確認",
       "customCoverMessage": "{{ count }}冊の本のカスタムカバーを生成してもよろしいですか？",
@@ -27,7 +25,6 @@
       "multipleLibrariesDetail": "選択した本はすべて同じライブラリのものである必要があります。"
     },
     "loading": {
-      "deleting": "{{ count }}冊の本を削除中...",
       "unshelving": "{{ count }}冊の本をシェルフから削除中..."
     },
     "labels": {
@@ -65,8 +62,7 @@
       "attachToBook": "別の本に添付",
       "moreActions": "その他の操作",
       "selectAll": "すべての本を選択",
-      "deselectAll": "すべての本の選択を解除",
-      "deleteSelected": "選択した本を削除"
+      "deselectAll": "すべての本の選択を解除"
     },
     "placeholder": {
       "selectColumns": "列を選択",
@@ -92,12 +88,9 @@
       "readStatus": "読書状態",
       "resetBookloreProgress": "Booklore進捗をリセット",
       "resetKOReaderProgress": "KOReader進捗をリセット",
-      "book": "本",
       "loading": "読み込み中..."
     },
     "confirm": {
-      "deleteBookMessage": "「{{ title }}」を削除してもよろしいですか？\n\nファイルシステムからブックファイルが完全に削除されます。\n\nこの操作は元に戻せません。",
-      "deleteBookHeader": "削除の確認",
       "deleteFileMessage": "追加ファイル「{{ fileName }}」を削除してもよろしいですか？",
       "deleteFileHeader": "ファイル削除の確認"
     },
@@ -154,12 +147,6 @@
   },
   "bookService": {
     "toast": {
-      "someFilesNotDeletedSummary": "一部のファイルを削除できませんでした",
-      "someFilesNotDeletedDetail": "本: {{ fileNames }}",
-      "booksDeletedSummary": "本が削除されました",
-      "booksDeletedDetail": "{{ count }}冊の本が正常に削除されました。",
-      "deleteFailedSummary": "削除に失敗しました",
-      "deleteFailedDetail": "本の削除中にエラーが発生しました。",
       "physicalBookCreatedSummary": "物理本が作成されました",
       "physicalBookCreatedDetail": "「{{ title }}」がライブラリに追加されました。",
       "creationFailedSummary": "作成に失敗しました",
@@ -684,8 +671,7 @@
       "lockUnlockMetadata": "メタデータのロック/解除",
       "moreActions": "その他の操作",
       "selectAll": "すべての本を選択",
-      "deselectAll": "すべての本の選択を解除",
-      "deleteSelected": "選択した本を削除"
+      "deselectAll": "すべての本の選択を解除"
     },
     "readButton": "",
     "booksInSeries": "",
@@ -732,11 +718,10 @@
     "allMerged": "すべての重複グループが処理されました。",
     "mergeAll": "すべてマージ（{{ count }}）",
     "merge": "マージ",
-    "deleteSelected": "削除（{{ count }}）",
     "dismiss": "閉じる",
     "target": "ターゲット",
     "sameFormatWarning": "同じフォーマット",
-    "helpText": "各グループには重複と思われる本が含まれています。保持するターゲットブックを選択し、「マージ」をクリックしてファイルを統合します。特定の重複を削除するには、削除したいものにチェックを入れて「削除」をクリックしてください。",
+    "helpText": "各グループには重複と思われる本が含まれています。保持するターゲットブックを選択し、「マージ」をクリックしてファイルを統合します。",
     "groupLabel": "グループ {{ index }}",
     "fileCount": "{{ count }}ファイル",
     "reason": {
@@ -746,10 +731,7 @@
       "DIRECTORY": "同じディレクトリ",
       "FILENAME": "ファイル名一致"
     },
-    "confirm": {
-      "deleteHeader": "削除の確認",
-      "deleteMessage": "{{ count }}冊の本とそのファイルがディスクから完全に削除されます。この操作は元に戻せません。"
-    },
+    "confirm": {},
     "toast": {
       "scanFailedSummary": "スキャンに失敗しました",
       "scanFailedDetail": "重複のスキャンができませんでした。",

@@ -48,7 +48,6 @@
   "perms": {
     "fullAdmin": "Acesso Total de Administrador",
     "downloadBooks": "Baixar Livros",
-    "deleteBooks": "Excluir Livros",
     "manageLibrary": "Gerenciar Biblioteca",
     "emailBooks": "Enviar Livros por Email",
     "viewLibraryStats": "Ver Estatísticas da Biblioteca",

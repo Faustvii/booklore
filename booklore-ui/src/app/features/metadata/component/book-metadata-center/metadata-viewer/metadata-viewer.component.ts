@@ -282,7 +282,7 @@ export class MetadataViewerComponent implements OnInit, OnChanges, AfterViewChec
               });
             }
 
-            if (userState?.user?.permissions.canDeleteBook || userState?.user?.permissions.admin) {
+            if (userState?.user?.permissions.admin) {
               // Delete File Formats submenu - allows deleting individual book format files
               const deleteFormatItems: MenuItem[] = [];
               const hasMultipleFormats = (book.alternativeFormats?.length ?? 0) > 0;
@@ -343,59 +343,6 @@ export class MetadataViewerComponent implements OnInit, OnChanges, AfterViewChec
                 });
               }
 
-              // Delete Book & All Files - deletes the entire book entity
-              const allFormats: string[] = [];
-              if (book.primaryFile?.fileName) {
-                allFormats.push(book.primaryFile.fileName);
-              }
-              book.alternativeFormats?.forEach(f => {
-                if (f.fileName) allFormats.push(f.fileName);
-              });
-              book.supplementaryFiles?.forEach(f => {
-                if (f.fileName) allFormats.push(f.fileName);
-              });
-
-              const isPhysical = !hasFiles;
-              const fileListMessage = allFormats.length > 0
-                ? `\n\nThe following files will be permanently deleted:\n• ${allFormats.join('\n• ')}`
-                : '';
-
-              const deleteLabel = isPhysical ? this.t.translate('metadata.viewer.menuDeleteBook') : this.t.translate('metadata.viewer.menuDeleteBookAllFiles');
-              const deleteMessage = isPhysical
-                ? this.t.translate('metadata.viewer.confirm.deleteBookMessage', { title: book.metadata?.title })
-                : this.t.translate('metadata.viewer.confirm.deleteBookAllFilesMessage', { title: book.metadata?.title, fileList: fileListMessage });
-              const deleteAcceptLabel = isPhysical ? this.t.translate('common.delete') : this.t.translate('metadata.viewer.confirm.deleteEverythingBtn');
-
-              items.push({
-                label: deleteLabel,
-                icon: 'pi pi-trash',
-                command: () => {
-                  this.confirmationService.confirm({
-                    message: deleteMessage,
-                    header: deleteLabel,
-                    icon: 'pi pi-exclamation-triangle',
-                    acceptIcon: 'pi pi-trash',
-                    rejectIcon: 'pi pi-times',
-                    acceptLabel: deleteAcceptLabel,
-                    rejectLabel: this.t.translate('common.cancel'),
-                    acceptButtonStyleClass: 'p-button-danger',
-                    rejectButtonStyleClass: 'p-button-outlined',
-                    accept: () => {
-                      this.bookService.deleteBooks(new Set([book.id])).subscribe({
-                        next: () => {
-                          if (this.metadataCenterViewMode === 'route') {
-                            this.router.navigate(['/dashboard']);
-                          } else {
-                            this.dialogRef?.close();
-                          }
-                        },
-                        error: () => {
-                        }
-                      });
-                    }
-                  });
-                },
-              });
             }
 
             return items;

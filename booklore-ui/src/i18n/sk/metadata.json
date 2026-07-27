@@ -315,8 +315,6 @@
     "menuAttachToAnotherBook": "",
     "menuDeleteFileFormats": "",
     "menuDeleteSupplementaryFiles": "",
-    "menuDeleteBookAllFiles": "",
-    "menuDeleteBook": "",
     "navigationPosition": "",
     "channelMono": "",
     "channelStereo": "",
@@ -366,10 +364,7 @@
       "deletePrimaryFormatHeader": "",
       "deleteAltFormatMessage": "",
       "deleteAltFormatHeader": "",
-      "deleteFileBtn": "",
-      "deleteBookMessage": "",
-      "deleteBookAllFilesMessage": "",
-      "deleteEverythingBtn": ""
+      "deleteFileBtn": ""
     }
   },
   "sidecar": {

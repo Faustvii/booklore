@@ -151,7 +151,6 @@ class UserProvisioningServiceTest {
         assertThat(perms.isPermissionDownload()).isFalse();
         assertThat(perms.isPermissionEditMetadata()).isFalse();
         assertThat(perms.isPermissionEmailBook()).isFalse();
-        assertThat(perms.isPermissionDeleteBook()).isFalse();
         assertThat(perms.isPermissionAccessOpds()).isFalse();
         assertThat(perms.isPermissionSyncKoreader()).isFalse();
         assertThat(perms.isPermissionSyncKobo()).isFalse();

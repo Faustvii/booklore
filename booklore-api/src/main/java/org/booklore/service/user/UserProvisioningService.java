@@ -56,7 +56,6 @@ public class UserProvisioningService {
         perms.setPermissionEditMetadata(true);
         perms.setPermissionManageLibrary(true);
         perms.setPermissionEmailBook(true);
-        perms.setPermissionDeleteBook(true);
         perms.setPermissionAccessOpds(true);
         perms.setPermissionSyncKoreader(true);
         perms.setPermissionSyncKobo(true);
@@ -101,7 +100,6 @@ public class UserProvisioningService {
         permissions.setPermissionEditMetadata(request.isPermissionEditMetadata());
         permissions.setPermissionManageLibrary(request.isPermissionManageLibrary());
         permissions.setPermissionEmailBook(request.isPermissionEmailBook());
-        permissions.setPermissionDeleteBook(request.isPermissionDeleteBook());
         permissions.setPermissionAccessOpds(request.isPermissionAccessOpds());
         permissions.setPermissionSyncKoreader(request.isPermissionSyncKoreader());
         permissions.setPermissionSyncKobo(request.isPermissionSyncKobo());
@@ -154,7 +152,6 @@ public class UserProvisioningService {
             perms.setPermissionEditMetadata(defaultPermissions.contains("permissionEditMetadata"));
             perms.setPermissionManageLibrary(defaultPermissions.contains("permissionManageLibrary"));
             perms.setPermissionEmailBook(defaultPermissions.contains("permissionEmailBook"));
-            perms.setPermissionDeleteBook(defaultPermissions.contains("permissionDeleteBook"));
             perms.setPermissionAccessOpds(defaultPermissions.contains("permissionAccessOpds"));
             perms.setPermissionSyncKoreader(defaultPermissions.contains("permissionSyncKoreader"));
             perms.setPermissionSyncKobo(defaultPermissions.contains("permissionSyncKobo"));
@@ -215,7 +212,6 @@ public class UserProvisioningService {
             permissions.setPermissionEditMetadata(defaultPermissions.contains("permissionEditMetadata"));
             permissions.setPermissionManageLibrary(defaultPermissions.contains("permissionManageLibrary"));
             permissions.setPermissionEmailBook(defaultPermissions.contains("permissionEmailBook"));
-            permissions.setPermissionDeleteBook(defaultPermissions.contains("permissionDeleteBook"));
             permissions.setPermissionAccessOpds(defaultPermissions.contains("permissionAccessOpds"));
             permissions.setPermissionSyncKoreader(defaultPermissions.contains("permissionSyncKoreader"));
             permissions.setPermissionSyncKobo(defaultPermissions.contains("permissionSyncKobo"));
@@ -232,7 +228,6 @@ public class UserProvisioningService {
             permissions.setPermissionManageLibrary(false);
             permissions.setPermissionEmailBook(false);
             permissions.setPermissionAccessOpds(false);
-            permissions.setPermissionDeleteBook(false);
             permissions.setPermissionSyncKoreader(false);
             permissions.setPermissionSyncKobo(false);
             permissions.setPermissionManageMetadataConfig(false);

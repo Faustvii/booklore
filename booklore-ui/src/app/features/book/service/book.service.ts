@@ -1,8 +1,8 @@
 import {inject, Injectable} from '@angular/core';
 import {first, Observable, of, throwError} from 'rxjs';
-import {HttpClient, HttpParams} from '@angular/common/http';
+import {HttpClient} from '@angular/common/http';
 import {catchError, distinctUntilChanged, filter, finalize, map, shareReplay, tap} from 'rxjs/operators';
-import {Book, BookDeletionResponse, BookRecommendation, BookSetting, BookStatusUpdateResponse, BookType, CreatePhysicalBookRequest, PersonalRatingUpdateResponse, ReadStatus} from '../model/book.model';
+import {Book, BookRecommendation, BookSetting, BookStatusUpdateResponse, BookType, CreatePhysicalBookRequest, PersonalRatingUpdateResponse, ReadStatus} from '../model/book.model';
 import {BookState} from '../model/state/book-state.model';
 import {API_CONFIG} from '../../../core/config/api-config';
 import {MessageService} from 'primeng/api';
@@ -178,48 +178,6 @@ export class BookService {
   }
 
   /*------------------ Book Operations ------------------*/
-
-  deleteBooks(ids: Set<number>): Observable<BookDeletionResponse> {
-    const idList = Array.from(ids);
-    const params = new HttpParams().set('ids', idList.join(','));
-
-    return this.http.delete<BookDeletionResponse>(this.url, {params}).pipe(
-      tap(response => {
-        const currentState = this.bookStateService.getCurrentBookState();
-        const remainingBooks = (currentState.books || []).filter(
-          book => !ids.has(book.id)
-        );
-
-        this.bookStateService.updateBookState({
-          books: remainingBooks,
-          loaded: true,
-          error: null,
-        });
-
-        if (response.failedFileDeletions?.length > 0) {
-          this.messageService.add({
-            severity: 'warn',
-            summary: this.t.translate('book.bookService.toast.someFilesNotDeletedSummary'),
-            detail: this.t.translate('book.bookService.toast.someFilesNotDeletedDetail', {fileNames: response.failedFileDeletions.join(', ')}),
-          });
-        } else {
-          this.messageService.add({
-            severity: 'success',
-            summary: this.t.translate('book.bookService.toast.booksDeletedSummary'),
-            detail: this.t.translate('book.bookService.toast.booksDeletedDetail', {count: idList.length}),
-          });
-        }
-      }),
-      catchError(error => {
-        this.messageService.add({
-          severity: 'error',
-          summary: this.t.translate('book.bookService.toast.deleteFailedSummary'),
-          detail: error?.error?.message || error?.message || this.t.translate('book.bookService.toast.deleteFailedDetail'),
-        });
-        return throwError(() => error);
-      })
-    );
-  }
 
   updateBookShelves(bookIds: Set<number | undefined>, shelvesToAssign: Set<number | null | undefined>, shelvesToUnassign: Set<number | null | undefined>): Observable<Book[]> {
     return this.bookPatchService.updateBookShelves(bookIds, shelvesToAssign, shelvesToUnassign).pipe(

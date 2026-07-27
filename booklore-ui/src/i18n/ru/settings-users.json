@@ -48,7 +48,6 @@
   "perms": {
     "fullAdmin": "Полный доступ администратора",
     "downloadBooks": "Скачивание книг",
-    "deleteBooks": "Удаление книг",
     "manageLibrary": "Управление библиотекой",
     "emailBooks": "Отправка книг по email",
     "viewLibraryStats": "Просмотр статистики библиотеки",

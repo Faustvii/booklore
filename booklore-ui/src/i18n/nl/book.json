@@ -1,8 +1,6 @@
 {
   "browser": {
     "confirm": {
-      "deleteMessage": "Weet je zeker dat je {{ count }} boeken wilt verwijderen?\n\nJe boeken zullen permanent verwijdert worden van je bestandssysteem.\n\nDeze actie kan niet ongedaan worden gemaakt.",
-      "deleteHeader": "Verwijdering bevestigen",
       "regenCoverMessage": "Weet u zeker dat u de omslagen voor {{ count }} boek(en) opnieuw wil genereren?",
       "regenCoverHeader": "Bevestig het opnieuw genereren van de omslag",
       "customCoverMessage": "Weet u zeker dat u aangepaste omslagen wilt genereren voor {{ count }} boek(en)?",
@@ -27,7 +25,6 @@
       "multipleLibrariesDetail": "Alle geselecteerde boeken moeten uit dezelfde bibliotheek komen."
     },
     "loading": {
-      "deleting": "{{ count }} boek(en) verwijderen...",
       "unshelving": ""
     },
     "labels": {
@@ -65,8 +62,7 @@
       "attachToBook": "Toevoegen aan een ander boek",
       "moreActions": "Meer acties",
       "selectAll": "Selecteer alle boeken",
-      "deselectAll": "Alle boeken deselecteren",
-      "deleteSelected": "Geselecteerde boeken verwijderen"
+      "deselectAll": "Alle boeken deselecteren"
     },
     "placeholder": {
       "selectColumns": "Kolommen selecteren",
@@ -92,12 +88,9 @@
       "readStatus": "Leesstatus",
       "resetBookloreProgress": "Voortgang Booklore herstellen",
       "resetKOReaderProgress": "Voortgang KOreader resetten",
-      "book": "Boek",
       "loading": "Laden..."
     },
     "confirm": {
-      "deleteBookMessage": "Weet u zeker dat u “{{ title }}” wilt verwijderen?\n\nHierdoor wordt het boekbestand permanent uit uw bestandssysteem verwijderd.\n\nDeze actie kan niet ongedaan worden gemaakt.",
-      "deleteBookHeader": "Verwijdering bevestigen",
       "deleteFileMessage": "Weet u zeker dat u het extra bestand “{{ fileName }}” wilt verwijderen?",
       "deleteFileHeader": "Bestandsverwijdering bevestigen",
       "largeFileMessage": "Dit bestand is groter dan 25 MB. Sommige e-mailproviders kunnen grote bijlagen weigeren.\n\nWilt u het toch verzenden?",
@@ -157,12 +150,6 @@
   },
   "bookService": {
     "toast": {
-      "someFilesNotDeletedSummary": "",
-      "someFilesNotDeletedDetail": "",
-      "booksDeletedSummary": "",
-      "booksDeletedDetail": "",
-      "deleteFailedSummary": "",
-      "deleteFailedDetail": "",
       "physicalBookCreatedSummary": "",
       "physicalBookCreatedDetail": "",
       "creationFailedSummary": "",
@@ -711,8 +698,7 @@
       "lockUnlockMetadata": "",
       "moreActions": "",
       "selectAll": "",
-      "deselectAll": "",
-      "deleteSelected": ""
+      "deselectAll": ""
     }
   },
   "duplicateMerger": {
@@ -735,7 +721,6 @@
     "allMerged": "",
     "mergeAll": "",
     "merge": "",
-    "deleteSelected": "",
     "dismiss": "",
     "target": "",
     "sameFormatWarning": "",
@@ -749,10 +734,7 @@
       "DIRECTORY": "",
       "FILENAME": ""
     },
-    "confirm": {
-      "deleteHeader": "",
-      "deleteMessage": ""
-    },
+    "confirm": {},
     "toast": {
       "scanFailedSummary": "",
       "scanFailedDetail": "",

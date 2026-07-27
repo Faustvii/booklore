@@ -328,8 +328,8 @@ export class BookCardComponent implements OnInit, OnChanges, OnDestroy {
     const hasNoAlternativeFormats = !this.book.alternativeFormats || this.book.alternativeFormats.length === 0;
     const hasNoSupplementaryFiles = !this.book.supplementaryFiles || this.book.supplementaryFiles.length === 0;
     const canDownload = !!this.user?.permissions.canDownload;
-    const canDeleteBook = !!this.user?.permissions.canDeleteBook;
-    return (canDownload || canDeleteBook) && hasNoAlternativeFormats && hasNoSupplementaryFiles;
+    const isAdmin = !!this.user?.permissions.admin;
+    return (canDownload || isAdmin) && hasNoAlternativeFormats && hasNoSupplementaryFiles;
   }
 
   private initMenu() {
@@ -384,7 +384,7 @@ export class BookCardComponent implements OnInit, OnChanges, OnDestroy {
       }
     }
 
-    if (this.user?.permissions.canDeleteBook) {
+    if (this.user?.permissions.admin) {
       const hasAdditionalFiles = (this.book.alternativeFormats && this.book.alternativeFormats.length > 0) ||
         (this.book.supplementaryFiles && this.book.supplementaryFiles.length > 0);
 
@@ -395,28 +395,7 @@ export class BookCardComponent implements OnInit, OnChanges, OnDestroy {
           icon: 'pi pi-trash',
           items: deleteItems
         });
-      } else if (this.additionalFilesLoaded) {
-        items.push({
-          label: this.t.translate('book.card.menu.delete'),
-          icon: 'pi pi-trash',
-          command: () => {
-            this.confirmationService.confirm({
-              message: this.t.translate('book.card.confirm.deleteBookMessage', {title: this.book.metadata?.title}),
-              header: this.t.translate('book.card.confirm.deleteBookHeader'),
-              icon: 'pi pi-exclamation-triangle',
-              acceptIcon: 'pi pi-trash',
-              rejectIcon: 'pi pi-times',
-              acceptLabel: this.t.translate('common.delete'),
-              rejectLabel: this.t.translate('common.cancel'),
-              acceptButtonStyleClass: 'p-button-danger',
-              rejectButtonStyleClass: 'p-button-outlined',
-              accept: () => {
-                this.bookService.deleteBooks(new Set([this.book.id])).subscribe();
-              }
-            });
-          }
-        });
-      } else {
+      } else if (!this.additionalFilesLoaded) {
         items.push({
           label: this.t.translate('book.card.menu.delete'),
           icon: this.isSubMenuLoading ? 'pi pi-spin pi-spinner' : 'pi pi-trash',
@@ -707,31 +686,6 @@ export class BookCardComponent implements OnInit, OnChanges, OnDestroy {
 
   private getDeleteMenuItems(): MenuItem[] {
     const items: MenuItem[] = [];
-
-    items.push({
-      label: this.t.translate('book.card.menu.book'),
-      icon: 'pi pi-book',
-      command: () => {
-        this.confirmationService.confirm({
-          message: this.t.translate('book.card.confirm.deleteBookMessage', {title: this.book.metadata?.title}),
-          header: this.t.translate('book.card.confirm.deleteBookHeader'),
-          icon: 'pi pi-exclamation-triangle',
-          acceptIcon: 'pi pi-trash',
-          rejectIcon: 'pi pi-times',
-          acceptLabel: this.t.translate('common.delete'),
-          rejectLabel: this.t.translate('common.cancel'),
-          acceptButtonStyleClass: 'p-button-danger',
-          rejectButtonStyleClass: 'p-button-outlined',
-          accept: () => {
-            this.bookService.deleteBooks(new Set([this.book.id])).subscribe();
-          }
-        });
-      }
-    });
-
-    if (this.hasAdditionalFiles()) {
-      items.push({separator: true});
-    }
 
     if (this.book.alternativeFormats && this.book.alternativeFormats.length > 0) {
       this.book.alternativeFormats.forEach(format => {

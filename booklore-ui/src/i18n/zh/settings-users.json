@@ -48,7 +48,6 @@
   "perms": {
     "fullAdmin": "完整管理员权限",
     "downloadBooks": "下载书籍",
-    "deleteBooks": "删除书籍",
     "manageLibrary": "管理书库",
     "emailBooks": "发送书籍邮件",
     "viewLibraryStats": "查看书库统计",

@@ -328,8 +328,6 @@
     "menuAttachToAnotherBook": "",
     "menuDeleteFileFormats": "",
     "menuDeleteSupplementaryFiles": "",
-    "menuDeleteBookAllFiles": "",
-    "menuDeleteBook": "",
     "navigationPosition": "",
     "channelMono": "",
     "channelStereo": "",
@@ -388,9 +386,6 @@
       "detachFileMessage": "",
       "detachFileCopyMetadata": "",
       "detachFileBtn": "",
-      "deleteBookMessage": "",
-      "deleteBookAllFilesMessage": "",
-      "deleteEverythingBtn": "",
       "largeFileMessage": "",
       "largeFileHeader": "",
       "sendAnyway": ""

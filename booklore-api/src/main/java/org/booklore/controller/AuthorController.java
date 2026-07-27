@@ -164,7 +164,7 @@ public class AuthorController {
 
     @Operation(summary = "Delete authors", description = "Delete multiple authors and their associated images.")
     @ApiResponse(responseCode = "200", description = "Authors deleted successfully")
-    @PreAuthorize("@securityUtil.canDeleteBook() or @securityUtil.isAdmin()")
+    @PreAuthorize("@securityUtil.isAdmin()")
     @DeleteMapping
     public ResponseEntity<Void> deleteAuthors(@RequestBody List<Long> authorIds) {
         authorMetadataService.deleteAuthors(authorIds);

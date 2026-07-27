@@ -12,28 +12,6 @@ import java.nio.file.StandardCopyOption;
 @Service
 public class SidecarMetadataWriter {
 
-    public void deleteSidecarFiles(Path bookPath) {
-        if (bookPath == null) {
-            return;
-        }
-
-        try {
-            Path sidecarPath = getSidecarPath(bookPath);
-            if (Files.exists(sidecarPath)) {
-                Files.delete(sidecarPath);
-                log.info("Deleted sidecar file: {}", sidecarPath);
-            }
-
-            Path coverPath = getCoverPath(bookPath);
-            if (Files.exists(coverPath)) {
-                Files.delete(coverPath);
-                log.info("Deleted sidecar cover file: {}", coverPath);
-            }
-        } catch (IOException e) {
-            log.warn("Failed to delete sidecar files for {}: {}", bookPath, e.getMessage());
-        }
-    }
-
     public void moveSidecarFiles(Path oldBookPath, Path newBookPath) {
         if (oldBookPath == null || newBookPath == null) {
             return;

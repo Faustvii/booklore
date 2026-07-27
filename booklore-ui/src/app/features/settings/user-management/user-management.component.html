@@ -250,10 +250,6 @@
                             <label [for]="'download-'+user.id">{{ t('perms.downloadBooks') }}</label>
                           </div>
                           <div class="permission-item">
-                            <p-checkbox [binary]="true" [(ngModel)]="user.permissions.canDeleteBook" [disabled]="isPermissionDisabled(user)" inputId="delete-{{user.id}}"></p-checkbox>
-                            <label [for]="'delete-'+user.id">{{ t('perms.deleteBooks') }}</label>
-                          </div>
-                          <div class="permission-item">
                             <p-checkbox [binary]="true" [(ngModel)]="user.permissions.canManageLibrary" [disabled]="isPermissionDisabled(user)" inputId="library-{{user.id}}"></p-checkbox>
                             <label [for]="'library-'+user.id">{{ t('perms.manageLibrary') }}</label>
                           </div>

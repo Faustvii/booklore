@@ -1,8 +1,6 @@
 {
   "browser": {
     "confirm": {
-      "deleteMessage": "Biztosan ki akarod törölni a kijelölt {{ count }} könyvet?\n\nEzzel véglegesen eltávolítod a könyvek fájljait a fájlrendszerből.\n\nEz az akció nem vonható vissza.",
-      "deleteHeader": "Törlés megerősítése",
       "regenCoverMessage": "Biztosan újra szeretnéd generálni a borítókat a kijelölt {{ count }} könyvhöz?",
       "regenCoverHeader": "Borítók újragenerálásának megerősítése",
       "customCoverMessage": "Biztosan szeretnél egyedi borítókat generálni a kijelölt {{ count }} könyvhöz?",
@@ -27,7 +25,6 @@
       "multipleLibrariesDetail": "Minden kiválasztott könyvnek azonos könyvtárból kell származnia."
     },
     "loading": {
-      "deleting": "{{ count }} könyv törlése...",
       "unshelving": "{{ count }} könyv levétele a polcokról..."
     },
     "labels": {
@@ -65,8 +62,7 @@
       "attachToBook": "Hozzáadás egy másik könyvhöz",
       "moreActions": "További lehetőségek",
       "selectAll": "Összes könyv kiválasztása",
-      "deselectAll": "Kiválasztások megszüntetése",
-      "deleteSelected": "Kiválasztott könyvek törlése"
+      "deselectAll": "Kiválasztások megszüntetése"
     },
     "placeholder": {
       "selectColumns": "Oszlopok kiválasztása",
@@ -92,12 +88,9 @@
       "readStatus": "Olvasás állapota",
       "resetBookloreProgress": "Booklore előrehaladás nullázása",
       "resetKOReaderProgress": "KOReader előrehaladás nullázása",
-      "book": "Könyv",
       "loading": "Betöltés..."
     },
     "confirm": {
-      "deleteBookMessage": "Biztosan ki szeretnéd törölni a következőt: \"{{ title }}\"?\n\nEzzel eltávolítod a könyv fájlt a fájlrendszeredből.\n\nEz a művelet nem vonható vissza.",
-      "deleteBookHeader": "Törlés megerősítése",
       "deleteFileMessage": "Biztosan törölni akarod ezt a további fájlt is: \"{{ fileName }}\"?",
       "deleteFileHeader": "Fájl törlésének megerősítése",
       "largeFileMessage": "Ez a fájl nagyobb mint 25MB. Egyes email szolgáltatók elutasítják a nagy csatolmányokat.\n\nMindenképpen el szeretnéd küldeni?",
@@ -157,12 +150,6 @@
   },
   "bookService": {
     "toast": {
-      "someFilesNotDeletedSummary": "",
-      "someFilesNotDeletedDetail": "",
-      "booksDeletedSummary": "",
-      "booksDeletedDetail": "",
-      "deleteFailedSummary": "",
-      "deleteFailedDetail": "",
       "physicalBookCreatedSummary": "",
       "physicalBookCreatedDetail": "",
       "creationFailedSummary": "",
@@ -711,8 +698,7 @@
       "lockUnlockMetadata": "",
       "moreActions": "További lehetőségek",
       "selectAll": "",
-      "deselectAll": "",
-      "deleteSelected": ""
+      "deselectAll": ""
     }
   },
   "duplicateMerger": {
@@ -735,7 +721,6 @@
     "allMerged": "",
     "mergeAll": "",
     "merge": "",
-    "deleteSelected": "",
     "dismiss": "",
     "target": "",
     "sameFormatWarning": "",
@@ -749,10 +734,7 @@
       "DIRECTORY": "",
       "FILENAME": ""
     },
-    "confirm": {
-      "deleteHeader": "",
-      "deleteMessage": ""
-    },
+    "confirm": {},
     "toast": {
       "scanFailedSummary": "",
       "scanFailedDetail": "",

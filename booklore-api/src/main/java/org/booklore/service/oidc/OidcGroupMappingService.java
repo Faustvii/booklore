@@ -134,7 +134,6 @@ public class OidcGroupMappingService {
             perms.setPermissionEditMetadata(permissions.contains("permissionEditMetadata"));
             perms.setPermissionManageLibrary(permissions.contains("permissionManageLibrary"));
             perms.setPermissionEmailBook(permissions.contains("permissionEmailBook"));
-            perms.setPermissionDeleteBook(permissions.contains("permissionDeleteBook"));
             perms.setPermissionAccessOpds(permissions.contains("permissionAccessOpds"));
             perms.setPermissionSyncKoreader(permissions.contains("permissionSyncKoreader"));
             perms.setPermissionSyncKobo(permissions.contains("permissionSyncKobo"));
@@ -159,7 +158,6 @@ public class OidcGroupMappingService {
             if (permissions.contains("permissionEditMetadata")) perms.setPermissionEditMetadata(true);
             if (permissions.contains("permissionManageLibrary")) perms.setPermissionManageLibrary(true);
             if (permissions.contains("permissionEmailBook")) perms.setPermissionEmailBook(true);
-            if (permissions.contains("permissionDeleteBook")) perms.setPermissionDeleteBook(true);
             if (permissions.contains("permissionAccessOpds")) perms.setPermissionAccessOpds(true);
             if (permissions.contains("permissionSyncKoreader")) perms.setPermissionSyncKoreader(true);
             if (permissions.contains("permissionSyncKobo")) perms.setPermissionSyncKobo(true);
