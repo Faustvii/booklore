@@ -18,7 +18,7 @@ export class TableColumnPreferenceService {
   private readonly allAvailableFields = [
     'readStatus', 'title', 'authors', 'publisher', 'seriesName', 'seriesNumber',
     'categories', 'publishedDate', 'lastReadTime', 'addedOn', 'fileName', 'fileSizeKb',
-    'language', 'isbn', 'pageCount', 'amazonRating', 'amazonReviewCount',
+    'language', 'isbn', 'pageCount', 'rating', 'amazonRating', 'amazonReviewCount',
     'goodreadsRating', 'goodreadsReviewCount', 'hardcoverRating', 'hardcoverReviewCount',
     'ranobedbRating',
   ];

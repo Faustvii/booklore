@@ -53,6 +53,7 @@ export class ViewPreferencesComponent implements OnInit, OnDestroy {
     {field: 'seriesName', translationKey: 'sortSeriesName'},
     {field: 'seriesNumber', translationKey: 'sortSeriesNumber'},
     {field: 'lastReadTime', translationKey: 'sortLastRead'},
+    {field: 'rating', translationKey: 'sortRating'},
     {field: 'personalRating', translationKey: 'sortPersonalRating'},
     {field: 'addedOn', translationKey: 'sortAddedOn'},
     {field: 'fileSizeKb', translationKey: 'sortFileSize'},

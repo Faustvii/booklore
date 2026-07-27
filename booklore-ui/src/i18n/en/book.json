@@ -302,6 +302,7 @@
       "language": "Language",
       "isbn": "ISBN",
       "pageCount": "Pages",
+      "rating": "Rating",
       "amazonRating": "Amazon",
       "amazonReviewCount": "AZ #",
       "goodreadsRating": "Goodreads",
