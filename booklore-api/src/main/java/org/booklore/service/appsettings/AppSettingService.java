@@ -214,10 +214,10 @@ public class AppSettingService {
         boolean finalEnabled = settingEnabled && (forceDisable == null || !forceDisable);
         builder.oidcEnabled(finalEnabled);
 
+        // Keep the real secret here - this AppSettings instance is the internal singleton that
+        // OidcAuthService/OidcTokenClient use to actually authenticate with the IdP. Only the
+        // HTTP-facing copy (AppSettingController.getAppSettings()) strips it before returning.
         OidcProviderDetails oidcProviderDetails = settingPersistenceHelper.getJsonSetting(settingsMap, AppSettingKey.OIDC_PROVIDER_DETAILS, OidcProviderDetails.class, null, false);
-        if (oidcProviderDetails != null) {
-            oidcProviderDetails.setClientSecret(null);
-        }
         builder.oidcProviderDetails(oidcProviderDetails);
 
         builder.oidcGroupSyncMode(settingPersistenceHelper.getOrCreateSetting(

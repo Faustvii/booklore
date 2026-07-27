@@ -35,7 +35,23 @@ public class AppSettingController {
     @GetMapping
     @PreAuthorize("@securityUtil.isAdmin()")
     public AppSettings getAppSettings() {
-        return appSettingService.getAppSettings();
+        AppSettings settings = appSettingService.getAppSettings();
+        OidcProviderDetails details = settings.getOidcProviderDetails();
+        if (details == null || details.getClientSecret() == null) {
+            return settings;
+        }
+
+        // appSettingService.getAppSettings() returns the internal singleton other services rely
+        // on to authenticate with the IdP - never mutate it. Return a sanitized copy instead so
+        // the client secret never leaves the server over this endpoint.
+        OidcProviderDetails sanitizedDetails = new OidcProviderDetails();
+        sanitizedDetails.setProviderName(details.getProviderName());
+        sanitizedDetails.setClientId(details.getClientId());
+        sanitizedDetails.setIssuerUri(details.getIssuerUri());
+        sanitizedDetails.setScopes(details.getScopes());
+        sanitizedDetails.setClaimMapping(details.getClaimMapping());
+
+        return settings.toBuilder().oidcProviderDetails(sanitizedDetails).build();
     }
 
     @Operation(summary = "Update application settings", description = "Update one or more application settings.")
