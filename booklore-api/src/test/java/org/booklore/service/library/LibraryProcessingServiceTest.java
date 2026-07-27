@@ -371,6 +371,78 @@ class LibraryProcessingServiceTest {
     }
 
     @Test
+    void rescanLibrary_shouldNotHardDeleteLastRemainingFile_andShouldFlagBookForDeletionInstead(@TempDir Path tempDir) throws IOException {
+        long libraryId = 1L;
+        Path accessiblePath = tempDir.resolve("library");
+        Files.createDirectory(accessiblePath);
+
+        LibraryEntity libraryEntity = new LibraryEntity();
+        libraryEntity.setId(libraryId);
+        libraryEntity.setName("Test Library");
+
+        LibraryPathEntity pathEntity = new LibraryPathEntity();
+        pathEntity.setId(10L);
+        pathEntity.setPath(accessiblePath.toString());
+        libraryEntity.setLibraryPaths(List.of(pathEntity));
+
+        // book1's only file will be missing from disk; book2's file remains, so the
+        // overall scan is not empty and the whole-library-offline guard does not trip.
+        BookEntity book1 = new BookEntity();
+        book1.setId(11L);
+        book1.setLibrary(libraryEntity);
+        book1.setLibraryPath(pathEntity);
+        BookFileEntity book1File = new BookFileEntity();
+        book1File.setId(1L);
+        book1File.setBook(book1);
+        book1File.setFileSubPath("");
+        book1File.setFileName("book1.epub");
+        book1File.setBookFormat(true);
+        book1.setBookFiles(List.of(book1File));
+
+        BookEntity book2 = new BookEntity();
+        book2.setId(12L);
+        book2.setLibrary(libraryEntity);
+        book2.setLibraryPath(pathEntity);
+        BookFileEntity book2File = new BookFileEntity();
+        book2File.setId(2L);
+        book2File.setBook(book2);
+        book2File.setFileSubPath("");
+        book2File.setFileName("book2.epub");
+        book2File.setBookFormat(true);
+        book2.setBookFiles(List.of(book2File));
+
+        libraryEntity.setBookEntities(List.of(book1, book2));
+
+        when(libraryRepository.findById(libraryId)).thenReturn(Optional.of(libraryEntity));
+
+        LibraryFile book2OnDisk = LibraryFile.builder()
+                .libraryEntity(libraryEntity)
+                .libraryPathEntity(pathEntity)
+                .fileSubPath("")
+                .fileName("book2.epub")
+                .build();
+
+        when(libraryFileHelper.getAllLibraryFiles(libraryEntity)).thenReturn(List.of(book2OnDisk));
+        when(libraryFileHelper.filterByAllowedFormats(anyList(), any())).thenAnswer(inv -> inv.getArgument(0));
+        when(bookAdditionalFileRepository.findByLibraryId(libraryId)).thenReturn(List.of(book1File, book2File));
+        when(bookGroupingService.groupForRescan(anyList(), eq(libraryEntity)))
+                .thenReturn(new BookGroupingService.GroupingResult(Collections.emptyMap(), Collections.emptyMap()));
+
+        libraryProcessingService.rescanLibrary(RescanLibraryContext.builder().libraryId(libraryId).build());
+
+        // book1's file must NOT be hard-deleted as a plain "additional file" removal -
+        // that would zero out its book_file rows before detectDeletedBookIds runs and
+        // orphan the book entry forever. Since it was the only missing file, the
+        // "additional files" step has nothing left to do at all.
+        verify(bookDeletionService, never()).deleteRemovedAdditionalFiles(any());
+
+        // book1 itself must be flagged as deleted since its only file is gone.
+        ArgumentCaptor<List<Long>> deletedBookIdsCaptor = ArgumentCaptor.forClass(List.class);
+        verify(bookDeletionService).processDeletedLibraryFiles(deletedBookIdsCaptor.capture(), anyList());
+        assertThat(deletedBookIdsCaptor.getValue()).containsExactly(11L);
+    }
+
+    @Test
     void rescanLibrary_shouldAbortWhenPathNotAccessible(@TempDir Path tempDir) {
         long libraryId = 1L;
         Path nonExistentPath = tempDir.resolve("non_existent_path");
