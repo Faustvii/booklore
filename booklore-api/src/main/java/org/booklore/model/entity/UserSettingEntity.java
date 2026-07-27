@@ -30,7 +30,7 @@ public class UserSettingEntity {
     @Column(name = "setting_key", nullable = false, length = 100)
     private String settingKey;
 
-    @Column(name = "setting_value", nullable = false)
+    @Column(name = "setting_value", nullable = false, columnDefinition = "TEXT")
     private String settingValue;
 
     @CreationTimestamp
