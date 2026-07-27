@@ -415,6 +415,7 @@
       "bookType": "File Format",
       "readStatus": "Read Status",
       "personalRating": "Personal Rating",
+      "rating": "Rating",
       "publisher": "Publisher",
       "matchScore": "Metadata Match Score",
       "library": "Library",

@@ -17,7 +17,7 @@ export interface Filter<T extends FilterValue = FilterValue> {
 
 export type FilterType =
   | 'author' | 'category' | 'series' | 'bookType' | 'readStatus'
-  | 'personalRating' | 'publisher' | 'matchScore' | 'library' | 'shelf'
+  | 'personalRating' | 'rating' | 'publisher' | 'matchScore' | 'library' | 'shelf'
   | 'shelfStatus' | 'tag' | 'publishedDate' | 'fileSize' | 'amazonRating'
   | 'goodreadsRating' | 'hardcoverRating' | 'language' | 'pageCount' | 'mood'
   | 'ageRating' | 'contentRating'
@@ -131,7 +131,7 @@ export const pageCountRanges = PAGE_COUNT_RANGES;
 export const matchScoreRanges = MATCH_SCORE_RANGES;
 
 export const NUMERIC_ID_FILTER_TYPES = new Set<FilterType>([
-  'personalRating', 'matchScore', 'fileSize', 'amazonRating',
+  'personalRating', 'rating', 'matchScore', 'fileSize', 'amazonRating',
   'goodreadsRating', 'hardcoverRating', 'pageCount', 'library', 'shelf',
   'ageRating'
 ]);
@@ -143,6 +143,7 @@ export const FILTER_LABELS: Readonly<Record<FilterType, string>> = {
   bookType: 'File Format',
   readStatus: 'Read Status',
   personalRating: 'Personal Rating',
+  rating: 'Rating',
   publisher: 'Publisher',
   matchScore: 'Metadata Match Score',
   library: 'Library',
@@ -210,6 +211,7 @@ export const FILTER_EXTRACTORS: Readonly<Record<Exclude<FilterType, 'library'>, 
     return [{id: validStatus, name: READ_STATUS_LABELS[validStatus]}];
   },
   personalRating: (book) => findExactRating10(book.personalRating ?? undefined),
+  rating: (book) => findInRange(book.metadata?.rating, RATING_RANGES_5),
   publisher: (book) => extractSingleString(book.metadata?.publisher),
   matchScore: (book) => findInRange(normalizeMatchScore(book.metadataMatchScore), MATCH_SCORE_RANGES),
   shelf: (book) => book.shelves?.map(s => ({id: s.id, name: s.name})) ?? [],
@@ -277,6 +279,7 @@ export const FILTER_LABEL_KEYS: Readonly<Record<FilterType, string>> = {
   bookType: 'book.filter.labels.bookType',
   readStatus: 'book.filter.labels.readStatus',
   personalRating: 'book.filter.labels.personalRating',
+  rating: 'book.filter.labels.rating',
   publisher: 'book.filter.labels.publisher',
   matchScore: 'book.filter.labels.matchScore',
   library: 'book.filter.labels.library',
@@ -342,6 +345,7 @@ export const FILTER_CONFIGS: Readonly<Record<Exclude<FilterType, 'library'>, Omi
   bookType: {label: 'Book Type', sortMode: 'count'},
   readStatus: {label: 'Read Status', sortMode: 'count'},
   personalRating: {label: 'Personal Rating', sortMode: 'sortIndex', isNumericId: true},
+  rating: {label: 'Rating', sortMode: 'sortIndex', isNumericId: true},
   publisher: {label: 'Publisher', sortMode: 'count'},
   matchScore: {label: 'Metadata Match Score', sortMode: 'sortIndex', isNumericId: true},
   shelf: {label: 'Shelf', sortMode: 'count', isNumericId: true},
