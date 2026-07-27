@@ -286,17 +286,6 @@
                           (onClick)="detachFile(book, book.primaryFile!.id, book.primaryFile!.fileName || 'file')">
                         </p-button>
                       }
-                      @if (isAdmin) {
-                        <p-button
-                          icon="pi pi-trash"
-                          size="small"
-                          text
-                          severity="danger"
-                          [pTooltip]="t('deleteTooltip')"
-                          tooltipPosition="top"
-                          (onClick)="deleteFile(book, book.primaryFile!.id, book.primaryFile!.fileName || 'file', true)">
-                        </p-button>
-                      }
                     </div>
                   </div>
                 </div>
@@ -376,17 +365,6 @@
                             (onClick)="detachFile(book, format.id, format.fileName || 'file')">
                           </p-button>
                         }
-                        @if (isAdmin) {
-                          <p-button
-                            icon="pi pi-trash"
-                            size="small"
-                            text
-                            severity="danger"
-                            [pTooltip]="t('deleteTooltip')"
-                            tooltipPosition="top"
-                            (onClick)="deleteFile(book, format.id, format.fileName || 'file', false)">
-                          </p-button>
-                        }
                       </div>
                     </div>
                   }
@@ -423,17 +401,6 @@
                             [pTooltip]="t('detachTooltip')"
                             tooltipPosition="top"
                             (onClick)="detachFile(book, file.id, file.fileName || 'file')">
-                          </p-button>
-                        }
-                        @if (isAdmin) {
-                          <p-button
-                            icon="pi pi-trash"
-                            size="small"
-                            text
-                            severity="danger"
-                            [pTooltip]="t('deleteTooltip')"
-                            tooltipPosition="top"
-                            (onClick)="deleteSupplementary(book.id, file.id, file.fileName || 'file')">
                           </p-button>
                         }
                       </div>

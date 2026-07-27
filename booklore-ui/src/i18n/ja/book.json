@@ -74,7 +74,6 @@
       "assignShelf": "シェルフに割り当て",
       "viewDetails": "詳細を表示",
       "download": "ダウンロード",
-      "delete": "削除",
       "emailBook": "本をメール送信",
       "quickSend": "クイック送信",
       "customSend": "カスタム送信",
@@ -90,15 +89,10 @@
       "resetKOReaderProgress": "KOReader進捗をリセット",
       "loading": "読み込み中..."
     },
-    "confirm": {
-      "deleteFileMessage": "追加ファイル「{{ fileName }}」を削除してもよろしいですか？",
-      "deleteFileHeader": "ファイル削除の確認"
-    },
+    "confirm": {},
     "toast": {
       "quickSendSuccessDetail": "本の送信がスケジュールされました。",
       "quickSendErrorDetail": "本の送信中にエラーが発生しました。",
-      "deleteFileSuccessDetail": "追加ファイル「{{ fileName }}」が正常に削除されました",
-      "deleteFileErrorDetail": "追加ファイルの削除に失敗しました: {{ error }}",
       "readStatusUpdatedSummary": "読書状態を更新しました",
       "readStatusUpdatedDetail": "「{{ label }}」としてマークしました",
       "readStatusFailedSummary": "更新に失敗しました",
@@ -151,11 +145,6 @@
       "physicalBookCreatedDetail": "「{{ title }}」がライブラリに追加されました。",
       "creationFailedSummary": "作成に失敗しました",
       "creationFailedDetail": "物理本の作成中にエラーが発生しました。",
-      "fileDeletedSummary": "ファイルが削除されました",
-      "additionalFileDeletedDetail": "追加ファイルが正常に削除されました。",
-      "bookFileDeletedDetail": "ブックファイルが正常に削除されました。",
-      "fileDeleteFailedSummary": "削除に失敗しました",
-      "fileDeleteFailedDetail": "ファイルの削除中にエラーが発生しました。",
       "fileUploadedSummary": "ファイルがアップロードされました",
       "fileUploadedDetail": "追加ファイルが正常にアップロードされました。",
       "uploadFailedSummary": "アップロードに失敗しました",

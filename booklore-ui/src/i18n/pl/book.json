@@ -74,7 +74,6 @@
       "assignShelf": "Przypisz półkę",
       "viewDetails": "Pokaż szczegóły",
       "download": "Pobierz",
-      "delete": "Usuń",
       "emailBook": "Wyślij książkę e-mailem",
       "quickSend": "Szybkie wysyłanie",
       "customSend": "Wysyłanie niestandardowe",
@@ -90,15 +89,10 @@
       "resetKOReaderProgress": "Resetuj postęp KOReader",
       "loading": "Ładowanie..."
     },
-    "confirm": {
-      "deleteFileMessage": "Czy na pewno chcesz usunąć dodatkowy plik \"{{ fileName }}\"?",
-      "deleteFileHeader": "Potwierdź usunięcie pliku"
-    },
+    "confirm": {},
     "toast": {
       "quickSendSuccessDetail": "Wysyłanie książki zostało zaplanowane.",
       "quickSendErrorDetail": "Wystąpił błąd podczas wysyłania książki.",
-      "deleteFileSuccessDetail": "Dodatkowy plik \"{{ fileName }}\" został pomyślnie usunięty",
-      "deleteFileErrorDetail": "Nie udało się usunąć dodatkowego pliku: {{ error }}",
       "readStatusUpdatedSummary": "Status czytania zaktualizowany",
       "readStatusUpdatedDetail": "Oznaczono jako \"{{ label }}\"",
       "readStatusFailedSummary": "Aktualizacja nie powiodła się",
@@ -151,11 +145,6 @@
       "physicalBookCreatedDetail": "\"{{ title }}\" została dodana do Twojej biblioteki.",
       "creationFailedSummary": "Tworzenie nie powiodło się",
       "creationFailedDetail": "Wystąpił błąd podczas tworzenia książki fizycznej.",
-      "fileDeletedSummary": "Plik usunięty",
-      "additionalFileDeletedDetail": "Dodatkowy plik został pomyślnie usunięty.",
-      "bookFileDeletedDetail": "Plik książki został pomyślnie usunięty.",
-      "fileDeleteFailedSummary": "Usuwanie nie powiodło się",
-      "fileDeleteFailedDetail": "Wystąpił błąd podczas usuwania pliku.",
       "fileUploadedSummary": "Plik przesłany",
       "fileUploadedDetail": "Dodatkowy plik został pomyślnie przesłany.",
       "uploadFailedSummary": "Przesyłanie nie powiodło się",

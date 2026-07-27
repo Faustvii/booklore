@@ -1,5 +1,4 @@
-import {Component, EventEmitter, inject, Input, OnInit, Output} from '@angular/core';
-import {filter, take} from 'rxjs/operators';
+import {Component, EventEmitter, inject, Input, Output} from '@angular/core';
 import {UpperCasePipe} from '@angular/common';
 import {Book, BookRecommendation, BookType, FileInfo} from '../../../../../book/model/book.model';
 import {Tab, TabList, TabPanel, TabPanels, Tabs} from 'primeng/tabs';
@@ -15,7 +14,6 @@ import {BookMetadataManageService} from '../../../../../book/service/book-metada
 import {TranslocoDirective, TranslocoService} from '@jsverse/transloco';
 import {AudiobookService} from '../../../../../readers/audiobook-player/audiobook.service';
 import {AudiobookInfo} from '../../../../../readers/audiobook-player/audiobook.model';
-import {User, UserService} from '../../../../../settings/user-management/user.service';
 
 export interface ReadEvent {
   bookId: number;
@@ -34,20 +32,6 @@ export interface DownloadAdditionalFileEvent {
 
 export interface DownloadAllFilesEvent {
   book: Book;
-}
-
-export interface DeleteBookFileEvent {
-  book: Book;
-  fileId: number;
-  fileName: string;
-  isPrimary: boolean;
-  isOnlyFormat: boolean;
-}
-
-export interface DeleteSupplementaryFileEvent {
-  bookId: number;
-  fileId: number;
-  fileName: string;
 }
 
 export interface DetachBookFileEvent {
@@ -78,7 +62,7 @@ export interface DetachBookFileEvent {
   templateUrl: './metadata-tabs.component.html',
   styleUrl: './metadata-tabs.component.scss'
 })
-export class MetadataTabsComponent implements OnInit {
+export class MetadataTabsComponent {
   @Input() book!: Book;
   @Input() bookInSeries: Book[] = [];
   @Input() recommendedBooks: BookRecommendation[] = [];
@@ -86,38 +70,19 @@ export class MetadataTabsComponent implements OnInit {
   protected urlHelper = inject(UrlHelperService);
   private bookMetadataManageService = inject(BookMetadataManageService);
   private audiobookService = inject(AudiobookService);
-  private userService = inject(UserService);
   private t = inject(TranslocoService);
 
   audiobookInfo: AudiobookInfo | null = null;
   chaptersLoading = false;
-  private user: User | null = null;
 
   @Output() readBook = new EventEmitter<ReadEvent>();
   @Output() downloadBook = new EventEmitter<DownloadEvent>();
   @Output() downloadFile = new EventEmitter<DownloadAdditionalFileEvent>();
   @Output() downloadAllFiles = new EventEmitter<DownloadAllFilesEvent>();
-  @Output() deleteBookFile = new EventEmitter<DeleteBookFileEvent>();
-  @Output() deleteSupplementaryFile = new EventEmitter<DeleteSupplementaryFileEvent>();
   @Output() detachBookFile = new EventEmitter<DetachBookFileEvent>();
-
-  ngOnInit(): void {
-    this.userService.userState$
-      .pipe(
-        filter(userState => !!userState?.user && userState.loaded),
-        take(1)
-      )
-      .subscribe(userState => {
-        this.user = userState.user;
-      });
-  }
 
   get defaultTabValue(): string {
     return this.bookInSeries && this.bookInSeries.length > 1 ? 'series' : 'similar';
-  }
-
-  get isAdmin(): boolean {
-    return !!this.user?.permissions.admin;
   }
 
   read(bookId: number, reader?: 'epub-streaming', bookType?: BookType): void {
@@ -134,15 +99,6 @@ export class MetadataTabsComponent implements OnInit {
 
   downloadAll(book: Book): void {
     this.downloadAllFiles.emit({ book });
-  }
-
-  deleteFile(book: Book, fileId: number, fileName: string, isPrimary: boolean): void {
-    const isOnlyFormat = !book.alternativeFormats?.length;
-    this.deleteBookFile.emit({ book, fileId, fileName, isPrimary, isOnlyFormat });
-  }
-
-  deleteSupplementary(bookId: number, fileId: number, fileName: string): void {
-    this.deleteSupplementaryFile.emit({ bookId, fileId, fileName });
   }
 
   detachFile(book: Book, fileId: number, fileName: string): void {

@@ -74,7 +74,6 @@
       "assignShelf": "分配书架",
       "viewDetails": "查看详情",
       "download": "下载",
-      "delete": "删除",
       "emailBook": "发送图书邮件",
       "quickSend": "快速发送",
       "customSend": "自定义发送",
@@ -90,15 +89,10 @@
       "resetKOReaderProgress": "重置 KOReader 进度",
       "loading": "加载中..."
     },
-    "confirm": {
-      "deleteFileMessage": "确定要删除附加文件「{{ fileName }}」吗？",
-      "deleteFileHeader": "确认删除文件"
-    },
+    "confirm": {},
     "toast": {
       "quickSendSuccessDetail": "图书发送已安排。",
       "quickSendErrorDetail": "发送图书时发生错误。",
-      "deleteFileSuccessDetail": "附加文件「{{ fileName }}」已成功删除",
-      "deleteFileErrorDetail": "删除附加文件失败：{{ error }}",
       "readStatusUpdatedSummary": "阅读状态已更新",
       "readStatusUpdatedDetail": "已标记为「{{ label }}」",
       "readStatusFailedSummary": "更新失败",
@@ -152,11 +146,6 @@
       "physicalBookCreatedDetail": "「{{ title }}」已添加到您的书库。",
       "creationFailedSummary": "创建失败",
       "creationFailedDetail": "创建实体书时发生错误。",
-      "fileDeletedSummary": "文件已删除",
-      "additionalFileDeletedDetail": "附加文件已成功删除。",
-      "bookFileDeletedDetail": "图书文件已成功删除。",
-      "fileDeleteFailedSummary": "删除失败",
-      "fileDeleteFailedDetail": "删除文件时发生错误。",
       "fileUploadedSummary": "文件已上传",
       "fileUploadedDetail": "附加文件已成功上传。",
       "uploadFailedSummary": "上传失败",

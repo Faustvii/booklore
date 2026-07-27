@@ -74,7 +74,6 @@
       "assignShelf": "Asignar estante",
       "viewDetails": "Ver detalles",
       "download": "Descargar",
-      "delete": "Eliminar",
       "emailBook": "Enviar por correo",
       "quickSend": "Envío rápido",
       "customSend": "Envío personalizado",
@@ -91,8 +90,6 @@
       "loading": "Cargando..."
     },
     "confirm": {
-      "deleteFileMessage": "¿Estás seguro de que deseas eliminar el archivo adicional \"{{ fileName }}\"?",
-      "deleteFileHeader": "Confirmar eliminación de archivo",
       "largeFileMessage": "Este archivo supera los 25 MB. Algunos proveedores de correo pueden rechazar archivos adjuntos grandes.\n\n¿Deseas enviarlo de todos modos?",
       "largeFileHeader": "Advertencia de archivo grande",
       "sendAnyway": "Enviar de todos modos"
@@ -100,8 +97,6 @@
     "toast": {
       "quickSendSuccessDetail": "El envío del libro ha sido programado.",
       "quickSendErrorDetail": "Ocurrió un error al enviar el libro.",
-      "deleteFileSuccessDetail": "Archivo adicional \"{{ fileName }}\" eliminado correctamente",
-      "deleteFileErrorDetail": "Error al eliminar el archivo adicional: {{ error }}",
       "readStatusUpdatedSummary": "Estado de lectura actualizado",
       "readStatusUpdatedDetail": "Marcado como \"{{ label }}\"",
       "readStatusFailedSummary": "Error al actualizar",
@@ -155,11 +150,6 @@
       "physicalBookCreatedDetail": "\"{{ title }}\" ha sido añadido a tu biblioteca.",
       "creationFailedSummary": "Error al crear",
       "creationFailedDetail": "Ocurrió un error al crear el libro físico.",
-      "fileDeletedSummary": "Archivo eliminado",
-      "additionalFileDeletedDetail": "Archivo adicional eliminado correctamente.",
-      "bookFileDeletedDetail": "Archivo de libro eliminado correctamente.",
-      "fileDeleteFailedSummary": "Error al eliminar",
-      "fileDeleteFailedDetail": "Ocurrió un error al eliminar el archivo.",
       "fileUploadedSummary": "Archivo subido",
       "fileUploadedDetail": "Archivo adicional subido correctamente.",
       "uploadFailedSummary": "Error al subir",

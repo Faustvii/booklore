@@ -74,7 +74,6 @@
       "assignShelf": "Assigner une étagère",
       "viewDetails": "Voir les détails",
       "download": "Télécharger",
-      "delete": "Supprimer",
       "emailBook": "Envoyer par email",
       "quickSend": "Envoi rapide",
       "customSend": "Envoi personnalisé",
@@ -91,8 +90,6 @@
       "loading": "Chargement..."
     },
     "confirm": {
-      "deleteFileMessage": "Êtes-vous sûr de vouloir supprimer le fichier supplémentaire « {{ fileName }} » ?",
-      "deleteFileHeader": "Confirmer la suppression du fichier",
       "largeFileMessage": "Ce fichier dépasse 25MB. Certains fournisseurs de courriel peuvent rejeter les grosses pièces jointes.\n\nVoulez vous l'envoyer quand même?",
       "largeFileHeader": "Alerte de fichier volumineux",
       "sendAnyway": "Envoyer quand même"
@@ -100,8 +97,6 @@
     "toast": {
       "quickSendSuccessDetail": "L'envoi du livre a été planifié.",
       "quickSendErrorDetail": "Une erreur est survenue lors de l'envoi du livre.",
-      "deleteFileSuccessDetail": "Fichier supplémentaire « {{ fileName }} » supprimé avec succès",
-      "deleteFileErrorDetail": "Échec de la suppression du fichier supplémentaire : {{ error }}",
       "readStatusUpdatedSummary": "Statut de lecture mis à jour",
       "readStatusUpdatedDetail": "Marqué comme « {{ label }} »",
       "readStatusFailedSummary": "Échec de la mise à jour",
@@ -154,11 +149,6 @@
       "physicalBookCreatedDetail": "« {{ title }} » a été ajouté à votre bibliothèque.",
       "creationFailedSummary": "Échec de la création",
       "creationFailedDetail": "Une erreur est survenue lors de la création du livre physique.",
-      "fileDeletedSummary": "Fichier supprimé",
-      "additionalFileDeletedDetail": "Fichier supplémentaire supprimé avec succès.",
-      "bookFileDeletedDetail": "Fichier du livre supprimé avec succès.",
-      "fileDeleteFailedSummary": "Échec de la suppression",
-      "fileDeleteFailedDetail": "Une erreur est survenue lors de la suppression du fichier.",
       "fileUploadedSummary": "Fichier téléversé",
       "fileUploadedDetail": "Fichier supplémentaire téléversé avec succès.",
       "uploadFailedSummary": "Échec du téléversement",

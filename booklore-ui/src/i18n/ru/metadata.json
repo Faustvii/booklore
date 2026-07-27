@@ -217,7 +217,6 @@
     "streamingReaderTooltip": "Потоковая читалка",
     "playTooltip": "Воспроизвести",
     "downloadTooltip": "Скачать",
-    "deleteTooltip": "Удалить",
     "downloadAllTooltip": "Скачать все файлы в виде ZIP-архива",
     "physicalBookHint": "Вы можете загрузить цифровую копию или добавить метаданные вручную."
   },
@@ -313,8 +312,6 @@
     "menuQuickSend": "Быстрая отправка",
     "menuCustomSend": "Настраиваемая отправка",
     "menuAttachToAnotherBook": "Прикрепить к другой книге",
-    "menuDeleteFileFormats": "Удалить форматы файлов",
-    "menuDeleteSupplementaryFiles": "Удалить дополнительные файлы",
     "navigationPosition": "{{ current }} из {{ total }}",
     "channelMono": "Моно",
     "channelStereo": "Стерео",
@@ -340,14 +337,6 @@
       "quickSendSuccessDetail": "Отправка книги запланирована.",
       "quickSendErrorSummary": "Ошибка",
       "quickSendErrorDetail": "Произошла ошибка при отправке книги.",
-      "deleteSupplementarySuccessSummary": "Успешно",
-      "deleteSupplementarySuccessDetail": "Дополнительный файл «{{ fileName }}» успешно удалён",
-      "deleteSupplementaryErrorSummary": "Ошибка",
-      "deleteSupplementaryErrorDetail": "Не удалось удалить дополнительный файл: {{ error }}",
-      "deleteFormatSuccessSummary": "Успешно",
-      "deleteFormatSuccessDetail": "Формат книги «{{ fileName }}» успешно удалён",
-      "deleteFormatErrorSummary": "Ошибка",
-      "deleteFormatErrorDetail": "Не удалось удалить формат книги: {{ error }}",
       "dateUpdatedSummary": "Дата обновлена",
       "dateUpdatedDetail": "Дата завершения книги обновлена.",
       "dateUpdateFailedSummary": "Ошибка обновления",
@@ -355,16 +344,7 @@
     },
     "confirm": {
       "resetProgressMessage": "Сбросить прогресс чтения для «{{ title }}»?",
-      "resetProgressHeader": "Подтвердить сброс",
-      "deleteSupplementaryMessage": "Вы уверены, что хотите удалить дополнительный файл «{{ fileName }}»?\n\nЭтот файл будет безвозвратно удалён из Вашей файловой системы.",
-      "deleteSupplementaryHeader": "Удалить дополнительный файл",
-      "deleteOnlyFormatMessage": "Вы уверены, что хотите удалить «{{ fileName }}»?\n\nЭто ЕДИНСТВЕННЫЙ формат книги. После удаления у книги не будет читаемого содержания.\n\nЭтот файл будет безвозвратно удалён из Вашей файловой системы.",
-      "deleteOnlyFormatHeader": "Удалить единственный формат книги",
-      "deletePrimaryFormatMessage": "Вы уверены, что хотите удалить «{{ fileName }}»?\n\nЭто текущий ОСНОВНОЙ формат книги. После удаления альтернативный формат станет новым основным.\n\nЭтот файл будет безвозвратно удалён из Вашей файловой системы.",
-      "deletePrimaryFormatHeader": "Удалить основной формат",
-      "deleteAltFormatMessage": "Вы уверены, что хотите удалить «{{ fileName }}»?\n\nЭтот файл будет безвозвратно удалён из Вашей файловой системы.",
-      "deleteAltFormatHeader": "Удалить формат книги",
-      "deleteFileBtn": "Удалить файл"
+      "resetProgressHeader": "Подтвердить сброс"
     }
   },
   "sidecar": {

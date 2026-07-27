@@ -31,7 +31,7 @@ import {AGE_RATING_OPTIONS, CONTENT_RATING_LABELS, fileSizeRanges, matchScoreRan
 import {BookNavigationService} from '../../../../book/service/book-navigation.service';
 import {BookMetadataHostService} from '../../../../../shared/service/book-metadata-host.service';
 import {AppSettingsService} from '../../../../../shared/service/app-settings.service';
-import {DeleteBookFileEvent, DeleteSupplementaryFileEvent, DetachBookFileEvent, DownloadAdditionalFileEvent, DownloadAllFilesEvent, DownloadEvent, MetadataTabsComponent, ReadEvent} from './metadata-tabs/metadata-tabs.component';
+import {DetachBookFileEvent, DownloadAdditionalFileEvent, DownloadAllFilesEvent, DownloadEvent, MetadataTabsComponent, ReadEvent} from './metadata-tabs/metadata-tabs.component';
 import {TranslocoDirective, TranslocoPipe, TranslocoService} from '@jsverse/transloco';
 import {AuthorService} from '../../../../author-browser/service/author.service';
 import {Dialog} from 'primeng/dialog';
@@ -282,69 +282,6 @@ export class MetadataViewerComponent implements OnInit, OnChanges, AfterViewChec
               });
             }
 
-            if (userState?.user?.permissions.admin) {
-              // Delete File Formats submenu - allows deleting individual book format files
-              const deleteFormatItems: MenuItem[] = [];
-              const hasMultipleFormats = (book.alternativeFormats?.length ?? 0) > 0;
-
-              // Add primary file if it exists
-              if (book.primaryFile) {
-                const extension = this.getFileExtension(book.primaryFile.filePath);
-                const isPrimaryOnly = !hasMultipleFormats;
-                const truncatedName = this.truncateFileName(book.primaryFile.fileName, 25);
-                deleteFormatItems.push({
-                  label: `${truncatedName} (${this.formatFileSize(book.primaryFile)}) [Primary]`,
-                  icon: this.getFileIcon(extension),
-                  tooltipOptions: {tooltipLabel: book.primaryFile.fileName, tooltipPosition: 'left'},
-                  command: () => this.deleteBookFile(book, book.primaryFile!.id, book.primaryFile!.fileName || 'file', true, isPrimaryOnly)
-                });
-              }
-
-              // Add alternative formats
-              if (book.alternativeFormats && book.alternativeFormats.length > 0) {
-                book.alternativeFormats.forEach(format => {
-                  const extension = this.getFileExtension(format.filePath);
-                  const truncatedName = this.truncateFileName(format.fileName, 25);
-                  deleteFormatItems.push({
-                    label: `${truncatedName} (${this.formatFileSize(format)})`,
-                    icon: this.getFileIcon(extension),
-                    tooltipOptions: {tooltipLabel: format.fileName, tooltipPosition: 'left'},
-                    command: () => this.deleteBookFile(book, format.id, format.fileName || 'file', false, false)
-                  });
-                });
-              }
-
-              if (deleteFormatItems.length > 0) {
-                items.push({
-                  label: this.t.translate('metadata.viewer.menuDeleteFileFormats'),
-                  icon: 'pi pi-file',
-                  items: deleteFormatItems
-                });
-              }
-
-              // Delete Supplementary Files submenu - for non-book files
-              if (book.supplementaryFiles && book.supplementaryFiles.length > 0) {
-                const deleteSupplementaryItems: MenuItem[] = [];
-                book.supplementaryFiles.forEach(file => {
-                  const extension = this.getFileExtension(file.filePath);
-                  const truncatedName = this.truncateFileName(file.fileName, 25);
-                  deleteSupplementaryItems.push({
-                    label: `${truncatedName} (${this.formatFileSize(file)})`,
-                    icon: this.getFileIcon(extension),
-                    tooltipOptions: {tooltipLabel: file.fileName, tooltipPosition: 'left'},
-                    command: () => this.deleteAdditionalFile(book.id, file.id, file.fileName || 'file')
-                  });
-                });
-
-                items.push({
-                  label: this.t.translate('metadata.viewer.menuDeleteSupplementaryFiles'),
-                  icon: 'pi pi-paperclip',
-                  items: deleteSupplementaryItems
-                });
-              }
-
-            }
-
             return items;
           })
         )
@@ -463,14 +400,6 @@ export class MetadataViewerComponent implements OnInit, OnChanges, AfterViewChec
     this.bookFileService.downloadAllFiles(event.book);
   }
 
-  onDeleteBookFile(event: DeleteBookFileEvent): void {
-    this.deleteBookFile(event.book, event.fileId, event.fileName, event.isPrimary, event.isOnlyFormat);
-  }
-
-  onDeleteSupplementaryFile(event: DeleteSupplementaryFileEvent): void {
-    this.deleteAdditionalFile(event.bookId, event.fileId, event.fileName);
-  }
-
   onDetachBookFile(event: DetachBookFileEvent): void {
     this.detachBookId = event.book.id;
     this.detachFileId = event.fileId;
@@ -482,82 +411,6 @@ export class MetadataViewerComponent implements OnInit, OnChanges, AfterViewChec
   confirmDetach(): void {
     this.showDetachDialog = false;
     this.bookFileService.detachBookFile(this.detachBookId, this.detachFileId, this.detachCopyMetadata).subscribe();
-  }
-
-  deleteAdditionalFile(bookId: number, fileId: number, fileName: string) {
-    this.confirmationService.confirm({
-      message: this.t.translate('metadata.viewer.confirm.deleteSupplementaryMessage', { fileName }),
-      header: this.t.translate('metadata.viewer.confirm.deleteSupplementaryHeader'),
-      icon: 'pi pi-exclamation-triangle',
-      acceptIcon: 'pi pi-trash',
-      rejectIcon: 'pi pi-times',
-      rejectButtonStyleClass: 'p-button-secondary',
-      acceptButtonStyleClass: 'p-button-danger',
-      accept: () => {
-        this.bookFileService.deleteAdditionalFile(bookId, fileId).subscribe({
-          next: () => {
-            this.messageService.add({
-              severity: 'success',
-              summary: this.t.translate('metadata.viewer.toast.deleteSupplementarySuccessSummary'),
-              detail: this.t.translate('metadata.viewer.toast.deleteSupplementarySuccessDetail', { fileName })
-            });
-          },
-          error: (error) => {
-            this.messageService.add({
-              severity: 'error',
-              summary: this.t.translate('metadata.viewer.toast.deleteSupplementaryErrorSummary'),
-              detail: this.t.translate('metadata.viewer.toast.deleteSupplementaryErrorDetail', { error: error.message || 'Unknown error' })
-            });
-          }
-        });
-      }
-    });
-  }
-
-  deleteBookFile(book: Book, fileId: number, fileName: string, isPrimary: boolean, isOnlyFormat: boolean) {
-    let message: string;
-    let header: string;
-
-    if (isOnlyFormat) {
-      message = this.t.translate('metadata.viewer.confirm.deleteOnlyFormatMessage', { fileName });
-      header = this.t.translate('metadata.viewer.confirm.deleteOnlyFormatHeader');
-    } else if (isPrimary) {
-      message = this.t.translate('metadata.viewer.confirm.deletePrimaryFormatMessage', { fileName });
-      header = this.t.translate('metadata.viewer.confirm.deletePrimaryFormatHeader');
-    } else {
-      message = this.t.translate('metadata.viewer.confirm.deleteAltFormatMessage', { fileName });
-      header = this.t.translate('metadata.viewer.confirm.deleteAltFormatHeader');
-    }
-
-    this.confirmationService.confirm({
-      message,
-      header,
-      icon: 'pi pi-exclamation-triangle',
-      acceptIcon: 'pi pi-trash',
-      rejectIcon: 'pi pi-times',
-      acceptLabel: this.t.translate('metadata.viewer.confirm.deleteFileBtn'),
-      rejectLabel: this.t.translate('common.cancel'),
-      rejectButtonStyleClass: 'p-button-secondary',
-      acceptButtonStyleClass: 'p-button-danger',
-      accept: () => {
-        this.bookFileService.deleteBookFile(book.id, fileId, isPrimary).subscribe({
-          next: () => {
-            this.messageService.add({
-              severity: 'success',
-              summary: this.t.translate('metadata.viewer.toast.deleteFormatSuccessSummary'),
-              detail: this.t.translate('metadata.viewer.toast.deleteFormatSuccessDetail', { fileName })
-            });
-          },
-          error: (error) => {
-            this.messageService.add({
-              severity: 'error',
-              summary: this.t.translate('metadata.viewer.toast.deleteFormatErrorSummary'),
-              detail: this.t.translate('metadata.viewer.toast.deleteFormatErrorDetail', { error: error.message || 'Unknown error' })
-            });
-          }
-        });
-      }
-    });
   }
 
   quickSend(book: Book) {

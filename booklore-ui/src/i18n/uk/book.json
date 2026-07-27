@@ -74,7 +74,6 @@
       "assignShelf": "Додати до полиці",
       "viewDetails": "Переглянути деталі",
       "download": "Завантажити",
-      "delete": "Видалити",
       "emailBook": "Надіслати книгу на email",
       "quickSend": "Швидка відправка",
       "customSend": "Налаштована відправка",
@@ -91,8 +90,6 @@
       "loading": "Завантаження..."
     },
     "confirm": {
-      "deleteFileMessage": "Ви впевнені, що хочете видалити додатковий файл \"{{ fileName }}\"?",
-      "deleteFileHeader": "Підтвердження видалення файлу",
       "largeFileMessage": "Розмір цього файлу перевищує 25 МБ. Деякі поштові сервіси можуть відхиляти великі вкладення.\n\nВсе одно надіслати?",
       "largeFileHeader": "Попередження про великий файл",
       "sendAnyway": "Все одно надіслати"
@@ -100,8 +97,6 @@
     "toast": {
       "quickSendSuccessDetail": "Книгу додано в чергу на відправку.",
       "quickSendErrorDetail": "Під час надсилання книги сталася помилка.",
-      "deleteFileSuccessDetail": "Додатковий файл \"{{ fileName }}\" успішно видалено",
-      "deleteFileErrorDetail": "Не вдалося видалити додатковий файл: {{ error }}",
       "readStatusUpdatedSummary": "Статус читання оновлено",
       "readStatusUpdatedDetail": "Позначено як \"{{ label }}\"",
       "readStatusFailedSummary": "Не вдалося оновити",
@@ -155,11 +150,6 @@
       "physicalBookCreatedDetail": "\"{{ title }}\" додано до вашої бібліотеки.",
       "creationFailedSummary": "Не вдалося створити",
       "creationFailedDetail": "Під час створення паперової книги виникла помилка.",
-      "fileDeletedSummary": "Файл видалено",
-      "additionalFileDeletedDetail": "Додатковий файл успішно видалено.",
-      "bookFileDeletedDetail": "Файл книги успішно видалено.",
-      "fileDeleteFailedSummary": "Не вдалося видалити",
-      "fileDeleteFailedDetail": "Під час видалення файлу виникла помилка.",
       "fileUploadedSummary": "Файл завантажено",
       "fileUploadedDetail": "Додатковий файл успішно завантажено.",
       "uploadFailedSummary": "Не вдалося завантажити",

@@ -8,7 +8,6 @@ import org.booklore.model.entity.LibraryPathEntity;
 import org.booklore.repository.BookAdditionalFileRepository;
 import org.booklore.repository.BookRepository;
 import org.booklore.service.file.AdditionalFileService;
-import org.booklore.service.monitoring.MonitoringRegistrationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -44,9 +43,6 @@ class AdditionalFileServiceTest {
 
     @Mock
     private AdditionalFileMapper additionalFileMapper;
-
-    @Mock
-    private MonitoringRegistrationService monitoringRegistrationService;
 
     @InjectMocks
     private AdditionalFileService additionalFileService;
@@ -145,80 +141,6 @@ class AdditionalFileServiceTest {
         assertTrue(result.isEmpty());
         verify(additionalFileRepository).findByBookIdAndIsBookFormat(bookId, isBook);
         verify(additionalFileMapper).toAdditionalFiles(entities);
-    }
-
-    @Test
-    void deleteAdditionalFile_WhenFileNotFound_ShouldThrowException() {
-        Long fileId = 1L;
-        when(additionalFileRepository.findById(fileId)).thenReturn(Optional.empty());
-
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class,
-                () -> additionalFileService.deleteAdditionalFile(fileId)
-        );
-
-        assertEquals("Additional file not found with id: 1", exception.getMessage());
-        verify(additionalFileRepository).findById(fileId);
-        verify(additionalFileRepository, never()).delete(any());
-        verify(monitoringRegistrationService, never()).unregisterSpecificPath(any());
-    }
-
-    @Test
-    void deleteAdditionalFile_WhenFileExists_ShouldDeleteSuccessfully() {
-        Long fileId = 1L;
-        Path parentPath = fileEntity.getFullFilePath().getParent();
-
-        when(additionalFileRepository.findById(fileId)).thenReturn(Optional.of(fileEntity));
-
-        try (MockedStatic<Files> filesMock = mockStatic(Files.class)) {
-            filesMock.when(() -> Files.deleteIfExists(fileEntity.getFullFilePath())).thenReturn(true);
-
-            additionalFileService.deleteAdditionalFile(fileId);
-
-            verify(additionalFileRepository).findById(fileId);
-            verify(monitoringRegistrationService).unregisterSpecificPath(parentPath);
-            filesMock.verify(() -> Files.deleteIfExists(fileEntity.getFullFilePath()));
-            verify(additionalFileRepository).delete(fileEntity);
-            verify(bookRepository, never()).save(any());
-        }
-    }
-
-    @Test
-    void deleteAdditionalFile_WhenIOExceptionOccurs_ShouldStillDeleteFromRepository() {
-        Long fileId = 1L;
-        Path parentPath = fileEntity.getFullFilePath().getParent();
-
-        when(additionalFileRepository.findById(fileId)).thenReturn(Optional.of(fileEntity));
-
-        try (MockedStatic<Files> filesMock = mockStatic(Files.class)) {
-            filesMock.when(() -> Files.deleteIfExists(fileEntity.getFullFilePath())).thenThrow(new IOException("File access error"));
-
-            additionalFileService.deleteAdditionalFile(fileId);
-
-            verify(additionalFileRepository).findById(fileId);
-            verify(monitoringRegistrationService).unregisterSpecificPath(parentPath);
-            filesMock.verify(() -> Files.deleteIfExists(fileEntity.getFullFilePath()));
-            verify(additionalFileRepository).delete(fileEntity);
-            verify(bookRepository, never()).save(any());
-        }
-    }
-
-    @Test
-    void deleteAdditionalFile_WhenEntityRelationshipsMissing_ShouldThrowIllegalStateException() {
-        Long fileId = 1L;
-        BookFileEntity invalidEntity = new BookFileEntity();
-        invalidEntity.setId(fileId);
-
-        when(additionalFileRepository.findById(fileId)).thenReturn(Optional.of(invalidEntity));
-
-        assertThrows(
-                IllegalStateException.class,
-                () -> additionalFileService.deleteAdditionalFile(fileId)
-        );
-
-        verify(additionalFileRepository).findById(fileId);
-        verify(additionalFileRepository, never()).delete(any());
-        verify(monitoringRegistrationService, never()).unregisterSpecificPath(any());
     }
 
     @Test
