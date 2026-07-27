@@ -108,32 +108,7 @@ public class SettingPersistenceHelper {
     }
 
     public MetadataPersistenceSettings getDefaultMetadataPersistenceSettings() {
-        MetadataPersistenceSettings.FormatSettings epubSettings = MetadataPersistenceSettings.FormatSettings.builder()
-                .enabled(false)
-                .maxFileSizeInMb(250)
-                .build();
-
-        MetadataPersistenceSettings.FormatSettings pdfSettings = MetadataPersistenceSettings.FormatSettings.builder()
-                .enabled(false)
-                .maxFileSizeInMb(250)
-                .build();
-
-        MetadataPersistenceSettings.FormatSettings cbxSettings = MetadataPersistenceSettings.FormatSettings.builder()
-                .enabled(false)
-                .maxFileSizeInMb(250)
-                .build();
-
-        MetadataPersistenceSettings.SaveToOriginalFile saveToOriginalFile = MetadataPersistenceSettings.SaveToOriginalFile.builder()
-                .epub(epubSettings)
-                .pdf(pdfSettings)
-                .cbx(cbxSettings)
-                .build();
-
-        return MetadataPersistenceSettings.builder()
-                .saveToOriginalFile(saveToOriginalFile)
-                .convertCbrCb7ToCbz(false)
-                .moveFilesToLibraryPattern(false)
-                .build();
+        return MetadataPersistenceSettings.builder().build();
     }
 
     public KoboSettings getDefaultKoboSettings() {

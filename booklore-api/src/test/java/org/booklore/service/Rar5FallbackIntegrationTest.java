@@ -5,10 +5,8 @@ import org.booklore.model.entity.BookEntity;
 import org.booklore.model.entity.BookMetadataEntity;
 import org.booklore.service.kobo.CbxConversionService;
 import org.booklore.service.metadata.extractor.CbxMetadataExtractor;
-import org.booklore.service.metadata.writer.CbxMetadataWriter;
 import org.booklore.service.reader.CbxReaderService;
 import org.booklore.repository.BookRepository;
-import org.booklore.service.appsettings.AppSettingService;
 import org.booklore.util.UnrarHelper;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -137,50 +135,6 @@ class Rar5FallbackIntegrationTest {
                     .filter(name -> name.startsWith("OEBPS/Images/page-"))
                     .toList();
             assertThat(imageEntries).hasSize(3);
-        }
-    }
-
-    // -- CbxMetadataWriter: loadFromRar + convertRarToZipArchive fallback --
-
-    @Test
-    void metadataWriter_convertsRar5ToCbzViaFallback(@TempDir Path tempDir) throws Exception {
-        Path cbrCopy = tempDir.resolve("test.cbr");
-        Files.copy(RAR5_CBR, cbrCopy);
-
-        AppSettingService mockSettings = org.mockito.Mockito.mock(AppSettingService.class);
-        var appSettings = new org.booklore.model.dto.settings.AppSettings();
-        var persistenceSettings = new org.booklore.model.dto.settings.MetadataPersistenceSettings();
-        var saveToFile = new org.booklore.model.dto.settings.MetadataPersistenceSettings.SaveToOriginalFile();
-        var cbxSettings = new org.booklore.model.dto.settings.MetadataPersistenceSettings.FormatSettings();
-        cbxSettings.setEnabled(true);
-        cbxSettings.setMaxFileSizeInMb(500);
-        saveToFile.setCbx(cbxSettings);
-        persistenceSettings.setSaveToOriginalFile(saveToFile);
-        appSettings.setMetadataPersistenceSettings(persistenceSettings);
-        org.mockito.Mockito.when(mockSettings.getAppSettings()).thenReturn(appSettings);
-
-        CbxMetadataWriter writer = new CbxMetadataWriter(mockSettings);
-
-        BookMetadataEntity metadata = new BookMetadataEntity();
-        metadata.setTitle("Updated RAR5 Title");
-
-        writer.saveMetadataToFile(cbrCopy.toFile(), metadata, null, null);
-
-        Path cbzPath = tempDir.resolve("test.cbz");
-        assertThat(cbzPath).exists();
-
-        try (ZipFile resultZip = new ZipFile(cbzPath.toFile())) {
-            ZipEntry comicInfo = resultZip.getEntry("ComicInfo.xml");
-            assertThat(comicInfo).isNotNull();
-
-            String xml = new String(resultZip.getInputStream(comicInfo).readAllBytes());
-            assertThat(xml).contains("Updated RAR5 Title");
-
-            long imageCount = resultZip.stream()
-                    .map(ZipEntry::getName)
-                    .filter(name -> name.endsWith(".jpg"))
-                    .count();
-            assertThat(imageCount).isEqualTo(3);
         }
     }
 }

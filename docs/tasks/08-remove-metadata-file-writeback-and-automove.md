@@ -1,7 +1,7 @@
 # Task 08 — Remove Metadata File Write-back and Auto-Move
 
 **Priority:** P8
-**Status:** Not started
+**Status:** Done
 **Scope:** Backend + Frontend
 
 ---
@@ -82,13 +82,68 @@ File: `booklore-api/src/main/java/org/booklore/model/dto/settings/MetadataPersis
 
 ## Acceptance Criteria
 
-- [ ] No code path writes metadata into an EPUB/PDF/CBX/audiobook file as a
+- [x] No code path writes metadata into an EPUB/PDF/CBX/audiobook file as a
       side effect of a metadata edit (single-book, bulk, or Metadata Manager)
-- [ ] No code path renames/moves a file as a side effect of a metadata edit
-- [ ] No code path auto-converts CBR/CB7 → CBZ
-- [ ] `MetadataPersistenceSettings` no longer has `saveToOriginalFile`,
+- [x] No code path renames/moves a file as a side effect of a metadata edit
+- [x] No code path auto-converts CBR/CB7 → CBZ
+- [x] `MetadataPersistenceSettings` no longer has `saveToOriginalFile`,
       `moveFilesToLibraryPattern`, or `convertCbrCb7ToCbz` fields
-- [ ] Settings UI no longer shows these toggles
-- [ ] Editing metadata still correctly updates Booklore's DB and UI
-- [ ] App starts without errors; compile clean
-- [ ] All existing tests pass; remove or update tests that covered removed code
+- [x] Settings UI no longer shows these toggles
+- [x] Editing metadata still correctly updates Booklore's DB and UI
+- [x] App starts without errors; compile clean
+- [x] All existing tests pass; remove or update tests that covered removed code
+
+## Implementation Notes
+
+- `EpubMetadataWriter`, `CbxMetadataWriter`, `PdfMetadataWriter`,
+  `AudiobookMetadataWriter`, `MetadataWriterFactory`, and the `MetadataWriter`
+  interface were deleted outright. Two writer-only helpers with no remaining
+  callers went with them: `MetadataCopyHelper` and `BookLoreSchema` (the
+  latter was already dead — an unused XMP schema helper referenced only by
+  its own test).
+- `BookCoverService` also used `MetadataWriterFactory` to embed *cover images*
+  into the source EPUB/PDF/CBX/audiobook file on every cover
+  generate/upload/URL-set operation (`writeCoverToBookFile` /
+  `writeAudiobookCoverToFile`), gated only by `convertCbrCb7ToCbz` — not by
+  `saveToOriginalFile`. This wasn't explicitly named in the task, but it's the
+  same category of file write-back and depends entirely on the writer
+  infrastructure being removed, so it was cut too: covers are now DB/thumbnail
+  only, never embedded back into the source file. `BookCoverService` keeps its
+  DB-facing behavior (thumbnail generation, cover hash, notifications)
+  unchanged; the upload/URL endpoints themselves are unaffected by this task
+  (their removal is Task 09's job).
+- `MetadataPersistenceSettings` is kept as an empty `@Data @Builder` shell
+  (mirroring how `SidecarSettings` was fully deleted in Task 05 while its
+  *parent* `MetadataPersistenceSettings` stayed, since it still had other
+  fields at the time) — `AppSettingKey.METADATA_PERSISTENCE_SETTINGS`,
+  `AppSettings.metadataPersistenceSettings`, and the frontend
+  `MetadataPersistenceSettings` model interface are all still wired through,
+  just with nothing left to configure.
+- `FileMoveService` (and its `FileMoveResult` DTO) had no callers left once
+  the auto-move call sites in `BookMetadataUpdater` and
+  `MetadataManagementService` were removed, so — per this task's own
+  instruction — it was deleted rather than kept, unlike Task 04 where it was
+  retained specifically *because* those two callers still existed.
+  `FileMoveHelper` (used separately by `BookFileAttachmentService`) was left
+  untouched.
+- `SidecarMetadataWriter.moveSidecarFiles(...)` was `FileMoveService`'s only
+  caller; once `FileMoveService` was deleted, the entire
+  `SidecarMetadataWriter` class had zero remaining references anywhere
+  (`deleteSidecarFiles` had already been removed in an earlier task), so it
+  was deleted too.
+- `MetadataChangeDetector.hasValueChangesForFileWrite(...)` and the
+  `includedInFileWrite` flag threaded through every `FieldDescriptor`/
+  `CollectionFieldDescriptor` entry existed solely to decide whether a field
+  change should trigger a file write. With file writes gone, this whole
+  concept was removed, along with its dedicated test coverage in
+  `MetadataChangeDetectorTest`.
+- Two frontend components outside the settings page — `book-file-attacher`
+  and `duplicate-merger` — read `metadataPersistenceSettings.moveFilesToLibraryPattern`
+  purely to seed the *default* value of an unrelated, still-functional
+  "move files" checkbox (their own explicit per-operation choice, backed by
+  `BookFileAttachmentService`/`FileMoveHelper`, not by anything removed here).
+  That default-seeding subscription (and the now-unused `AppSettingsService`
+  injection in each) was removed; the checkbox now just defaults to
+  unchecked instead of mirroring the deleted global setting.
+- Verified with the full backend test suite (2908 tests, 0 failures) and a
+  clean Angular production build.
