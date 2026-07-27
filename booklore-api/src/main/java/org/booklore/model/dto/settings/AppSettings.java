@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class AppSettings {
     private boolean autoBookSearch;
     private boolean similarBookRecommendation;
+    private boolean autoFetchAuthorMetadata;
     private boolean opdsServerEnabled;
     private boolean komgaApiEnabled;
     private boolean komgaGroupUnknown;

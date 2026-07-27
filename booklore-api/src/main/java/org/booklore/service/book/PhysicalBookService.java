@@ -14,6 +14,8 @@ import org.booklore.repository.AuthorRepository;
 import org.booklore.repository.BookRepository;
 import org.booklore.repository.CategoryRepository;
 import org.booklore.repository.LibraryRepository;
+import org.booklore.service.author.AuthorAutoFetchService;
+import org.booklore.service.author.NewAuthorTrackingContext;
 import org.booklore.util.BookCoverUtils;
 import org.booklore.util.FileService;
 import org.booklore.util.RemoteUrlSanitizer;
@@ -44,6 +46,8 @@ public class PhysicalBookService {
     private final BookMapper bookMapper;
     private final FileService fileService;
     private final RemoteUrlSanitizer remoteUrlSanitizer;
+    private final NewAuthorTrackingContext newAuthorTrackingContext;
+    private final AuthorAutoFetchService authorAutoFetchService;
 
     @Transactional
     public Book createPhysicalBook(CreatePhysicalBookRequest request) {
@@ -74,7 +78,12 @@ public class PhysicalBookService {
         bookEntity.setMetadata(metadata);
 
         if (request.getAuthors() != null && !request.getAuthors().isEmpty()) {
-            addAuthorsToBook(new ArrayList<>(request.getAuthors()), bookEntity);
+            boolean ownsAuthorTrackingSession = newAuthorTrackingContext.begin();
+            try {
+                addAuthorsToBook(new ArrayList<>(request.getAuthors()), bookEntity);
+            } finally {
+                authorAutoFetchService.triggerIfEnabled(newAuthorTrackingContext.end(ownsAuthorTrackingSession));
+            }
         }
 
         if (request.getCategories() != null && !request.getCategories().isEmpty()) {
@@ -135,7 +144,11 @@ public class PhysicalBookService {
         authors.stream()
                 .map(authorName -> truncate(authorName, 255))
                 .map(authorName -> authorRepository.findByName(authorName)
-                        .orElseGet(() -> authorRepository.save(AuthorEntity.builder().name(authorName).build())))
+                        .orElseGet(() -> {
+                            AuthorEntity created = authorRepository.save(AuthorEntity.builder().name(authorName).build());
+                            newAuthorTrackingContext.track(created.getId());
+                            return created;
+                        }))
                 .forEach(authorEntity -> bookEntity.getMetadata().getAuthors().add(authorEntity));
         bookEntity.getMetadata().updateSearchText();
     }

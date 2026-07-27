@@ -7,6 +7,7 @@ import org.booklore.model.entity.CategoryEntity;
 import org.booklore.model.entity.MoodEntity;
 import org.booklore.model.entity.TagEntity;
 import org.booklore.repository.*;
+import org.booklore.service.author.NewAuthorTrackingContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,6 +40,7 @@ class BookCreatorServiceTest {
     @Mock private ComicTeamRepository comicTeamRepository;
     @Mock private ComicLocationRepository comicLocationRepository;
     @Mock private ComicCreatorRepository comicCreatorRepository;
+    @Mock private NewAuthorTrackingContext newAuthorTrackingContext;
 
     @InjectMocks
     private BookCreatorService bookCreatorService;

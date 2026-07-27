@@ -12,6 +12,8 @@ import org.booklore.model.enums.BookFileType;
 import org.booklore.repository.BookAdditionalFileRepository;
 import org.booklore.repository.BookRepository;
 import org.booklore.repository.LibraryRepository;
+import org.booklore.service.author.AuthorAutoFetchService;
+import org.booklore.service.author.NewAuthorTrackingContext;
 import org.booklore.service.event.BookEventBroadcaster;
 import org.booklore.service.file.FileFingerprint;
 import org.booklore.service.fileprocessor.BookFileProcessor;
@@ -50,6 +52,8 @@ public class FileAsBookProcessor {
     private final FileService fileService;
     private final MetadataExtractorFactory metadataExtractorFactory;
     private final AudiobookMetadataExtractor audiobookMetadataExtractor;
+    private final NewAuthorTrackingContext newAuthorTrackingContext;
+    private final AuthorAutoFetchService authorAutoFetchService;
 
     @Transactional
     public void processLibraryFiles(List<LibraryFile> libraryFiles, LibraryEntity libraryEntity) {
@@ -60,11 +64,16 @@ public class FileAsBookProcessor {
     @Transactional
     public void processLibraryFilesGrouped(Map<String, List<LibraryFile>> groups, LibraryEntity libraryEntity) {
         LibraryEntity managedLibrary = ensureManaged(libraryEntity);
-        for (Map.Entry<String, List<LibraryFile>> entry : groups.entrySet()) {
-            entry.getValue().forEach(lf -> lf.setLibraryEntity(managedLibrary));
-            processGroupWithErrorHandling(entry.getValue(), managedLibrary);
+        boolean ownsAuthorTrackingSession = newAuthorTrackingContext.begin();
+        try {
+            for (Map.Entry<String, List<LibraryFile>> entry : groups.entrySet()) {
+                entry.getValue().forEach(lf -> lf.setLibraryEntity(managedLibrary));
+                processGroupWithErrorHandling(entry.getValue(), managedLibrary);
+            }
+            log.info("Finished processing library '{}'", managedLibrary.getName());
+        } finally {
+            authorAutoFetchService.triggerIfEnabled(newAuthorTrackingContext.end(ownsAuthorTrackingSession));
         }
-        log.info("Finished processing library '{}'", managedLibrary.getName());
     }
 
     private LibraryEntity ensureManaged(LibraryEntity entity) {
