@@ -25,7 +25,7 @@ public class AuthorEntity {
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "asin", length = 20)
+    @Column(name = "asin", length = 100)
     private String asin;
 
     @Column(name = "name_locked", nullable = false)
