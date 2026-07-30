@@ -92,7 +92,7 @@ public class BookMetadataEntity {
     @Column(name = "hardcover_review_count")
     private Integer hardcoverReviewCount;
 
-    @Column(name = "asin", length = 10)
+    @Column(name = "asin", length = 100)
     private String asin;
 
     @Column(name = "goodreads_id", length = 100)
